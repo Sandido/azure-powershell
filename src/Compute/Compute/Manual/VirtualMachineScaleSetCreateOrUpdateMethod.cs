@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.Azure.Commands.Common.Strategies;
 using Microsoft.Azure.Commands.Compute.Automation.Models;
@@ -169,6 +170,10 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         public SwitchParameter SkipExtensionsOnOverprovisionedVMs { get; set; }
 
         const int FirstPortRangeStart = 50000;
+
+        [Parameter(ParameterSetName = SimpleParameterSet, Mandatory = false)]//add a help message. A description of what it does perhaps. 
+        [Parameter(ParameterSetName = "DefaultParameter", Mandatory = false)]
+        public SwitchParameter EncryptionAtHost { get; set; }
 
         sealed class Parameters : IParameters<VirtualMachineScaleSet>
         {
@@ -323,6 +328,7 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             LoadBalancerName = LoadBalancerName ?? VMScaleSetName;
             FrontendPoolName = FrontendPoolName ?? VMScaleSetName;
             BackendPoolName = BackendPoolName ?? VMScaleSetName;
+            EncryptionAtHost = (this.EncryptionAtHost.IsPresent ? true : false);
 
             var client = new Client(DefaultProfile.DefaultContext);
 

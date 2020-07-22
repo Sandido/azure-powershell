@@ -312,6 +312,10 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         [Parameter(Mandatory = false, HelpMessage = "Run cmdlet in the background")]
         public SwitchParameter AsJob { get; set; }
 
+        [Parameter(ParameterSetName = "DefaultParameter", Mandatory = false)]//add a help message. A description of what it does perhaps. 
+        [Parameter(ParameterSetName = "ExplicitIdentityParameterSet", Mandatory = false)]//Can I make the strings constants?
+        public SwitchParameter EncryptionAtHost { get; set; }
+
         private void BuildPatchObject()
         {
             if (this.IsParameterBound(c => c.AutomaticOSUpgrade))

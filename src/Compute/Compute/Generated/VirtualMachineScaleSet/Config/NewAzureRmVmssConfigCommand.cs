@@ -241,6 +241,10 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             ValueFromPipelineByPropertyName = true)]
         public string[] IdentityId { get; set; }
 
+        [Parameter(ParameterSetName = "ExplicitIdentityParameterSet", Mandatory = false)]//add a help message. A description of what it does perhaps. 
+        [Parameter(ParameterSetName = "DefaultParameterSet", Mandatory = false)]//Can I make the strings constants?
+        public SwitchParameter EncryptionAtHost { get; set; }
+
         protected override void ProcessRecord()
         {
             if (ShouldProcess("VirtualMachineScaleSet", "New"))
@@ -563,6 +567,11 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                 {
                     vAdditionalCapabilities = new AdditionalCapabilities(true);
                 }
+            }
+
+            if (this.EncryptionAtHost.IsPresent)
+            {
+                //TODO: code needed here?
             }
 
             if (this.IsParameterBound(c => c.ScaleInPolicy))

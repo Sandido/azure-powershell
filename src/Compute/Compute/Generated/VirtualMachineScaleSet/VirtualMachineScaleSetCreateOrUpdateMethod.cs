@@ -61,6 +61,8 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                                 WriteWarning("You are deploying VMSS pinned to a specific image version from Azure Marketplace. \n" +
                                     "Consider using \"latest\" as the image version. This allows VMSS to auto upgrade when a newer version is available.");
                             }
+                            
+                            EncryptionAtHost = (this.EncryptionAtHost.IsPresent ? true : false);//Is this needed? Seems out of place
                             var result = VirtualMachineScaleSetsClient.CreateOrUpdate(resourceGroupName, vmScaleSetName, parameters);
                             var psObject = new PSVirtualMachineScaleSet();
                             ComputeAutomationAutoMapperProfile.Mapper.Map<VirtualMachineScaleSet, PSVirtualMachineScaleSet>(result, psObject);
