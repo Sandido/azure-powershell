@@ -426,7 +426,7 @@ namespace Microsoft.Azure.Commands.Compute
                         identity: _cmdlet.GetVMIdentityFromArgs(),
                         proximityPlacementGroup: ppgSubResourceFunc,
                         hostId: _cmdlet.HostId,
-                        hostGroupId: _cmdlet.HostGroupId,
+                        hostGroupId: _cmdlet.HostGroupId, 
                         priority: _cmdlet.Priority,
                         evictionPolicy: _cmdlet.EvictionPolicy,
                         maxPrice: _cmdlet.IsParameterBound(c => c.MaxPrice) ? _cmdlet.MaxPrice : (double?)null,
