@@ -19,6 +19,101 @@
 -->
 ## Upcoming Release
 
+## Version 0.11.0
+* Removed principaltype in Synapse Role-based access control
+
+## Version 0.10.0
+* Add support for Synapse Role-based access control
+   - Upgraded Azure.Analytics.Synapse.AccessControl to 1.0.0-preview.3
+   - Updated `New-AzSynapseRoleAssignment` cmdlet
+   - Updated `Get-AzSynapseRoleAssignment` cmdlet
+   - Updated `Remove-AzSynapseRoleAssignment` cmdlet
+   - Added `Get-AzSynapseRoleScope` cmdlet
+* Renamed -AllowAllAzureIP to -AllowAllAzureIp and changed IP range to 0.0.0.0-0.0.0.0 
+* Added -AllowAllIp and set IP range to 0.0.0.0-255.255.255.255
+* Fixed the issue of retrieving Apache Spark pool information through management API
+
+## Version 0.9.0
+* Added support for workspace key encryption management
+	- Add `New-AzSynapseWorkspaceKey` cmdlet
+    - Add `Get-AzSynapseWorkspaceKey` cmdlet
+    - Add `Remove-AzSynapseWorkspaceKey` cmdlet
+    - Add `Update-AzSynapseWorkspaceKey` cmdlet
+* Added support for managed identity SQL control
+	- Add `Set-AzSynapseManagedIdentitySqlControlSetting` cmdlet
+    - Add `Get-AzSynapseManagedIdentitySqlControlSetting` cmdlet
+* Added support for data exfiltration
+	- Update `New-AzSynapseWorkspace` cmdlet to accept `-ManagedVirtualNetwork`
+    - Add `New-AzSynapseManagedVirtualNetworkConfig` cmdlet
+    - Add `Update-AzSynapseManagedVirtualNetworkConfig` cmdlet
+
+## Version 0.8.0
+* Added support for operation of getting droppedsqlpool and geobackup
+    - Add `Get-AzSynapseDroppedSqlPool` cmdlet
+    - Add `Get-AzSynapseSqlPoolGeoBackup` cmdlet
+* Switched to Azure PowerShell official exception types
+
+## Version 0.7.0
+* Simplify `Restore-AzSynapseSqlPool` cmdlet to make it consistent with the existing SQL DW cmdlet
+
+## Version 0.6.0
+* Added support for operation of Advanced Threat Protection settings in SqlPool-level
+    - Add `Update-AzSynapseSqlPoolAdvancedThreatProtectionSetting` cmdlet
+    - Add `Get-AzSynapseSqlPoolAdvancedThreatProtectionSetting` cmdlet
+    - Add `Reset-AzSynapseSqlPoolAdvancedThreatProtectionSetting` cmdlet
+* Added support for operation of Vulnerability Assessment settings in SqlPool-level
+    - Add `Update-AzSynapseSqlPoolVulnerabilityAssessmentSetting` cmdlet
+    - Add `Get-AzSynapseSqlPoolVulnerabilityAssessmentSetting` cmdlet
+    - Add `Reset-AzSynapseSqlPoolVulnerabilityAssessmentSetting` cmdlet
+* Added support for operation of SQL Advanced Data Security
+    - Add `Enable-AzSynapseSqlAdvancedDataSecurity` cmdlet
+    - Add `Disable-AzSynapseSqlAdvancedDataSecurity` cmdlet
+    - Add `Get-AzSynapseSqlAdvancedDataSecurityPolicy` cmdlet
+* Added support for operation of Transparent Data Encryption in SqlPool-level
+    - Add `Get-AzSynapseSqlPoolTransparentDataEncryption` cmdlet
+    - Add `Set-AzSynapseSqlPoolTransparentDataEncryption` cmdlet
+* Added support for operation of Data Classification in SqlPool-level
+    - Add `Disable-AzSynapseSqlPoolSensitivityRecommendation` cmdlet
+    - Add `Enable-AzSynapseSqlPoolSensitivityRecommendation` cmdlet
+    - Add `Get-AzSynapseSqlPoolSensitivityRecommendation` cmdlet
+    - Add `Get-AzSynapseSqlPoolSensitivityClassification` cmdlet
+    - Add `Remove-AzSynapseSqlPoolSensitivityClassification` cmdlet
+    - Add `Set-AzSynapseSqlPoolSensitivityClassification` cmdlet
+* Added support for operation of Vulnerability Assessment Baseline in SqlPool-level
+    - Add `Clear-AzSynapseSqlPoolVulnerabilityAssessmentRuleBaseline` cmdlet
+    - Add `Get-AzSynapseSqlPoolVulnerabilityAssessmentRuleBaseline` cmdlet
+    - Add `Set-AzSynapseSqlPoolVulnerabilityAssessmentRuleBaseline` cmdlet
+* Fixed deserialization error when create Pipeline/Dataset/Trigger through DefinitionFile
+* Added polling for artifacts cmdlets
+
+## Version 0.5.0
+* Added support for operation of Synapse SQL Pool Restore Point
+    - Add `New-AzSynapseSqlPoolRestorePoint` cmdlet
+    - Add `Remove-AzSynapseSqlPoolRestorePoint` cmdlet
+* Added support for operation of Auditing settings in Workspace-level and SqlPool-level
+    - Add `Set-AzSynapseSqlAuditSetting` cmdlet
+    - Add `Get-AzSynapseSqlAuditSetting` cmdlet
+    - Add `Reset-AzSynapseSqlAuditSetting` cmdlet
+    - Add `Set-AzSynapseSqlPoolAuditSetting` cmdlet
+    - Add `Get-AzSynapseSqlPoolAuditSetting` cmdlet
+    - Add `Reset-AzSynapseSqlPoolAuditSetting` cmdlet
+* Added support for operation of Advanced Threat Protection settings in Workspace-level
+    - Add `Update-AzSynapseSqlAdvancedThreatProtectionSetting` cmdlet
+    - Add `Get-AzSynapseSqlAdvancedThreatProtectionSetting` cmdlet
+    - Add `Reset-AzSynapseSqlAdvancedThreatProtectionSetting` cmdlet
+* Added support for operation of Vulnerability Assessment settings in Workspace-level
+    - Add `Update-AzSynapseSqlVulnerabilityAssessmentSetting` cmdlet
+    - Add `Get-AzSynapseSqlVulnerabilityAssessmentSetting` cmdlet
+    - Add `Reset-AzSynapseSqlVulnerabilityAssessmentSetting` cmdlet
+* Added support for operation of SQL Active Directory admin
+    - Add `Set-AzSynapseSqlActiveDirectoryAdministrator` cmdlet
+    - Add `Get-AzSynapseSqlActiveDirectoryAdministrator` cmdlet
+    - Add `Remove-AzSynapseSqlActiveDirectoryAdministrator` cmdlet
+* Fixed Null Reference Exception when submit spark job.
+
+## Version 0.4.0
+* Add `-Force` to all Remove cmdlets
+
 ## Version 0.3.0
 * Added support for operation of Synapse LinkedService
     - Add `Get-AzSynapseLinkedService` cmdlet

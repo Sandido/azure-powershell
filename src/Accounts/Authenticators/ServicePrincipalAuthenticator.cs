@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Identity;
 
+using Hyak.Common;
+
 using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Identity.Client;
@@ -30,7 +32,6 @@ namespace Microsoft.Azure.PowerShell.Authenticators
     public class ServicePrincipalAuthenticator : DelegatingAuthenticator
     {
         private const string AuthenticationFailedMessage = "No certificate thumbprint or secret provided for the given service principal '{0}'.";
-        private ConcurrentDictionary<string, ClientCertificateCredential> ClientCertCredentialMap = new ConcurrentDictionary<string, ClientCertificateCredential>(StringComparer.OrdinalIgnoreCase);
 
         //MSAL doesn't cache Service Principal into msal.cache
         public override Task<IAccessToken> Authenticate(AuthenticationParameters parameters, CancellationToken cancellationToken)
@@ -54,31 +55,29 @@ namespace Microsoft.Azure.PowerShell.Authenticators
             if (!string.IsNullOrEmpty(spParameters.Thumbprint))
             {
                 //Service Principal with Certificate
-                ClientCertificateCredential certCredential;
-                if (!ClientCertCredentialMap.TryGetValue(spParameters.ApplicationId, out certCredential))
-                {
-                    //first time login
-                    var certificate = AzureSession.Instance.DataStore.GetCertificate(spParameters.Thumbprint);
-                    certCredential = new ClientCertificateCredential(tenantId, spParameters.ApplicationId, certificate, options);
-                    var tokenTask = certCredential.GetTokenAsync(requestContext, cancellationToken);
-                    return MsalAccessToken.GetAccessTokenAsync(tokenTask,
-                        () => { ClientCertCredentialMap[spParameters.ApplicationId] = certCredential; },
-                        spParameters.TenantId,
-                        spParameters.ApplicationId);
-                }
-                else
-                {
-                    var tokenTask = certCredential.GetTokenAsync(requestContext, cancellationToken);
-                    return MsalAccessToken.GetAccessTokenAsync(tokenTask, spParameters.TenantId, spParameters.ApplicationId);
-                }
+                var certificate = AzureSession.Instance.DataStore.GetCertificate(spParameters.Thumbprint);
+                ClientCertificateCredential certCredential = new ClientCertificateCredential(tenantId, spParameters.ApplicationId, certificate, options);
+                var parametersLog = $"- Thumbprint:'{spParameters.Thumbprint}', ApplicationId:'{spParameters.ApplicationId}', TenantId:'{tenantId}', Scopes:'{string.Join(",", scopes)}', AuthorityHost:'{options.AuthorityHost}'";
+                return MsalAccessToken.GetAccessTokenAsync(
+                    nameof(ServicePrincipalAuthenticator),
+                    parametersLog,
+                    certCredential,
+                    requestContext,
+                    cancellationToken,
+                    spParameters.TenantId,
+                    spParameters.ApplicationId);
             }
             else if (spParameters.Secret != null)
             {
                 // service principal with secret
                 var secretCredential = new ClientSecretCredential(tenantId, spParameters.ApplicationId, spParameters.Secret.ConvertToString(), options);
-                var tokenTask = secretCredential.GetTokenAsync(requestContext, cancellationToken);
+                var parametersLog = $"- ApplicationId:'{spParameters.ApplicationId}', TenantId:'{tenantId}', Scopes:'{string.Join(",", scopes)}', AuthorityHost:'{options.AuthorityHost}'";
                 return MsalAccessToken.GetAccessTokenAsync(
-                    tokenTask,
+                    nameof(ServicePrincipalAuthenticator),
+                    parametersLog,
+                    secretCredential,
+                    requestContext,
+                    cancellationToken,
                     spParameters.TenantId,
                     spParameters.ApplicationId);
             }

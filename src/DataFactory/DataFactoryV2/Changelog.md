@@ -19,6 +19,25 @@
 -->
 ## Upcoming Release
 
+## Version 1.12.0
+* Added User Assigned Identities to Data Factory.
+* Updated ADF .Net SDK version to 4.18.0
+
+## Version 1.11.5
+* Updated ADF .Net SDK version to 4.15.0
+
+## Version 1.11.4
+* Updated ADF .Net SDK version to 4.14.0
+
+## Version 1.11.3
+* Fixed the command `Invoke-AzDataFactoryV2Pipeline` for SupportsShouldProcess issue
+
+## Version 1.11.2
+* Updated ADF .Net SDK version to 4.13.0
+
+## Version 1.11.1
+* Improved error message of `New-AzDataFactoryV2LinkedServiceEncryptedCredential` command
+
 ## Version 1.11.0
 * Updated ADF .Net SDK version to 4.12.0
 * Updated ADF encryption client SDK version to 4.14.7587.7

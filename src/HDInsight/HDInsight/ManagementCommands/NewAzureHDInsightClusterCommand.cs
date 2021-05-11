@@ -114,6 +114,7 @@ namespace Microsoft.Azure.Commands.HDInsight
                     ZookeeperNodeSize = ZookeeperNodeSize,
                     HiveMetastore = HiveMetastore,
                     OozieMetastore = OozieMetastore,
+                    AmbariDatabase = AmbariDatabase,
                     ObjectId = ObjectId,
                     ApplicationId = ApplicationId,
                     AADTenantId = AadTenantId,
@@ -175,6 +176,7 @@ namespace Microsoft.Azure.Commands.HDInsight
                 ZookeeperNodeSize = value.ZookeeperNodeSize;
                 HiveMetastore = value.HiveMetastore;
                 OozieMetastore = value.OozieMetastore;
+                AmbariDatabase = value.AmbariDatabase;
                 CertificateFileContents = value.CertificateFileContents;
                 CertificateFilePath = value.CertificateFilePath;
                 AadTenantId = value.AADTenantId;
@@ -219,6 +221,9 @@ namespace Microsoft.Azure.Commands.HDInsight
 
         [Parameter(HelpMessage = "Gets or sets the database to store the metadata for Hive.")]
         public AzureHDInsightMetastore HiveMetastore { get; set; }
+
+        [Parameter(HelpMessage = "Gets or sets the database for ambari.")]
+        public AzureHDInsightMetastore AmbariDatabase { get; set; }
 
         [Parameter(HelpMessage = "Gets additional Azure Storage Account that you want to enable access to.")]
         public Dictionary<string, string> AdditionalStorageAccounts { get; private set; }
@@ -358,6 +363,20 @@ namespace Microsoft.Azure.Commands.HDInsight
         [Parameter(HelpMessage = "Gets or sets the client group name for Kafka Rest Proxy access.")]
         public string KafkaClientGroupName { get; set; }
 
+        [Parameter(HelpMessage = "Gets or sets the resource provider connection type.")]
+        [ValidateSet(Management.HDInsight.Models.ResourceProviderConnection.Inbound, Management.HDInsight.Models.ResourceProviderConnection.Outbound)]
+        public string ResourceProviderConnection { get; set; }
+
+        [Parameter(HelpMessage = "Gets or sets the private link type.")]
+        [ValidateSet(Management.HDInsight.Models.PrivateLink.Enabled, Management.HDInsight.Models.PrivateLink.Disabled)]
+        public string PrivateLink { get; set; }
+
+        [Parameter(HelpMessage = "Enables HDInsight compute isolation feature.")]
+        public SwitchParameter EnableComputeIsolation { get; set; }
+
+        [Parameter(HelpMessage = "Gets or sets the dedicated host sku for compute isolation.")]
+        public string ComputeIsolationHostSku { get; set; }
+
 
         #endregion
 
@@ -439,6 +458,12 @@ namespace Microsoft.Azure.Commands.HDInsight
                 ClusterCreateHelper.AddHiveMetastoreToConfigurations(HiveMetastore, clusterConfigurations);
             }
 
+            // Handle Custom Ambari Database
+            if (AmbariDatabase != null)
+            {
+                ClusterCreateHelper.AddCustomAmbariDatabaseToConfigurations(AmbariDatabase, clusterConfigurations);
+            }
+
             // Handle ADLSGen1 identity
             if (!string.IsNullOrEmpty(CertificatePassword))
             {
@@ -462,8 +487,11 @@ namespace Microsoft.Azure.Commands.HDInsight
                 };
             }
 
+            bool isKafkaRestProxyEnable = kafkaRestProperties != null;
+            var defaultVmSizeConfigurations = GetDefaultVmsizesConfigurations(Location);
+
             // Compute profile contains headnode, workernode, zookeepernode, edgenode, kafkamanagementnode, idbrokernode, etc.
-            ComputeProfile computeProfile = ClusterCreateHelper.CreateComputeProfile(osProfile, vnetProfile, clusterScriptActions, ClusterType, ClusterSizeInNodes, HeadNodeSize, WorkerNodeSize, ZookeeperNodeSize, EdgeNodeSize, KafkaManagementNodeSize, EnableIDBroker.IsPresent);
+            ComputeProfile computeProfile = ClusterCreateHelper.CreateComputeProfile(osProfile, vnetProfile, clusterScriptActions, ClusterType, ClusterSizeInNodes, HeadNodeSize, WorkerNodeSize, ZookeeperNodeSize, EdgeNodeSize, isKafkaRestProxyEnable, KafkaManagementNodeSize, EnableIDBroker.IsPresent, defaultVmSizeConfigurations);
 
             // Handle SecurityProfile
             SecurityProfile securityProfile = ClusterCreateHelper.ConvertAzureHDInsightSecurityProfileToSecurityProfile(SecurityProfile, AssignedIdentity);
@@ -538,6 +566,20 @@ namespace Microsoft.Azure.Commands.HDInsight
                 workerNode.AutoscaleConfiguration = autoscaleParameter;
             }
 
+            // Handle relay outound and private link feature
+            NetworkProperties networkProperties = null;
+            if (ResourceProviderConnection != null || PrivateLink != null)
+            {
+                networkProperties = new NetworkProperties(ResourceProviderConnection, PrivateLink);
+            }
+
+            // Handle compute isolation properties
+            ComputeIsolationProperties computeIsolationProperties = null;
+            if (EnableComputeIsolation.IsPresent)
+            {
+                computeIsolationProperties = new ComputeIsolationProperties(EnableComputeIsolation.IsPresent, ComputeIsolationHostSku);
+            }
+
             // Construct cluster create parameter
             ClusterCreateParametersExtended createParams = new ClusterCreateParametersExtended
             {
@@ -564,7 +606,9 @@ namespace Microsoft.Azure.Commands.HDInsight
                     {
                         IsEncryptionInTransitEnabled = EncryptionInTransit
                     } : null,
-                    MinSupportedTlsVersion = MinSupportedTlsVersion
+                    MinSupportedTlsVersion = MinSupportedTlsVersion,
+                    NetworkProperties = networkProperties,
+                    ComputeIsolationProperties= computeIsolationProperties
 
                 },
                 Identity = clusterIdentity

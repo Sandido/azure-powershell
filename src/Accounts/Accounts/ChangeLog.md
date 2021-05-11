@@ -17,8 +17,57 @@
     * Overview of change #1
         - Additional information about change #1
 -->
+
 ## Upcoming Release
+* Customize display format of PSAzureRmAccount to hide secret of service principal [#14208]
+
+## Version 2.2.8
+* Fallback to first valid context if current default context key is "Default" which is invalid
+
+## Version 2.2.7
+* Fixed incorrect warning message on Windows PowerShell [#14556]
+* Set Azure Environment variable `AzureKeyVaultServiceEndpointResourceId` according to the value of `AzureKeyVaultDnsSuffix` when discovering environment 
+
+## Version 2.2.6
+* Upgrade Azure.Identity to fix the issue that Connect-AzAccount fails when ADFS credential is used [#13560]
+
+## Version 2.2.5
+* Tracked CloudError code in exception
+* Raised 'ContextCleared' event when `Clear-AzContext` was executed
+
+## Version 2.2.4
+* Shown correct client request id on debug message [#13745]
+* Added common Azure PowerShell exception type
+* Supported storage API 2019-06-01
+
+## Version 2.2.3
+* Fixed the issue that Http proxy is not respected in Windows PowerShell [#13647]
+* Improved debug log of long running operations in generated modules
+
+## Version 2.2.2
+* Managed to parse ExpiresOn time from raw token if could not get from underlying library
+* Improved warning message if Interactive authentication is unavailable
+
+## Version 2.2.1
+* Fixed the issue that using Task.Result incorrectly causes unclear error message if browser is not available for Interactive auth
+
+## Version 2.2.0
+* Fixed an issue that TenantId may be not respected if using `Connect-AzAccount -DeviceCode`[#13477]
+* Added new cmdlet `Get-AzAccessToken`
+* Fixed an issue that error happens if user profile path is inaccessible
+* Fixed an issue causing Write-Object error during Connect-AzAccount [#13419]
+* Added parameter "ContainerRegistryEndpointSuffix" to: `Add-AzEnvironment`, `Set-AzEnvironment` 
+* Supported interrupting login by hitting <kbd>CTRL</kbd>+<kbd>C</kbd>
+* Fixed an issue causing `Connect-AzAccount -KeyVaultAccessToken` not working [#13127]
 * Fixed null reference and method case insensitive in `Invoke-AzRestMethod`
+
+## Version 2.1.2
+* Fixed one issue related to MSI
+
+## Version 2.1.1
+* Fixed the issue that token is not renewed after expiring for LRO [#13367]
+* Fixed the issue that AccountId is not respected in MSI [#13376]
+* Fixed the issue that error message is unclear if browser is not avaialable for Interactive auth [#13340]
 
 ## Version 2.1.0
 * [Breaking Change] Removed `Get-AzProfile` and `Select-AzProfile`

@@ -21,6 +21,7 @@ using Microsoft.Azure.Management.ResourceManager.Models;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.IO;
 using System.Management.Automation;
 
@@ -98,6 +99,13 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
         [LocationCompleter("Microsoft.Resources/templateSpecs")]
         public string Location { get; set; }
 
+        [Alias("Tags")]
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Hashtable of tags for the new template spec resource(s).")]
+        [ValidateNotNull]
+        public Hashtable Tag { get; set; }
+
         [Parameter(
             ParameterSetName = FromJsonStringParameterSet,
             Mandatory = true,
@@ -124,6 +132,16 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
             HelpMessage = "Do not ask for confirmation when overwriting an existing version.")]
         public SwitchParameter Force { get; set; }
 
+
+        [Parameter(Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "UIForm for the templatespec resource")]
+        public string UIFormDefinitionFile { get; set; }
+
+        [Parameter(Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "UIForm for the templatespec resource")]
+        public string UIFormDefinitionString { get; set; }
         #endregion
 
         #region Cmdlet Overrides
@@ -187,11 +205,33 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                         packagedTemplate = new PackagedTemplate
                         {
                             RootTemplate = parsedTemplate,
-                            Artifacts = new TemplateSpecArtifact[0]
+                            Artifacts = new LinkedTemplateArtifact[0]
                         };
                         break;
                     default:
                         throw new PSNotSupportedException();
+                }
+
+                JObject UIFormDefinition = new JObject();
+                if (UIFormDefinitionFile == null && UIFormDefinitionString == null)
+                {
+                    UIFormDefinition = null;
+                }
+                else if (!String.IsNullOrEmpty(UIFormDefinitionFile))
+                {
+                    string UIFormFilePath = this.TryResolvePath(UIFormDefinitionFile);
+                    if (!File.Exists(UIFormFilePath))
+                    {
+                        throw new PSInvalidOperationException(
+                            string.Format(ProjectResources.InvalidFilePath, UIFormDefinitionFile)
+                        );
+                    }
+                    string UIFormJson = FileUtilities.DataStore.ReadFileAsText(UIFormDefinitionFile);
+                    UIFormDefinition = JObject.Parse(UIFormJson);
+                }
+                else if (!String.IsNullOrEmpty(UIFormDefinitionString))
+                {
+                    UIFormDefinition = JObject.Parse(UIFormDefinitionString);
                 }
 
                 Action createOrUpdateAction = () =>
@@ -202,9 +242,12 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                         Version,
                         Location,
                         packagedTemplate,
+                        UIFormDefinition,
                         templateSpecDescription: Description,
                         templateSpecDisplayName: DisplayName,
-                        versionDescription: VersionDescription
+                        versionDescription: VersionDescription,
+                        templateSpecTags:Tag, // Note: Only applied if template spec doesn't exist
+                        versionTags: Tag
                     );
 
                     WriteObject(templateSpecVersion);

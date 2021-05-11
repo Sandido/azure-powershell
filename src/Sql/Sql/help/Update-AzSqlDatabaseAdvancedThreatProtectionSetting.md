@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Sql.dll-Help.xml
 Module Name: Az.Sql
 ms.assetid: 457FD595-D5E1-45C4-9DB8-C3C6C30A0E94
-online version: https://docs.microsoft.com/en-us/powershell/module/az.sql/Update-AzSqlDatabaseAdvancedThreatProtectionSetting
+online version: https://docs.microsoft.com/powershell/module/az.sql/Update-AzSqlDatabaseAdvancedThreatProtectionSetting
 schema: 2.0.0
 ---
 
@@ -85,9 +85,9 @@ Accept wildcard characters: False
 ### -ExcludedDetectionType
 Specifies an array of detection types to exclude from the settings.
 The acceptable values for this parameter are:
-- Sql_Injection 
-- Sql_Injection_Vulnerability 
-- Access_Anomaly 
+- Sql_Injection
+- Sql_Injection_Vulnerability
+- Access_Anomaly
 - None
 
 ```yaml
@@ -245,10 +245,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Get-AzSqlDatabaseThreatDetectionsettings](./Get-AzSqlServerThreatDetectionsettings.md)
-
-[Remove-AzSqlDatabaseThreatDetectionsettings](./Remove-AzSqlDatabaseThreatDetectionsettings.md)
+[Azure SQL Database cmdlets](/powershell/module/az.sql/)
 
 [SQL Database Documentation](https://docs.microsoft.com/azure/sql-database/)
-
-

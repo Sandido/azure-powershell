@@ -12,6 +12,7 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Azure.Commands.ResourceManager.Cmdlets.Components;
 using Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkModels;
 using Microsoft.Azure.Commands.ResourceManager.Common;
@@ -20,6 +21,7 @@ using Microsoft.Azure.Management.ResourceManager.Models;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.IO;
 using System.Management.Automation;
 
@@ -120,6 +122,13 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
         [LocationCompleter("Microsoft.Resources/templateSpecs")]
         public string Location { get; set; }
 
+        [Alias("Tags")]
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Hashtable of tags for the template spec and/or version")]
+        [ValidateNotNull]
+        public Hashtable Tag { get; set; }
+
         [Parameter(Mandatory = true, ParameterSetName = UpdateVersionByNameFromJsonParameterSet, ValueFromPipelineByPropertyName = true,
             HelpMessage = "The Azure Resource Manager template JSON.")]
         [Parameter(Mandatory = true, ParameterSetName = UpdateVersionByIdFromJsonParameterSet, ValueFromPipelineByPropertyName = true,
@@ -146,6 +155,16 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
         [ValidateNotNullOrEmpty]
         public string VersionDescription { get; set; }
 
+
+        [Parameter(Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "UIForm for the templatespec resource")]
+        public string UIFormDefinitionFile { get; set; }
+
+        [Parameter(Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "UIForm for the templatespec resource")]
+        public string UIFormDefinitionString { get; set; }
         #endregion
 
         #region Cmdlet Overrides
@@ -225,7 +244,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                             packagedTemplate = new PackagedTemplate
                             {
                                 RootTemplate = JObject.Parse(TemplateJson),
-                                Artifacts = new TemplateSpecArtifact[0]
+                                Artifacts = new LinkedTemplateArtifact[0]
                             };
                             break;
                         default:
@@ -237,15 +256,40 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                         return;
                     }
 
+                    JObject UIFormDefinition = new JObject();
+                    if (UIFormDefinitionFile == null && UIFormDefinitionString == null)
+                    {
+                        UIFormDefinition = null;
+                    }
+                    else if (!String.IsNullOrEmpty(UIFormDefinitionFile))
+                    {
+                        string UIFormFilePath = this.TryResolvePath(UIFormDefinitionFile);
+                        if (!File.Exists(UIFormFilePath))
+                        {
+                            throw new PSInvalidOperationException(
+                                string.Format(ProjectResources.InvalidFilePath, UIFormDefinitionFile)
+                            );
+                        }
+                        string UIFormJson = FileUtilities.DataStore.ReadFileAsText(UIFormDefinitionFile);
+                        UIFormDefinition = JObject.Parse(UIFormJson);
+                    }
+                    else if (!String.IsNullOrEmpty(UIFormDefinitionString))
+                    {
+                        UIFormDefinition = JObject.Parse(UIFormDefinitionString);
+                    }
+
                     var templateSpecVersion = TemplateSpecsSdkClient.CreateOrUpdateTemplateSpecVersion(
                         ResourceGroupName,
                         Name,
                         Version,
                         Location,
                         packagedTemplate,
+                        UIFormDefinition,
                         templateSpecDescription: Description,
                         templateSpecDisplayName: DisplayName,
-                        versionDescription: VersionDescription
+                        versionDescription: VersionDescription,
+                        templateSpecTags: Tag, // Note: Only applied if template spec doesn't exist
+                        versionTags: Tag
                     );
 
                     WriteObject(templateSpecVersion);
@@ -264,7 +308,8 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                             Name,
                             Location,
                             templateSpecDescription: Description,
-                            templateSpecDisplayName: DisplayName
+                            templateSpecDisplayName: DisplayName,
+                            tags: Tag
                         );
 
                     // As the root template spec is a seperate resource type, it won't contain version 

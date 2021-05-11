@@ -5,7 +5,6 @@ using Microsoft.Azure.Commands.Synapse.Common;
 using Microsoft.Azure.Commands.Synapse.Models;
 using Microsoft.Azure.Commands.Synapse.Properties;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Management.Automation;
@@ -80,11 +79,17 @@ namespace Microsoft.Azure.Commands.Synapse
                 this.WorkspaceName = this.WorkspaceObject.Name;
             }
 
+            if (!this.IsParameterBound(c => c.Name))
+            {
+                string path = this.TryResolvePath(DefinitionFile);
+                this.Name = Path.GetFileNameWithoutExtension(path);
+            }
+
             if (this.ShouldProcess(this.WorkspaceName, String.Format(Resources.SettingSynapseNotebook, this.Name, this.WorkspaceName)))
             {
                 string rawJsonContent = SynapseAnalyticsClient.ReadJsonFileContent(this.TryResolvePath(DefinitionFile));
-                PSNotebook pSNotebook = JsonConvert.DeserializeObject<PSNotebook>(rawJsonContent);
-                NotebookResource notebookResource = new NotebookResource(pSNotebook.ToSdkObject());
+                Notebook notebook = JsonConvert.DeserializeObject<Notebook>(rawJsonContent);
+                NotebookResource notebookResource = new NotebookResource(this.Name, notebook);
 
                 if (this.IsParameterBound(c => c.SparkPoolName))
                 {
@@ -93,7 +98,7 @@ namespace Microsoft.Azure.Commands.Synapse
 
                     string suffix = DefaultContext.Environment.GetEndpoint(AzureEnvironment.ExtendedEndpoint.AzureSynapseAnalyticsEndpointSuffix);
                     string endpoint = "https://" + this.WorkspaceName + "." + suffix;
-                    var sparkPoolInfo = new SynapseAnalyticsManagementClient(DefaultContext).GetSparkPool(null, this.WorkspaceName, this.SparkPoolName);
+                    var sparkPoolInfo = SynapseAnalyticsClient.GetBigDataPool(SparkPoolName);
 
                     options["auth"] = new ComputeOptions
                     {
@@ -115,11 +120,6 @@ namespace Microsoft.Azure.Commands.Synapse
                     notebookResource.Properties.SessionProperties = new NotebookSessionProperties(options["memory"] + "g", (int)options["cores"], options["memory"] + "g", (int)options["cores"], (int)options["nodeCount"]);
                 }
 
-                if (!this.IsParameterBound(c => c.Name))
-                {
-                    string path = this.TryResolvePath(DefinitionFile);
-                    this.Name = Path.GetFileNameWithoutExtension(path);
-                }
                 WriteObject(new PSNotebookResource(SynapseAnalyticsClient.CreateOrUpdateNotebook(this.Name, notebookResource), this.WorkspaceName));
             }
         }

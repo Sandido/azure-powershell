@@ -19,6 +19,19 @@
 -->
 ## Upcoming Release
 
+## Version 2.1.0
+* Added support `AcrNameToAttach` in `Set-AzAksCluster`. [#14692]
+* Added support `AcrNameToDetach` in `Set-AzAksCluster`. [#14693] 
+* Added `Set-AzAksClusterCredential` to reset the ServicePrincipal of an existing AKS cluster.
+
+## Version 2.0.2
+* Refined error messages of cmdlet failure.
+* Upgraded exception handling to use Azure PowerShell related exceptions.
+* Fixed the issue that user could not use provided service principal to create Kubernetes cluster. [#13938]
+
+## Version 2.0.1
+* Fixed the issue that user cannot use service principal to create a new Kubernetes cluster. [#13012]
+
 ## Version 2.0.0
 * [Breaking Change] Removed parameter alias `ClientIdAndSecret` in `New-AzAksCluster` and `Set-AzAksCluster`.
 * [Breaking Change] Changed the default value of `NodeVmSetType` in `New-AzAksCluster` from `AvailabilitySet` to `VirtualMachineScaleSets`.

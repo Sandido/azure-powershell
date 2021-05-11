@@ -19,6 +19,18 @@
 -->
 ## Upcoming Release
 
+## Version 2.7.3
+* Updated IoT Hub Management SDK and models to version 3.0.0 (api-version 2020-03-01)
+
+## Version 2.7.2
+* Fixed a regression regarding SAS token generation
+
+## Version 2.7.1
+* Fixed an issue of SAS token.
+
+## Version 2.7.0
+* Allowed tags in IoT Hub create cmdlet.
+
 ## Version 2.6.0
 * Updated devices sdk.
 

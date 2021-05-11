@@ -19,6 +19,17 @@
 -->
 ## Upcoming Release
 
+## Version 0.10.0
+* Changed output of `Search-AzGraph` to PSResourceGraphResponse which wrapped previous output under Data property.
+
+## Version 0.9.0
+* Added support for the new api version with the ability to query with management group scopes using -ManagementGroup param.
+* Deprecated parameter -Include.
+* Introduced -SkipToken param and aligned max resources returned per page with server value.
+
+## Version 0.8.0
+* Added new cmdlets to support query resource
+
 ## Version 0.7.7
 * Update references in .psd1 to use relative path
 

@@ -260,6 +260,10 @@ namespace Microsoft.Azure.Commands.DataFactoryV2
 
         public const string HelpGlobalParameter = "The dictionary containing the global parameters of the data factory.";
 
+        public const string HelpIdentityType = "The identity type for the factory. It can be 'SystemAssigned', 'UserAssigned' or 'SystemAssigned,UserAssigned'";
+
+        public const string HelpUserAssignedIdenty = "Dictionary of user assigned identities to use. { \"<UAMI Id>\" : {} }";
+
         public const string HelpRepoConfigurationProjectName = "The project name for repo configuration.";
 
         public const string HelpRepoConfigurationTenantId = "The tenant id for repo configuration.";
@@ -286,5 +290,6 @@ namespace Microsoft.Azure.Commands.DataFactoryV2
 
         public const string ActionDescriptionForRemoveEventSubscription = "Unsubscribe the event trigger from external service events.";
 
+        public const string ActionDescriptionForInvokePipeline = "Starts a run for \"{0}\" pipeline in the \"{1}\" factory.";
     }
 }

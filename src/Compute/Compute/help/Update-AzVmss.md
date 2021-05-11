@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Compute.dll-Help.xml
 Module Name: Az.Compute
 ms.assetid: 9EE192A5-4E3F-41ED-A539-8E0A5D5EA4C9
-online version: https://docs.microsoft.com/en-us/powershell/module/az.compute/update-azvmss
+online version: https://docs.microsoft.com/powershell/module/az.compute/update-azvmss
 schema: 2.0.0
 ---
 
@@ -152,7 +152,7 @@ Accept wildcard characters: False
 Specifies a base-64 encoded string of custom data.
 This is decoded to a binary array that is saved as a file on the virtual machine.
 The maximum length of the binary array is 65535 bytes. <br>
-For using cloud-init for your VM, see [Using cloud-init to customize a Linux VM during creation](https://docs.microsoft.com/azure/virtual-machines/virtual-machines-linux-using-cloud-init?toc=%2fazure%2fvirtual-machines%2flinux%2ftoc.json).
+For using cloud-init for your VM, see [Using cloud-init to customize a Linux VM during creation](/azure/virtual-machines/linux/tutorial-automate-vm-deployment).
 
 ```yaml
 Type: System.String
@@ -242,7 +242,7 @@ Accept wildcard characters: False
 ```
 
 ### -EncryptionAtHost
-This parameter can be used by user in the request to enable or disable the Host Encryption for the virtual machine scale set. 
+This parameter can be used by user in the request to enable or disable the Host Encryption for the virtual machine scale set.
 
 ```yaml
 Type: System.Boolean
@@ -491,7 +491,7 @@ Accept wildcard characters: False
 ```
 
 ### -OsDiskCaching
-Specifies the caching mode of the operating system disk. 
+Specifies the caching mode of the operating system disk.
 The acceptable values for this parameter are:
 - None
 - ReadOnly
@@ -806,7 +806,7 @@ Accept wildcard characters: False
 
 ### -TimeZone
 Specifies the time zone for Windows OS. e.g. \"Pacific Standard Time\". <br>
-Possible values can be [TimeZoneInfo.Id](https://docs.microsoft.com/en-us/dotnet/api/system.timezoneinfo.id?#System_TimeZoneInfo_Id) value from time zones returned by [TimeZoneInfo.GetSystemTimeZones](https://docs.microsoft.com/en-us/dotnet/api/system.timezoneinfo.getsystemtimezones).
+Possible values can be [TimeZoneInfo.Id](https://docs.microsoft.com/dotnet/api/system.timezoneinfo.id?#System_TimeZoneInfo_Id) value from time zones returned by [TimeZoneInfo.GetSystemTimeZones](https://docs.microsoft.com/dotnet/api/system.timezoneinfo.getsystemtimezones).
 
 ```yaml
 Type: System.String

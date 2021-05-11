@@ -33,9 +33,30 @@ namespace Commands.Aks.Test.ScenarioTests
 
         [Fact]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewAzureKubernetesByServicePrincipal()
+        {
+            TestController.NewInstance.RunPowerShellTest(_logger, "Test-NewAzAksByServicePrincipal");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void TestAzureKubernetesAddons()
         {
             TestController.NewInstance.RunPowerShellTest(_logger, "Test-NewAzAksAddons");
+        }
+
+        [Fact(Skip = "Please make sure you have graph directory.read permission which is required for grant acrpull permission.")]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewAzAksWithAcr()
+        {
+            TestController.NewInstance.RunPowerShellTest(_logger, "Test-NewAzAksWithAcr");
+        }
+        
+        [Fact(Skip = "Updating service principal profile is not allowed on MSI cluster.")]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestResetAzureKubernetesServicePrincipal()
+        {
+            TestController.NewInstance.RunPowerShellTest(_logger, "Test-ResetAzureKubernetesServicePrincipal");
         }
     }
 }

@@ -19,8 +19,11 @@ using System.Threading.Tasks;
 using Azure.Core;
 using Azure.Identity;
 
+using Hyak.Common;
+
 using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
+using Microsoft.Azure.Commands.ResourceManager.Common;
 
 namespace Microsoft.Azure.PowerShell.Authenticators
 {
@@ -31,7 +34,7 @@ namespace Microsoft.Azure.PowerShell.Authenticators
             var deviceCodeParameters = parameters as DeviceCodeParameters;
             var tokenCacheProvider = parameters.TokenCacheProvider;
             var onPremise = parameters.Environment.OnPremise;
-            //null instead of "organizations" should be passed to Azure.Identity to support MSA account 
+            //null instead of "organizations" should be passed to Azure.Identity to support MSA account
             var tenantId = onPremise ? AdfsTenant :
                 (string.Equals(parameters.TenantId, OrganizationsTenant, StringComparison.OrdinalIgnoreCase) ? null : parameters.TenantId);
             var resource = parameters.Environment.GetEndpoint(parameters.ResourceId) ?? parameters.ResourceId;
@@ -47,18 +50,18 @@ namespace Microsoft.Azure.PowerShell.Authenticators
                 DeviceCodeCallback = DeviceCodeFunc,
                 AuthorityHost = new Uri(authority),
                 ClientId = clientId,
-                TenantId = onPremise ? tenantId : null,
+                TenantId = tenantId,
                 TokenCache = tokenCache.TokenCache,
             };
             var codeCredential = new DeviceCodeCredential(options);
-            var source = new CancellationTokenSource();
-            source.CancelAfter(TimeSpan.FromMinutes(5));
 
-            var authTask = codeCredential.AuthenticateAsync(requestContext, source.Token);
+            TracingAdapter.Information($"{DateTime.Now:T} - [DeviceCodeAuthenticator] Calling DeviceCodeCredential.AuthenticateAsync - TenantId:'{options.TenantId}', Scopes:'{string.Join(",", scopes)}', AuthorityHost:'{options.AuthorityHost}'");
+            var authTask = codeCredential.AuthenticateAsync(requestContext, cancellationToken);
             return MsalAccessToken.GetAccessTokenAsync(
                 authTask,
-                () => codeCredential.GetTokenAsync(requestContext, source.Token),
-                source.Token);
+                codeCredential,
+                requestContext,
+                cancellationToken);
         }
 
         private Task DeviceCodeFunc(DeviceCodeInfo info, CancellationToken cancellation)
@@ -75,7 +78,7 @@ namespace Microsoft.Azure.PowerShell.Authenticators
         private void WriteWarning(string message)
         {
             EventHandler<StreamEventArgs> writeWarningEvent;
-            if (AzureSession.Instance.TryGetComponent("WriteWarning", out writeWarningEvent))
+            if (AzureSession.Instance.TryGetComponent(AzureRMCmdlet.WriteWarningKey, out writeWarningEvent))
             {
                 writeWarningEvent(this, new StreamEventArgs() { Message = message });
             }

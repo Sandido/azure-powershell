@@ -41,7 +41,7 @@ function Test-ClusterRelatedCommands{
 		#test Set-AzHDInsightClusterSize
 		$resizeCluster = Set-AzHDInsightClusterSize -ClusterName $cluster.Name -ResourceGroupName $cluster.ResourceGroup `
 		-TargetInstanceCount 3
-		Assert-AreEqual $resizeCluster.CoresUsed 20
+		Assert-AreEqual $resizeCluster.CoresUsed 40
 	}
 	finally
 	{
@@ -267,6 +267,124 @@ function Test-CreateClusterWithKafkaRestProxy{
 		#test Get-AzHDInsightCluster
 		$resultCluster = Get-AzHDInsightCluster -ClusterName $cluster.Name
 		Assert-AreEqual $resultCluster.Name  $cluster.Name
+	}
+	finally
+	{
+		# Delete cluster and resource group
+		Remove-AzHDInsightCluster -ClusterName $cluster.Name
+		Remove-AzResourceGroup -ResourceGroupName $cluster.ResourceGroup
+	}
+}
+
+<#
+.SYNOPSIS
+Test Create Azure HDInsight Cluster with Relay Outbound and Private Link
+#>
+
+function Test-CreateClusterWithRelayOutoundAndPrivateLink{
+
+	# Create some resources that will be used throughout test
+	try
+	{
+		# prepare parameter for creating parameter
+		$params= Prepare-ClusterCreateParameter -location "South Central US"
+
+		# Private Link requires vnet has firewall, this is difficult to create dynamically, just hardcode here
+		$vnetId="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/fakevnet"
+		$subnetName="default"
+
+		# create cluster
+		$cluster = New-AzHDInsightCluster -Location $params.location -ResourceGroupName $params.resourceGroupName `
+		-ClusterName $params.clusterName -ClusterSizeInNodes $params.clusterSizeInNodes -ClusterType $params.clusterType `
+		-StorageAccountResourceId $params.storageAccountResourceId -StorageAccountKey $params.storageAccountKey `
+		-HttpCredential $params.httpCredential -SshCredential $params.sshCredential `
+		-MinSupportedTlsVersion $params.minSupportedTlsVersion `
+		-VirtualNetworkId $vnetId -SubnetName $subnetName -Version 3.6 `
+		-ResourceProviderConnection Outbound -PrivateLink Enabled
+
+		Assert-AreEqual $cluster.NetworkProperties.ResourceProviderConnection Outbound
+		Assert-AreEqual $cluster.NetworkProperties.PrivateLink Enabled
+		
+	}
+	finally
+	{
+		# Delete cluster and resource group
+		Remove-AzHDInsightCluster -ClusterName $cluster.Name
+		Remove-AzResourceGroup -ResourceGroupName $cluster.ResourceGroup
+	}
+}
+
+<#
+.SYNOPSIS
+Test Create Azure HDInsight Cluster with custom ambari database
+#>
+
+function Test-CreateClusterWithCustomAmbariDatabase{
+
+	# Create some resources that will be used throughout test
+	try
+	{
+		# prepare parameter for creating parameter
+		$params= Prepare-ClusterCreateParameter -location "South Central US"
+
+		# prepare custom ambari database
+		$databaseUserName="yourdatabaseuser"
+		$databasePassword="xxxxxxxx"
+		$databasePassword=ConvertTo-SecureString $databasePassword -AsPlainText -Force
+	
+		$sqlserverCredential=New-Object System.Management.Automation.PSCredential($databaseUserName, $databasePassword)
+		$sqlserver="yoursqlserver.database.windows.net"
+		$database="customambaridb"
+
+		$config=New-AzHDInsightClusterConfig|Add-AzHDInsightMetastore `
+        -SqlAzureServerName $sqlserver -DatabaseName $database `
+		-Credential $sqlserverCredential -MetastoreType AmbariDatabase
+
+		# create cluster
+		$cluster = New-AzHDInsightCluster -Location $params.location -ResourceGroupName $params.resourceGroupName `
+		-ClusterName $params.clusterName -ClusterSizeInNodes $params.clusterSizeInNodes -ClusterType $params.clusterType `
+		-StorageAccountResourceId $params.storageAccountResourceId -StorageAccountKey $params.storageAccountKey `
+		-HttpCredential $params.httpCredential -SshCredential $params.sshCredential `
+		-MinSupportedTlsVersion $params.minSupportedTlsVersion `
+		-AmbariDatabase $config.AmbariDatabase
+
+		Assert-NotNull $cluster
+		
+	}
+	finally
+	{
+		# Delete cluster and resource group
+		Remove-AzHDInsightCluster -ClusterName $cluster.Name
+		Remove-AzResourceGroup -ResourceGroupName $cluster.ResourceGroup
+	}
+}
+
+<#
+.SYNOPSIS
+Test Create Azure HDInsight Cluster with compute isolation
+#>
+function Test-CreateClusterWithComputeIsolation{
+
+	# Create some resources that will be used throughout test
+	try
+	{
+		# prepare parameter for creating parameter
+		$params= Prepare-ClusterCreateParameter -location "South Central US"
+		$encryptionAtHost=$true
+		$workerNodeSize="Standard_E8S_v3"
+		$headNodeSize="Standard_E16S_v3"
+		$zookeeperNodeSize="Standard_E2S_v3"
+
+		# create cluster
+		$cluster=New-AzHDInsightCluster -Location $params.location -ResourceGroupName $params.resourceGroupName `
+		-ClusterName $params.clusterName -ClusterSizeInNodes $params.clusterSizeInNodes -ClusterType $params.clusterType `
+		-WorkerNodeSize $workerNodeSize -HeadNodeSize $headNodeSize -ZookeeperNodeSize $zookeeperNodeSize `
+		-StorageAccountResourceId $params.storageAccountResourceId -StorageAccountKey $params.storageAccountKey `
+		-HttpCredential $params.httpCredential -SshCredential $params.sshCredential `
+		-MinSupportedTlsVersion $params.minSupportedTlsVersion -EnableComputeIsolation
+
+		Assert-AreEqual $cluster.ComputeIsolationProperties.EnableComputeIsolation $true
+		
 	}
 	finally
 	{

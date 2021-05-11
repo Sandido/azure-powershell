@@ -13,6 +13,7 @@
 // ----------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -20,6 +21,8 @@ using System.Threading.Tasks;
 
 using Azure.Core;
 using Azure.Identity;
+
+using Hyak.Common;
 
 using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
@@ -65,14 +68,15 @@ namespace Microsoft.Azure.PowerShell.Authenticators
                 RedirectUri = GetReplyUrl(onPremise, interactiveParameters),
             };
             var browserCredential = new InteractiveBrowserCredential(options);
-            var source = new CancellationTokenSource();
-            source.CancelAfter(TimeSpan.FromMinutes(5));
-            var authTask = browserCredential.AuthenticateAsync(requestContext, source.Token);
+
+            TracingAdapter.Information($"{DateTime.Now:T} - [InteractiveUserAuthenticator] Calling InteractiveBrowserCredential.AuthenticateAsync with TenantId:'{options.TenantId}', Scopes:'{string.Join(",", scopes)}', AuthorityHost:'{options.AuthorityHost}', RedirectUri:'{options.RedirectUri}'");
+            var authTask = browserCredential.AuthenticateAsync(requestContext, cancellationToken);
 
             return MsalAccessToken.GetAccessTokenAsync(
                 authTask,
-                () => browserCredential.GetTokenAsync(requestContext, source.Token),
-                source.Token);
+                browserCredential,
+                requestContext,
+                cancellationToken);
         }
 
         private Uri GetReplyUrl(bool onPremise, InteractiveParameters interactiveParameters)

@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.ContainerRegistry.dll-Help.xml
 Module Name: Az.ContainerRegistry
-online version: https://docs.microsoft.com/en-us/powershell/module/az.containerregistry/get-azcontainerregistryusage
+online version: https://docs.microsoft.com/powershell/module/az.containerregistry/get-azcontainerregistryusage
 schema: 2.0.0
 ---
 
@@ -13,7 +13,7 @@ Get Usage of an azure container registry.
 ## SYNTAX
 
 ```
-Get-AzContainerRegistryUsage -ResourceGroupName <String> -RegistryName <String>
+Get-AzContainerRegistryUsage -ResourceGroupName <String> -Name <String>
  [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
 ```
 
@@ -46,18 +46,18 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RegistryName
+### -Name
 Target registry name.
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
-Aliases:
+Aliases: RegistryName
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -72,7 +72,7 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

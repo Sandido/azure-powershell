@@ -1,7 +1,7 @@
 ---
 Module Name: Az.RecoveryServices
 Module Guid: 4aa53b7e-fcfe-4e22-979c-9a4e6380de58
-Download Help Link: https://docs.microsoft.com/en-us/powershell/module/az.recoveryservices
+Download Help Link: https://docs.microsoft.com/powershell/module/az.recoveryservices
 Help Version: 4.1.2.0
 Locale: en-US
 ---
@@ -161,6 +161,9 @@ Creates an Azure Site Recovery Fabric.
 ### [New-AzRecoveryServicesAsrInMageAzureV2DiskInput](New-AzRecoveryServicesAsrInMageAzureV2DiskInput.md)
 Creates a disk mapping object for vMWare virtual machine disks to be replicated.
 
+### [New-AzRecoveryServicesAsrInMageRcmDiskInput](New-AzRecoveryServicesAsrInMageRcmDiskInput.md)
+Creates Azure Site Recovery Disk replication configuration for VMware To Azure replication.
+
 ### [New-AzRecoveryServicesAsrNetworkMapping](New-AzRecoveryServicesAsrNetworkMapping.md)
 Creates an ASR network mapping between two networks.
 
@@ -266,6 +269,9 @@ Updates properties of a Vault.
 ### [Start-AzRecoveryServicesAsrApplyRecoveryPoint](Start-AzRecoveryServicesAsrApplyRecoveryPoint.md)
 Changes a recovery point for a failed over protected item before committing the failover operation.
 
+### [Start-AzRecoveryServicesAsrCancelFailoverJob](Start-AzRecoveryServicesAsrCancelFailoverJob.md)
+Starts the cancel failover action for a Site Recovery object.
+
 ### [Start-AzRecoveryServicesAsrCommitFailoverJob](Start-AzRecoveryServicesAsrCommitFailoverJob.md)
 Starts the commit failover action for a Site Recovery object.
 
@@ -285,7 +291,7 @@ Starts the test failover cleanup operation.
 Starts a test failover operation.
 
 ### [Start-AzRecoveryServicesAsrUnplannedFailoverJob](Start-AzRecoveryServicesAsrUnplannedFailoverJob.md)
-Starts a unplanned failover operation.
+Starts an unplanned failover operation.
 
 ### [Stop-AzRecoveryServicesAsrJob](Stop-AzRecoveryServicesAsrJob.md)
 Stops an Azure Site Recovery job.

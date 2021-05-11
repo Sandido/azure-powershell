@@ -10,9 +10,11 @@ using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Azure.Internal.Common;
 using Newtonsoft.Json.Linq;
+using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
 
 namespace Microsoft.Azure.Commands.Network
 {
+    [CmdletDeprecation(ReplacementCmdletName = "Get-AzRouteServerPeerAdvertisedRoute")]
     [Cmdlet(VerbsCommon.Get, ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "VirtualRouterPeerAdvertisedRoute", DefaultParameterSetName = VirtualRouterPeerParameterSetNames.ByVirtualRouterPeerName), OutputType(typeof(PSPeerRoute))]
     public class GetVirtualRouterPeerAdvertisedRouteCommand : NetworkBaseCmdlet
     {
@@ -72,6 +74,10 @@ namespace Microsoft.Azure.Commands.Network
 
         public override void Execute()
         {
+            WriteWarningWithTimestamp("Upcoming breaking changes in the cmdlet 'Get-AzVirtualRouterAdvertisedRoutes': "
+                + "The output type 'Microsoft.Azure.Commands.Network.Models.PSVirtualRouterLearnedRoutes' is changing. "
+                + "Note: Go to https://aka.ms/azps-changewarnings for steps to suppress this breaking change warning, and other information on breaking changes in Azure PowerShell.");
+
             base.Execute();
 
             context = DefaultContext;

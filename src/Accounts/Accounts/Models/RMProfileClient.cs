@@ -36,6 +36,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
         private IProfileOperations _profile;
         private IAzureTokenCache _cache;
         public Action<string> WarningLog;
+        public Action<string> DebugLog;
 
         private IAzureContext DefaultContext
         {
@@ -195,6 +196,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
                         environment,
                         subscriptionId,
                         subscriptionName,
+                        true,
                         out newSubscription,
                         out newTenant))
                     {
@@ -241,14 +243,15 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
                                 token = null;
                             }
                         }
-                        catch
+                        catch(Exception e)
                         {
-                            WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenant));
+                            WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenant, e.Message));
+                            WriteDebugMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenant, e.ToString()));
                         }
 
                         if (token != null &&
                             newTenant == null &&
-                            TryGetTenantSubscription(token, account, environment, subscriptionId, subscriptionName, out tempSubscription, out tempTenant))
+                            TryGetTenantSubscription(token, account, environment, subscriptionId, subscriptionName, false, out tempSubscription, out tempTenant))
                         {
                             // If no subscription found for the given token/tenant，discard tempTenant value.
                             // Continue to look for matched subscripitons until one subscription retrived by its home tenant is found.
@@ -497,12 +500,13 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
                         ListAllSubscriptionsForTenant(
                             (tenant.GetId() == Guid.Empty) ? tenant.Directory : tenant.Id.ToString()));
                 }
-                catch (AadAuthenticationException)
+                catch (AadAuthenticationException e)
                 {
                     WriteWarningMessage(string.Format(
                         ProfileMessages.UnableToLogin,
                         _profile.DefaultContext.Account,
                         tenant));
+                    WriteDebugMessage(e.ToString());
                 }
 
             }
@@ -554,6 +558,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
             IAzureEnvironment environment,
             string subscriptionId,
             string subscriptionName,
+            bool isTenantPresent,
             out IAzureSubscription subscription,
             out IAzureTenant tenant)
         {
@@ -596,7 +601,14 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
                 }
                 catch (CloudException ex)
                 {
-                    WriteWarningMessage(ex.Message);
+                    //Error "InvalidAuthenticationTokenTenant" means tenant and subscription mismatches.
+                    //If tenant is not present, we're iterating all tenants until finding right tenant for specified subscription,
+                    //in this case, InvalidAuthenticationTokenTenant message is expected and we should ignore it.
+                    if (isTenantPresent || !string.Equals(ex.Body?.Code, "InvalidAuthenticationTokenTenant", StringComparison.OrdinalIgnoreCase))
+                    {
+                        WriteWarningMessage(ex.Message);
+                        WriteDebugMessage(ex.ToString());
+                    }
                 }
 
                 if (subscription != null)
@@ -644,9 +656,10 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
 
                 result = SubscriptionAndTenantClient?.ListAccountTenants(commonTenantToken, environment);
             }
-            catch
+            catch(Exception e)
             {
-                WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, commonTenant));
+                WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, commonTenant, e.Message));
+                WriteDebugMessage(string.Format(ProfileMessages.UnableToAqcuireToken, commonTenant, e.ToString()));
                 if (account.IsPropertySet(AzureAccount.Property.Tenants))
                 {
                     result =
@@ -690,9 +703,10 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
             {
                 accessToken = AcquireAccessToken(account, environment, tenantId, password, promptBehavior, null);
             }
-            catch
+            catch(Exception e)
             {
-                WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenantId));
+                WriteWarningMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenantId, e.Message));
+                WriteDebugMessage(string.Format(ProfileMessages.UnableToAqcuireToken, tenantId, e.ToString()));
                 return new List<AzureSubscription>();
             }
 
@@ -704,6 +718,14 @@ namespace Microsoft.Azure.Commands.ResourceManager.Common
             if (WarningLog != null)
             {
                 WarningLog(message);
+            }
+        }
+
+        private void WriteDebugMessage(string message)
+        {
+            if(DebugLog != null)
+            {
+                DebugLog(message);
             }
         }
 

@@ -70,7 +70,7 @@ if ($ValidateMarkdownHelp)
     $Exceptions = Import-Csv "$NewExceptionsPath\ValidateHelpIssues.csv"
     if (($Exceptions | Measure-Object).Count -gt 0)
     {
-        $Exceptions | ft
+        $Exceptions | Format-List
         throw "A markdown file containing the help for a cmdlet is incomplete. Please check the exceptions provided for more details."
     }
     else
@@ -82,7 +82,7 @@ if ($ValidateMarkdownHelp)
 }
 
 # We need to define new version of module instead of hardcode here
-$GeneratedModuleListPath = [System.IO.Path]::Combine(@($PSScriptRoot, "GeneratedModuleList.txt"))
+$GeneratedModuleListPath = [System.IO.Path]::Combine($PSScriptRoot, "GeneratedModuleList.txt")
 $NewModules = Get-Content $GeneratedModuleListPath
 if ($GenerateMamlHelp)
 {

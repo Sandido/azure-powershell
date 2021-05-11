@@ -17,9 +17,67 @@
     * Overview of change #1
         - Additional information about change #1
 -->
+
 ## Upcoming Release
+* Updated SDK to 3.13.1-preview to use GA TemplateSpecs API version
+* Added `AdditionalProperties` to PSADUser and PSADGroup [#14568]
+* Supported `CustomKeyIdentifier` in `New-AzADAppCredential` and `Get-AzADAppCredential` [#11457], [#13723]
+
+## Version 3.5.0
+* Added parameter `ObjectType` for `New-AzRoleAssignment`
+* Fix version checking bug in `Set-AzRoleAssignment`
+* Updated to use SDK version 3.13-preview
+* Template Spec Versions: Renamed artifacts to linkedTemplates
+* Template Spec Versions: Renamed "template" to "mainTemplate"
+* Added support for UIFormDefinition for New-AzTemplateSpec and Set-AzTemplateSpec
+
+## Version 3.4.1
+* Added upcoming breaking change warnings on below cmdlets, because the value of `IdentifierUris` parameter will need verified domain.
+  - `New-AzADApplication` 
+  - `Update-AzADApplication`
+  - `New-AzADServicePrincipal`
+  - `Update-AzADServicePrincipal`
+* Ignored Bicep warning message in error stream if exitcode equals zero.
+
+## Version 3.4.0
+* Redirected bicep message to verbose stream
+* Removed the logic of copying Bicep template file to temp folder.
+* Added support of policy exemption resource type
+* Fixed what-if functionality when using `-QueryString` parameter.
+* Normalized `-QueryString` starting with "?" for scenarios involving dynamic parameters.
+
+## Version 3.3.0
+* Added support for Azure resources deployment in Bicep language
+* Fixed issues with TemplateSpec deployments in `New-AzTenantDeployment` and `New-AzManagementGroupDeployment`
+* Added support for `-QueryString` parameter in `Test-Az*Deployments` cmdlets
+* Fixed issue with dynamic parameters when `New-Az*Deployments` is used with `-QueryString`
+* Added support for `-TemplateParameterObject` parameter while using `-TemplateSpecId` parameter in `New-Az*Deployments` cmdlets
+* Fixed the inaccurate error message received on trying to deploy a non-existent template spec
+* Added support for policy export format to ```New-AzPolicyDefinition -Policy```
+* Add support for property updates from ```Set-AzPolicyAssignment -InputObject```
+
+## Version 3.2.1
+* Removed principal type on New-AzRoleAssignment and Set-AzRoleAssignment because current mapping was breaking certain scenarios
+
+## Version 3.2.0
+* Added support for -QueryString parameter in New-Az*Deployments cmdlets
+
+## Version 3.1.1
+* Fixed a NullRef exception issue in `New-AzureManagedApplication` and `Set-AzureManagedApplication`.
+* Updated Azure Resource Manager SDK to use latest DeploymentScripts GA api-version: 2020-10-01.
+
+## Version 3.1.0
+* Added `-Tag` parameter support to `Set-AzTemplateSpec` and `New-AzTemplateSpec`
+* Added Tag display support to default formatter for Template Specs 
+
+## Version 3.0.1
 * Fixed an issue where What-If shows two resource group scopes with different casing
 * Updated `Export-AzResourceGroup` to use the SDK.
+* Added culture info to parse methods
+* Fixed issue where attempts to deploy template specs from a subscription outside of the current subscription context would fail
+* Changed Double parser for version parser
+* Changed New-AzRoleAssignment to include principal type during calls
+* Changed Set-AzRoleAssignment to include principal type during calls
 
 ## Version 3.0.0
 * Fixed parsing bug

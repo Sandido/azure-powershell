@@ -16,9 +16,12 @@ using Microsoft.Azure.Commands.Common.Authentication;
 using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Azure.Commands.ResourceManager.Cmdlets.Components;
 using Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkModels;
+using Microsoft.Azure.Commands.ResourceManager.Common.Tags;
 using Microsoft.Azure.Management.ResourceManager;
 using Microsoft.Azure.Management.ResourceManager.Models;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -134,7 +137,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             catch (Exception ex)
             {
                 if (!throwIfNotExists && 
-                    ex is DefaultErrorResponseException dex && 
+                    ex is TemplateSpecsErrorException dex && 
                     dex.Response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     // Template spec does not exist
@@ -162,7 +165,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             catch (Exception ex)
             {
                 if (!throwIfNotExists &&
-                    ex is DefaultErrorResponseException dex &&
+                    ex is TemplateSpecsErrorException dex &&
                     dex.Response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     // Template spec version does not exist
@@ -179,16 +182,21 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             string templateSpecVersion,
             string location,
             PackagedTemplate packagedTemplate,
+            object UIFormDefinition,
             string templateSpecDisplayName = null,
             string templateSpecDescription = null,
-            string versionDescription = null)
+            string versionDescription = null,
+            Hashtable templateSpecTags = null,
+            Hashtable versionTags = null)
         {
             var templateSpecModel = this.CreateOrUpdateTemplateSpecInternal(
                 resourceGroupName,
                 templateSpecName,
                 location,
                 templateSpecDisplayName,
-                templateSpecDescription
+                templateSpecDescription,
+                tags: templateSpecTags,
+                onlyApplyTagsOnCreate: true // Don't update tags if the template spec already exists
             );
 
             var existingTemplateSpecVersion = this.GetAzureSdkTemplateSpecVersion(
@@ -201,10 +209,36 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             var templateSpecVersionModel = new TemplateSpecVersion
             {
                 Location = templateSpecModel.Location,
-                Template = packagedTemplate.RootTemplate,
-                Artifacts = packagedTemplate.Artifacts?.ToList(),
-                Description = versionDescription ?? existingTemplateSpecVersion?.Description
-            };
+                MainTemplate = packagedTemplate.RootTemplate,
+                LinkedTemplates = packagedTemplate.Artifacts?.ToList(),
+                Description = versionDescription ?? existingTemplateSpecVersion?.Description,
+                UiFormDefinition = UIFormDefinition
+        };
+
+            // Handle our conditional tagging:
+            // ------------------------------------------
+
+            if (versionTags != null) 
+            {
+                // Explicit version tags provided. Use them:
+                templateSpecVersionModel.Tags = 
+                    TagsConversionHelper.CreateTagDictionary(versionTags, true);
+            } 
+            else if (existingTemplateSpecVersion != null) 
+            {
+                // No tags were provided. The template spec version already exists
+                // ... keep the existing version's tags:
+                templateSpecVersionModel.Tags = existingTemplateSpecVersion.Tags;
+            } 
+            else
+            {
+                // No tags were provided. The template spec version does not already exist
+                // ... inherit the tags present on the underlying template spec:
+                templateSpecVersionModel.Tags = templateSpecModel.Tags;
+            }
+
+            // Perform the actual version create/update:
+            // ------------------------------------------
 
             templateSpecVersionModel = TemplateSpecsClient.TemplateSpecVersions.CreateOrUpdate(
                 resourceGroupName,
@@ -221,14 +255,17 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             string templateSpecName,
             string location,
             string templateSpecDisplayName = null,
-            string templateSpecDescription = null)
+            string templateSpecDescription = null,
+            Hashtable tags = null)
         {
             var sdkTemplateSpecModel = this.CreateOrUpdateTemplateSpecInternal(
                 resourceGroupName,
                 templateSpecName,
                 location,
                 templateSpecDisplayName,
-                templateSpecDescription
+                templateSpecDescription,
+                tags,
+                onlyApplyTagsOnCreate: false // Apply tags on updates too
             );
 
             return new PSTemplateSpec(sdkTemplateSpecModel);
@@ -285,7 +322,9 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
             string templateSpecName,
             string location,
             string templateSpecDisplayName = null,
-            string templateSpecDescription = null)
+            string templateSpecDescription = null,
+            Hashtable tags = null,
+            bool onlyApplyTagsOnCreate = false)
         {
             var existingTemplateSpec = this.GetAzureSdkTemplateSpec(
                 resourceGroupName,
@@ -313,6 +352,11 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.SdkClient
                 DisplayName = templateSpecDisplayName ?? existingTemplateSpec?.DisplayName,
                 Tags = existingTemplateSpec?.Tags
             };
+
+            if ((tags != null) && (existingTemplateSpec == null || !onlyApplyTagsOnCreate))
+            {
+                templateSpecModel.Tags = TagsConversionHelper.CreateTagDictionary(tags, true);
+            }
 
             templateSpecModel = TemplateSpecsClient.TemplateSpecs.CreateOrUpdate(
                 resourceGroupName,
