@@ -19,9 +19,41 @@
 -->
 
 ## Upcoming Release
+* Added breaking change warnings for AAD cmdlets
+* Added property `UIFormDefinition` to Template Spec Versions,  `Export-AzTemplateSpec` will now include a Template Spec Version's UIFormDefinition (if any) as part of the export.
+* Added error catching for role assignment creation fail while creating a Service Principal
+* Performance improvement for Get-AzPolicyAlias when -NamespaceMatch matches a single RP namespace
+
+## Version 4.4.0
+* Added a clearer error message for a case in which TemplateUri do not accept bicep file.
+* Fixed typos with ManagementGroups breaking change descriptions [#15819].
+* Fixed resource tags casing issue - resource tags casing not being preserved.
+* Updated to Microsoft.Azure.Management.Authorization 2.13.0-preview.
+
+## Version 4.3.1
+* Use JsonExtensions to serialize deserialize JSON objects to ensure the use of custom serialization settings [#15552]
+* Added support for `Unsupported` and `NoEffect` change types to deployment What-If cmdlets.
+* Added support for `ConsentToPermissions` Boolean parameter to Register-AzResourceProvider cmdlet.
+
+## Version 4.3.0
+* Fixed bug with `PSResource` where some constructors left `SubscriptionId` property unassigned/null.  [#10783]
+* Added support for creating and updating Template Spec in Bicep file [#15313]
+* Added `-ProceedIfNoChange` parameter to deployment create cmdlets.
+
+## Version 4.2.0
+* Allowed naming the deployment when testing deployments [#11497]
+
+## Version 4.1.1
+* Fixed issue that property `IdentifierUri` is cleaned by `Update-AzAdApplication` [#15134]
+
+## Version 4.1.0
+* Changed `-IdentifierUris` in `New-AzADApplication` to optional parameter
+* Removed generated `DisplayName` of ADApplication created by `New-AzADServicePrincipal`
 * Updated SDK to 3.13.1-preview to use GA TemplateSpecs API version
 * Added `AdditionalProperties` to PSADUser and PSADGroup [#14568]
 * Supported `CustomKeyIdentifier` in `New-AzADAppCredential` and `Get-AzADAppCredential` [#11457], [#13723]
+* Changed `MainTemplate` to be shown by the default formatter for Template Spec Versions
+* Added support for `NonComplianceMessage` to `*-AzPolicyAssignment` cmdlets
 
 ## Version 3.5.0
 * Added parameter `ObjectType` for `New-AzRoleAssignment`
@@ -171,8 +203,8 @@
     - New-AzTag -ResourceId
     - Remove-AzTag -ResourceId
 * Added new Tag cmdlet
-    - Update-AzTag -ResourceId
-* Brought ScopedDeployment from SDK 3.3.0 
+    - Update-AzTag -ResourceId 
+* Brought ScopedDeployment from SDK 3.3.0
 
 ## Version 1.11.0
 * Refactored template deployment cmdlets

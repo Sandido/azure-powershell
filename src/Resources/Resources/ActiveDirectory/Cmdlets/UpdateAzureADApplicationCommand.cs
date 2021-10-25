@@ -23,6 +23,7 @@ namespace Microsoft.Azure.Commands.ActiveDirectory
     /// <summary>
     /// Creates a new AD application.
     /// </summary>
+    [CmdletOutputBreakingChange(typeof(PSADApplication), ReplacementCmdletOutputTypeName = "System.Boolean")]
     [Cmdlet("Update", ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "ADApplication", SupportsShouldProcess = true, DefaultParameterSetName = ParameterSet.ApplicationObjectIdWithUpdateParams), OutputType(typeof(PSADApplication))]
     [Alias("Set-" + ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "ADApplication")]
     public class UpdateAzureADApplicationCommand : ActiveDirectoryBaseCmdlet
@@ -57,7 +58,6 @@ namespace Microsoft.Azure.Commands.ActiveDirectory
         [ValidateNotNullOrEmpty]
         public string HomePage { get; set; }
 
-        [CmdletParameterBreakingChange("IdentifierUri", ChangeDescription = "The value will be considered valid only if it exists as a verified domain in a tenant.")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true, ParameterSetName = ParameterSet.ApplicationObjectIdWithUpdateParams,
             HelpMessage = "The URIs that identify the application.")]
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true, ParameterSetName = ParameterSet.ApplicationIdWithUpdateParams,

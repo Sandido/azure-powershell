@@ -22,8 +22,9 @@ Set-AzStorageAccount [-ResourceGroupName] <String> [-Name] <String> [-Force] [-S
  [-UpgradeToStorageV2] [-EnableAzureActiveDirectoryDomainServicesForFile <Boolean>] [-EnableLargeFileShare]
  [-PublishMicrosoftEndpoint <Boolean>] [-PublishInternetEndpoint <Boolean>] [-AllowBlobPublicAccess <Boolean>]
  [-MinimumTlsVersion <String>] [-AllowSharedKeyAccess <Boolean>] [-SasExpirationPeriod <TimeSpan>]
- [-KeyExpirationPeriodInDay <Int32>] [-AsJob] [-DefaultProfile <IAzureContextContainer>]
- [-RoutingChoice <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-KeyExpirationPeriodInDay <Int32>] [-AllowCrossTenantReplication <Boolean>]
+ [-DefaultSharePermission <String>] [-PublicNetworkAccess <String>] [-AsJob]
+ [-DefaultProfile <IAzureContextContainer>] [-RoutingChoice <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### KeyvaultEncryption
@@ -36,8 +37,9 @@ Set-AzStorageAccount [-ResourceGroupName] <String> [-Name] <String> [-Force] [-S
  [-UpgradeToStorageV2] [-EnableAzureActiveDirectoryDomainServicesForFile <Boolean>] [-EnableLargeFileShare]
  [-PublishMicrosoftEndpoint <Boolean>] [-PublishInternetEndpoint <Boolean>] [-AllowBlobPublicAccess <Boolean>]
  [-MinimumTlsVersion <String>] [-AllowSharedKeyAccess <Boolean>] [-SasExpirationPeriod <TimeSpan>]
- [-KeyExpirationPeriodInDay <Int32>] [-AsJob] [-DefaultProfile <IAzureContextContainer>]
- [-RoutingChoice <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-KeyExpirationPeriodInDay <Int32>] [-AllowCrossTenantReplication <Boolean>]
+ [-DefaultSharePermission <String>] [-PublicNetworkAccess <String>] [-AsJob]
+ [-DefaultProfile <IAzureContextContainer>] [-RoutingChoice <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### ActiveDirectoryDomainServicesForFile
@@ -52,7 +54,8 @@ Set-AzStorageAccount [-ResourceGroupName] <String> [-Name] <String> [-Force] [-S
  [-ActiveDirectoryForestName <String>] [-ActiveDirectoryDomainGuid <String>]
  [-ActiveDirectoryDomainSid <String>] [-ActiveDirectoryAzureStorageSid <String>]
  [-AllowBlobPublicAccess <Boolean>] [-MinimumTlsVersion <String>] [-AllowSharedKeyAccess <Boolean>]
- [-SasExpirationPeriod <TimeSpan>] [-KeyExpirationPeriodInDay <Int32>] [-AsJob]
+ [-SasExpirationPeriod <TimeSpan>] [-KeyExpirationPeriodInDay <Int32>] [-AllowCrossTenantReplication <Boolean>]
+ [-DefaultSharePermission <String>] [-PublicNetworkAccess <String>] [-AsJob]
  [-DefaultProfile <IAzureContextContainer>] [-RoutingChoice <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -143,12 +146,15 @@ PS C:\> Set-AzStorageAccount -ResourceGroupName "MyResourceGroup" -AccountName "
 
 The command upgrade a Storage account with Kind "Storage" or "BlobStorage" to "StorageV2" kind Storage account.
 
-### Example 10: Update a Storage account by enable Azure Files AAD DS Authentication.
+### Example 10: Update a Storage account by enable Azure Files AAD DS Authentication and set DefaultSharePermission.
 ```
-PS C:\> $account = Set-AzStorageAccount -ResourceGroupName "MyResourceGroup" -AccountName "mystorageaccount" -EnableAzureActiveDirectoryDomainServicesForFile $true PS
+PS C:\> $account = Set-AzStorageAccount -ResourceGroupName "MyResourceGroup" -AccountName "mystorageaccount" -EnableAzureActiveDirectoryDomainServicesForFile $true -DefaultSharePermission StorageFileDataSmbShareOwner
 
-PS C:\> $account.AzureFilesIdentityBasedAuth.DirectoryServiceOptions
-AADDS
+PS C:\> $account.AzureFilesIdentityBasedAuth
+
+DirectoryServiceOptions ActiveDirectoryProperties                                                      DefaultSharePermission      
+----------------------- -------------------------                                                      ----------------------      
+AADDS                   Microsoft.Azure.Commands.Management.Storage.Models.PSActiveDirectoryProperties StorageFileDataSmbShareOwner
 ```
 
 The command update a Storage account by enable Azure Files AAD DS Authentication.
@@ -300,6 +306,26 @@ $account = Set-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $sto
 This command first update the user assigned identity to access keyvault, then update the keyvault for encryption.
 To update both both Keyvault and the user assigned identity, we need update with the above 2 steps. 
 
+### Example 18: Update a Storage account with AllowCrossTenantReplication
+```powershell
+PS C:\> $account = Set-AzStorageAccount -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -AllowCrossTenantReplication $false -EnableHttpsTrafficOnly $true
+
+PS C:\> $account.AllowCrossTenantReplication
+False
+```
+
+This command updates a Storage account by set AllowCrossTenantReplication to false, then show the updated account related properties.
+
+### Example 18: Update a Storage account by enable PublicNetworkAccess
+```powershell
+PS C:\> $account = Set-AzStorageAccount -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -PublicNetworkAccess Enabled
+
+PS C:\> $account.PublicNetworkAccess
+Enabled
+```
+
+This command updates a Storage account by set PublicNetworkAccess as enabled.
+
 ## PARAMETERS
 
 ### -AccessTier
@@ -428,6 +454,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -AllowCrossTenantReplication
+Gets or sets allow or disallow cross AAD tenant object replication. The default interpretation is true for this property.
+
+```yaml
+Type: System.Boolean
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -AllowSharedKeyAccess
 Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.
 
@@ -495,6 +536,22 @@ The credentials, account, tenant, and subscription used for communication with A
 Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
 Parameter Sets: (All)
 Aliases: AzContext, AzureRmContext, AzureCredential
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DefaultSharePermission
+Default share permission for users using Kerberos authentication if RBAC role is not assigned.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: None, StorageFileDataSmbShareContributor, StorageFileDataSmbShareReader, StorageFileDataSmbShareElevatedContributor
 
 Required: False
 Position: Named
@@ -734,6 +791,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -PublicNetworkAccess
+Allow or disallow public network access to Storage Account.Possible values include: 'Enabled', 'Disabled'.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -PublishInternetEndpoint
 Indicates whether internet  routing storage endpoints are to be published
 
@@ -944,7 +1016,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

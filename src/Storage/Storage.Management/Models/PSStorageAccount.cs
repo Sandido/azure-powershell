@@ -66,8 +66,11 @@ namespace Microsoft.Azure.Commands.Management.Storage.Models
             this.KeyCreationTime = storageAccount.KeyCreationTime is null? null : new PSKeyCreationTime(storageAccount.KeyCreationTime);
             this.KeyPolicy = storageAccount.KeyPolicy;
             this.SasPolicy = storageAccount.SasPolicy;
+            this.AllowCrossTenantReplication = storageAccount.AllowCrossTenantReplication;
+            this.PublicNetworkAccess = storageAccount.PublicNetworkAccess;
 
         }
+        public bool? AllowCrossTenantReplication { get; set; }
 
         public PSKeyCreationTime KeyCreationTime { get; set; }
         public KeyPolicy KeyPolicy { get; }
@@ -149,6 +152,8 @@ namespace Microsoft.Azure.Commands.Management.Storage.Models
         public bool? AllowSharedKeyAccess { get; set; }
 
         public PSExtendedLocation ExtendedLocation { get; set; }
+
+        public string PublicNetworkAccess { get; set; }
 
         public static PSStorageAccount Create(StorageModels.StorageAccount storageAccount, IStorageManagementClient client)
         {

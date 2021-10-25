@@ -691,6 +691,15 @@ namespace Microsoft.Azure.Commands.Profile.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This function is in preview. It may not be available in the selected subscription..
+        /// </summary>
+        internal static string PreviewFunctionMessage {
+            get {
+                return ResourceManager.GetString("PreviewFunctionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set the target account, tenant, and subscription of cmdlets executed in this session to the context stored in {0}.
         /// </summary>
         internal static string ProcessImportContextFromFile {
@@ -1022,6 +1031,15 @@ namespace Microsoft.Azure.Commands.Profile.Properties {
                 return ResourceManager.GetString("ServicePrincipalWarning", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The provided service principal secret will be included in the &apos;{0}&apos; file found in the user profile ( {1} ). Please ensure that this directory has appropriate protections..
+        /// </summary>
+        internal static string ClientAssertionWarning {
+            get {
+                return ResourceManager.GetString("ClientAssertionWarning", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Setting property &apos;{0}&apos;=&apos;{1}&apos;.
@@ -1155,6 +1173,15 @@ namespace Microsoft.Azure.Commands.Profile.Properties {
         internal static string TokenCacheEncryptionNotSupportedWithFallback {
             get {
                 return ResourceManager.GetString("TokenCacheEncryptionNotSupportedWithFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persistence check fails due to unknown error.
+        /// </summary>
+        internal static string TokenCachePersistenceCheckError {
+            get {
+                return ResourceManager.GetString("TokenCachePersistenceCheckError", resourceCulture);
             }
         }
         

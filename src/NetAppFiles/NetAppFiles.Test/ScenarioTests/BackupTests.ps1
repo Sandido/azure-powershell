@@ -29,9 +29,10 @@ function Test-BackupCrud
     $backupName2 = Get-ResourceName    
     $backupPolicyName1 = Get-ResourceName
     $resourceLocation = Get-ProviderLocation "Microsoft.NetApp"    
-    #$backupLocation = "eastus2euap"
-    $backupLocation = "southcentralusstage"
-    $backupVNetLocation = "southcentralus"
+    $backupLocation = "eastus2euap"
+    $backupVNetLocation = "eastus2euap"
+    #$backupLocation = "southcentralusstage"
+    #$backupVNetLocation = "southcentralus"
     #$backupLocation = "centralus"
     $label = "powershellBackupTest"
     $labelUpdate = "powershellBackupTestUpdate"
@@ -79,7 +80,7 @@ function Test-BackupCrud
             Start-Sleep -Seconds 10.0
             $i++
         }               
-        until ($sourceVolume.ProvisioningState -eq "Succeeded" -or $i -eq 3);        
+        until ($sourceVolume.ProvisioningState -eq "Succeeded" -or $i -eq 3);
     }    
 
     function SleepDuringRecord ($seconds = 30.0)
@@ -94,7 +95,7 @@ function Test-BackupCrud
     try
     {
         # create the resource group
-        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation
+        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation -Tags @{Owner = 'b-aubald'}
 
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $backupVNetLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
@@ -244,8 +245,8 @@ function Test-BackupPipelines
     $usageThreshold = 100 * $gibibyte
     $doubleUsage = 2 * $usageThreshold
     $resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
-    $backupLocation = "southcentralusstage"
-    $backupVNetLocation = "southcentralus"
+    $backupLocation = "eastus2euap"
+    $backupVNetLocation = "eastus2euap"
     $subnetName = "default"
     $poolSize = 4398046511104
     $serviceLevel = "Premium"
@@ -267,7 +268,7 @@ function Test-BackupPipelines
         $newTagValue = "psBackupTagValue1"
         
         # create the resource group
-        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation
+        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation -Tags @{Owner = 'b-aubald'}
 
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $backupVNetLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
@@ -380,8 +381,8 @@ function Test-VolumeBackupStatus
     $usageThreshold = 100 * $gibibyte    
     #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
     $resourceLocation = "westus2"
-    $backupLocation = "southcentralusstage"
-    $backupVNetLocation = "southcentralus"
+    $backupLocation = "eastus2euap"
+    $backupVNetLocation = "eastus2euap"
     $label = "powershellBackupTest"
     #$backupLocation = "eastus2euap"
     #$backupVNetLocation = "eastus2euap"
@@ -432,7 +433,7 @@ function Test-VolumeBackupStatus
     try
     {
         # create the resource group
-        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation
+        New-AzResourceGroup -Name $resourceGroup -Location $backupVNetLocation -Tags @{Owner = 'b-aubald'}
 		
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $backupVNetLocation -Name $vnetName -AddressPrefix 10.0.0.0/16

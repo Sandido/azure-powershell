@@ -11,7 +11,7 @@
 RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '0.3.0'
+ModuleVersion = '0.5.0'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core'
@@ -29,9 +29,9 @@ CompanyName = 'Microsoft Corporation'
 Copyright = 'Microsoft Corporation. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Microsoft Azure PowerShell - Module providing recommendations for cmdlets comprised in the Az module - This module requires PowerShell 7.2 preview 3 and PSReadLine 2.2.0-beta2.
+Description = 'Microsoft Azure PowerShell - Module providing recommendations for cmdlets comprised in the Az module - This module requires PowerShell 7.2-preview.6 and PSReadLine 2.2.0-beta3.
 
-The suggestions must be activated:
+Suggestions must be activated:
 - Enable-AzPredictor:  Activate the suggestions
 - Disable-AzPredictor: Disable the suggestions
 
@@ -45,9 +45,7 @@ PowerShellVersion = '7.2'
 
 NestedModules = @("Microsoft.Azure.PowerShell.Tools.AzPredictor.dll")
 
-ScriptsToProcess = @("PromptSurvey.ps1")
-
-CmdletsToExport = @("Enable-AzPredictor", "Disable-AzPredictor", "Open-AzPredictorSurvey")
+CmdletsToExport = @("Enable-AzPredictor", "Disable-AzPredictor", "Open-AzPredictorSurvey", "Send-AzPredictorRating")
 
 # Format files (.ps1xml) to be loaded when importing this module
 
@@ -69,7 +67,9 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '* Add Open-AzPredictorSurvey to welcome feedback.'
+        ReleaseNotes = '* Improvements in command parsing mechanism
+* Fixed end of user input detection when - character is used
+* Optimized collection of anonymized data'
 
         # Prerelease string of this module
         # Prerelease = ''
@@ -78,7 +78,7 @@ PrivateData = @{
         # RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
-        ExternalModuleDependencies = @('Az', 'PSReadLine')
+        ExternalModuleDependencies = @('Az.Accounts', 'PSReadLine')
 
     } # End of PSData hashtable
 

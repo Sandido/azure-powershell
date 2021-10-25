@@ -15,19 +15,19 @@
 namespace Microsoft.Azure.PowerShell.Tools.AzPredictor.Telemetry
 {
     /// <summary>
-    /// The telemetry client that collects and sends the telemetry data.
+    /// The telemetry client that collects data at the interested places.
     /// </summary>
     public interface ITelemetryClient
     {
         /// <summary>
-        /// Gets the id to correlate the request and the server.
+        /// Gets the id to identify the events proceeding to a CommandHistory
         /// </summary>
-        public string RequestId { get; }
+        public string CommandId { get; }
 
         /// <summary>
-        /// Gets the session id for the telemetry events.
+        /// Gets and sets the id to correlate the request and the server.
         /// </summary>
-        public string SessionId { get; }
+        public string RequestId { get; set; }
 
         /// <summary>
         /// Collects the event of the history command.
@@ -64,5 +64,11 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor.Telemetry
         /// </summary>
         /// <param name="telemetryData">The data to collect.</param>
         public void OnLoadParameterMap(ParameterMapTelemetryData telemetryData);
+
+        /// <summary>
+        /// Collects when we fails to parse a command in the model.
+        /// </summary>
+        /// <param name="telemetryData">The data to collect.</param>
+        public void OnParseCommandLineFailure(CommandLineParsingTelemetryData telemetryData);
     }
 }

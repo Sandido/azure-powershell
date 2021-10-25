@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation.Language;
-using System.Management.Automation.Subsystem;
+using System.Management.Automation.Subsystem.Prediction;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -34,6 +34,20 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
     internal class AzPredictorService : IAzPredictorService
     {
         private const string ClientType = "AzurePowerShell";
+
+        private static readonly PredictiveCommand[] _surveyCmdlets = new PredictiveCommand[AzPredictorConstants.CohortCount]
+        {
+            new PredictiveCommand()
+                    {
+                        Command = "Open-AzPredictorSurvey",
+                        Description = "Run this command to tell us about your experience with Az Predictor",
+                    },
+            new PredictiveCommand()
+                    {
+                        Command = "Send-AzPredictorRating -Rating 5",
+                        Description = "Run this command followed by your rating of Az Predictor: 1 (poor) - 5 (great)"
+                    },
+        };
 
         private sealed class PredictionRequestBody
         {
@@ -101,7 +115,7 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
             Validation.CheckArgument(telemetryClient, $"{nameof(telemetryClient)} cannot be null.");
             Validation.CheckArgument(azContext, $"{nameof(azContext)} cannot be null.");
 
-            _parameterValuePredictor = new ParameterValuePredictor(telemetryClient);
+            _parameterValuePredictor = new ParameterValuePredictor(telemetryClient, azContext);
 
             _commandsEndpoint = $"{serviceUri}{AzPredictorConstants.CommandsEndpoint}?clientType={AzPredictorService.ClientType}&context.versionNumber={azContext.AzVersion}";
             _predictionsEndpoint = serviceUri + AzPredictorConstants.PredictionsEndpoint;
@@ -116,8 +130,10 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
         /// <summary>
         /// A default constructor for the derived class. This is used in test cases.
         /// </summary>
-        protected AzPredictorService()
+        /// <param name="azContext">The Az context which this module runs in.</param>
+        protected AzPredictorService(IAzContext azContext)
         {
+            _azContext = azContext;
             RequestAllPredictiveCommands();
         }
 
@@ -144,7 +160,12 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                 }
             }
 
-            var commandName = commandAst?.GetCommandName();
+            if (commandAst == null)
+            {
+                return null;
+            }
+
+            var commandName = commandAst.GetCommandName();
 
             if (string.IsNullOrWhiteSpace(commandName))
             {
@@ -155,15 +176,21 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
 
             try
             {
-                inputParameterSet = new ParameterSet(commandAst);
+                inputParameterSet = new ParameterSet(commandAst, _azContext);
             }
-            catch when (!IsSupportedCommand(commandName))
+            catch when (!IsRecognizedCommand(commandName))
             {
                 // We only ignore the exception when the command name is not supported.
-                // For the supported ones, this most likely happens when positional parameters are used.
-                // We want to collect the telemetry about the exception how common a positional parameter is used.
+                // We want to collect the telemetry about the exception how common it is for the format we don't support.
                 return null;
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // We want to show a survey/feedback cmdlet at the end of the suggestion list. We try to find one less
+            // suggestions to make room for that cmdlet and avoid too much computation.
+            // But if only one suggestion is requested, we don't replace it with the survey cmdlets.
+            var suggestionFromPredictorCount = (suggestionCount == 1) ? 1 : (suggestionCount - 1);
 
             var rawUserInput = context.InputAst.ToString();
             var presentCommands = new Dictionary<string, int>();
@@ -174,7 +201,7 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                     inputParameterSet,
                     rawUserInput,
                     presentCommands,
-                    suggestionCount,
+                    suggestionFromPredictorCount,
                     maxAllowedCommandDuplicate,
                     cancellationToken);
 
@@ -193,10 +220,10 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                 }
             }
 
-            if ((result == null) || (result.Count < suggestionCount))
+            if ((result == null) || (result.Count < suggestionFromPredictorCount))
             {
                 var fallbackPredictor = _fallbackPredictor;
-                var suggestionCountToRequest = (result == null) ? suggestionCount : suggestionCount - result.Count;
+                var suggestionCountToRequest = (result == null) ? suggestionFromPredictorCount : suggestionFromPredictorCount - result.Count;
                 var resultsFromFallback = fallbackPredictor?.GetSuggestion(commandName,
                         inputParameterSet,
                         rawUserInput,
@@ -218,13 +245,37 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                 {
                     for (var i = 0; i < resultsFromFallback.Count; ++i)
                     {
-                        if (result.SourceTexts.Contains(resultsFromFallback.SourceTexts[i]))
-                        {
-                            continue;
-                        }
-
                         result.AddSuggestion(resultsFromFallback.PredictiveSuggestions[i], resultsFromFallback.SourceTexts[i], SuggestionSource.StaticCommands);
                     }
+                }
+            }
+
+            if (suggestionCount > 1)
+            {
+                // Add the survey/feedback cmdlet at the end if the user isn't typing it.
+                bool isSurveyCmdletFound = false;
+
+                if (result != null)
+                {
+                    foreach (var predictiveCommand in result.SourceTexts)
+                    {
+                        if (string.Equals(predictiveCommand, _surveyCmdlets[_azContext.Cohort].Command, StringComparison.Ordinal))
+                        {
+                            isSurveyCmdletFound = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    result = new CommandLineSuggestion();
+                }
+
+                if (!isSurveyCmdletFound)
+                {
+                    var toAddCmdlet = _surveyCmdlets[_azContext.Cohort].Command;
+                    var toAddDescription = _surveyCmdlets[_azContext.Cohort].Description;
+                    result.AddSuggestion(new PredictiveSuggestion($"{toAddCmdlet} # {toAddDescription}", toAddCmdlet), toAddCmdlet, SuggestionSource.StaticCommands);
                 }
             }
 
@@ -232,7 +283,7 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
         }
 
         /// <inheritdoc/>
-        public virtual async Task<bool> RequestPredictionsAsync(IEnumerable<string> commands, CancellationToken cancellationToken)
+        public virtual async Task<bool?> RequestPredictionsAsync(IEnumerable<string> commands, string requestId, CancellationToken cancellationToken)
         {
             Validation.CheckArgument(commands, $"{nameof(commands)} cannot be null.");
 
@@ -241,43 +292,46 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
 
             try
             {
-                if (string.Equals(localCommands, _commandToRequestPrediction, StringComparison.Ordinal))
+                if (string.Equals(localCommands, _commandToRequestPrediction, StringComparison.OrdinalIgnoreCase))
                 {
                     // It's the same history we've already requested the prediction for last time, skip it.
-                    return false;
+                    return null;
                 }
 
-                if (commands.Any())
+                if (!commands.Any())
                 {
-                    SetCommandToRequestPrediction(localCommands);
-
-                    AzPredictorService.SetHttpRequestHeader(_client?.DefaultRequestHeaders, _azContext.HashUserId, _telemetryClient.RequestId);
-
-                    var requestContext = new PredictionRequestBody.RequestContext()
-                    {
-                        VersionNumber = this._azContext.AzVersion
-                    };
-
-                    var requestBody = new PredictionRequestBody(commands)
-                    {
-                        Context = requestContext,
-                    };
-
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var requestBodyString = JsonSerializer.Serialize(requestBody, JsonUtilities.DefaultSerializerOptions);
-                    var httpResponseMessage = await _client.PostAsync(_predictionsEndpoint, new StringContent(requestBodyString, Encoding.UTF8, "application/json"), cancellationToken);
-                    isRequestSent = true;
-
-                    httpResponseMessage.EnsureSuccessStatusCode();
-                    var reply = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
-                    var suggestionsList = await JsonSerializer.DeserializeAsync<IList<PredictiveCommand>>(reply, JsonUtilities.DefaultSerializerOptions);
-
-                    SetCommandBasedPreditor(localCommands, suggestionsList);
+                    return null;
                 }
 
+                // We have a check to avoid sending the request using the same commands. So we only check if it's cancelled
+                // here. We don't cancel the request once we set _commandToRequestPrediction to localCommands.
+                cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken = CancellationToken.None;
+                SetCommandToRequestPrediction(localCommands);
+
+                AzPredictorService.SetHttpRequestHeader(_client?.DefaultRequestHeaders, _azContext.HashUserId, requestId);
+
+                var requestContext = new PredictionRequestBody.RequestContext()
+                {
+                    VersionNumber = this._azContext.AzVersion
+                };
+
+                var requestBody = new PredictionRequestBody(commands)
+                {
+                    Context = requestContext,
+                };
+
+                var requestBodyString = JsonSerializer.Serialize(requestBody, JsonUtilities.DefaultSerializerOptions);
+                var httpResponseMessage = await _client.PostAsync(_predictionsEndpoint, new StringContent(requestBodyString, Encoding.UTF8, "application/json"), cancellationToken);
+                isRequestSent = true;
+
+                httpResponseMessage.EnsureSuccessStatusCode();
+                var reply = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
+                var suggestionsList = await JsonSerializer.DeserializeAsync<IList<PredictiveCommand>>(reply, JsonUtilities.DefaultSerializerOptions);
+
+                SetCommandBasedPreditor(localCommands, suggestionsList);
             }
-            catch (Exception e)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
                 throw new ServiceRequestException(e.Message, e)
                         {
@@ -297,7 +351,9 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
         }
 
         /// <inheritdoc/>
-        public bool IsSupportedCommand(string cmd) => !string.IsNullOrWhiteSpace(cmd) && (_allPredictiveCommands?.Contains(cmd) == true);
+        public bool IsSupportedCommand(string cmd) => IsRecognizedCommand(cmd)
+            && !_surveyCmdlets.Any(cmdlet => cmdlet.Command.StartsWith(cmd, StringComparison.OrdinalIgnoreCase)) // the survey cmdlets aren't in the normal az command flow, so mark them as unsupported.
+            && cmd.IndexOf(AzPredictorConstants.AzCommandMoniker) > 0; // This is the Az cmdlet.
 
         /// <summary>
         /// Requests a list of popular commands from service. These commands are used as fall back suggestion
@@ -310,17 +366,19 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                     {
                         var hasSentHttpRequest = false;
                         Exception exception = null;
+                        var requestId = Guid.NewGuid().ToString();
 
                         try
                         {
-                            AzPredictorService.SetHttpRequestHeader(_client.DefaultRequestHeaders, _azContext.HashUserId, _telemetryClient.RequestId);
+                            AzPredictorService.SetHttpRequestHeader(_client.DefaultRequestHeaders, _azContext.HashUserId, requestId);
 
                             var httpResponseMessage = await _client.GetAsync(_commandsEndpoint);
                             hasSentHttpRequest = true;
 
                             httpResponseMessage.EnsureSuccessStatusCode();
                             var reply = await httpResponseMessage.Content.ReadAsStringAsync();
-                            var commandsReply = JsonSerializer.Deserialize<IList<PredictiveCommand>>(reply, JsonUtilities.DefaultSerializerOptions);
+                            var commandsReply = JsonSerializer.Deserialize<List<PredictiveCommand>>(reply, JsonUtilities.DefaultSerializerOptions);
+                            commandsReply.AddRange(_surveyCmdlets);
                             SetFallbackPredictor(commandsReply);
                         }
                         catch (Exception e) when (!(e is OperationCanceledException))
@@ -329,37 +387,19 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                         }
                         finally
                         {
-                            _telemetryClient.OnRequestPrediction(new RequestPredictionTelemetryData(AzPredictorConstants.DefaultClientId,
+                            _telemetryClient.RequestId = requestId;
+                            _telemetryClient.OnRequestPrediction(new RequestPredictionTelemetryData(null,
                                         new List<string>(),
                                         hasSentHttpRequest,
                                         exception));
                         }
 
                         // Initialize predictions
-                        hasSentHttpRequest = false;
                         var placeholderCommands = new string[] {
                                     AzPredictorConstants.CommandPlaceholder,
                                     AzPredictorConstants.CommandPlaceholder};
-                        try
-                        {
-                            hasSentHttpRequest = await RequestPredictionsAsync(placeholderCommands, CancellationToken.None);
-                        }
-                        catch (ServiceRequestException e)
-                        {
-                            hasSentHttpRequest = e.IsRequestSent;
-                            exception = e.InnerException;
-                        }
-                        catch (Exception e)
-                        {
-                            exception = e;
-                        }
-                        finally
-                        {
-                            _telemetryClient.OnRequestPrediction(new RequestPredictionTelemetryData(AzPredictorConstants.DefaultClientId,
-                                        placeholderCommands,
-                                        hasSentHttpRequest,
-                                        (exception is OperationCanceledException ? null : exception)));
-                        }
+
+                        return AzPredictorUtilities.RequestPredictionAndCollectTelemetryAync(this, _telemetryClient, null, placeholderCommands, null, CancellationToken.None);
                     });
         }
 
@@ -371,7 +411,7 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
         {
             Validation.CheckArgument(commands, $"{nameof(commands)} cannot be null.");
 
-            _fallbackPredictor = new CommandLinePredictor(commands, _parameterValuePredictor);
+            _fallbackPredictor = new CommandLinePredictor(commands, _parameterValuePredictor, _telemetryClient, _azContext);
             _allPredictiveCommands = commands.Select(x => AzPredictorService.GetCommandName(x.Command)).ToHashSet<string>(StringComparer.OrdinalIgnoreCase); // this could be slow
         }
 
@@ -385,7 +425,7 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
             Validation.CheckArgument(!string.IsNullOrWhiteSpace(commands), $"{nameof(commands)} cannot be null or whitespace.");
             Validation.CheckArgument(suggestions, $"{nameof(suggestions)} cannot be null.");
 
-            _commandBasedPredictor = Tuple.Create(commands, new CommandLinePredictor(suggestions, _parameterValuePredictor));
+            _commandBasedPredictor = Tuple.Create(commands, new CommandLinePredictor(suggestions, _parameterValuePredictor, _telemetryClient, _azContext));
         }
 
         /// <summary>
@@ -429,5 +469,8 @@ namespace Microsoft.Azure.PowerShell.Tools.AzPredictor
                 }
             }
         }
+
+        private bool IsRecognizedCommand(string cmd) => !string.IsNullOrWhiteSpace(cmd)
+            && (_allPredictiveCommands?.Contains(cmd) == true);
     }
 }
