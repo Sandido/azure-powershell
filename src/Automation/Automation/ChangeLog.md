@@ -18,6 +18,14 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+* `New-AzAutomationSchedule` allows defnining StartTime with offsets.
+*  Fixed bug: updated 'Set-AzAutomationModule' to use PUT call while updating modules with specific versions   [#12552]
+
+## Version 1.7.2
+* Fixed example in reference doc for `Remove-AzAutomationHybridWorkerGroup`
+
+## Version 1.7.1
+* Fixed bug: Add Schedule name validation in New-AzAutomationSchedule
 
 ## Version 1.7.1
 * Fixed bug: Closing in input file handle in Import-AzAutomationRunbook
