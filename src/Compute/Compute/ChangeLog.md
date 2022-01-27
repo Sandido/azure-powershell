@@ -20,6 +20,14 @@
 
 -->
 ## Upcoming Release
+* Updated `Set-AzVmExtension` cmdlet to properly display `-Name` and `-Location` parameters as mandatory.
+* Edited `New-AzVmssConfig` second example so it runs successfully by changing the Tag input to the correct format. 
+* Added `Hibernate` parameter to `Stop-AzVm` cmdlet. 
+* Added `HibernationEnabled` parameter to `New-AzVm`, `New-AzVmConfig`, and `Update-AzVm` cmdlets.
+* Added `EnableHotpatching` parameter to the `Set-AzVmssOSProfile` cmdlet.
+
+## Version 4.22.0
+* Updated `UserData` parameter in VM and VMSS cmdlets to pipe by the Property Name to ensure piping scenarios occur correctly.
 * Changed `New-AzVM` cmdlet when using the SimpleParameterSet to not create a `PublicIPAddress` when a `PublicIPAddress` name is not provided.
 * Added `PlatformFaultDomain` parameter to cmdlets: `New-AzVM` and `New-AzVMConfig`
 * Added `-Feature` parameter for `New-AzGalleryImageDefinition`
