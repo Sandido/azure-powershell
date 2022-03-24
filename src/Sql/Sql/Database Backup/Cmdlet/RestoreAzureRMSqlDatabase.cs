@@ -11,16 +11,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // ----------------------------------------------------------------------------------
-
-using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
-using Microsoft.Azure.Commands.Common.Authentication.Models;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
+using Microsoft.Azure.Commands.ResourceManager.Common.Tags;
 using Microsoft.Azure.Commands.Sql.Backup.Services;
 using Microsoft.Azure.Commands.Sql.Common;
 using Microsoft.Azure.Commands.Sql.Database.Model;
 using Microsoft.Azure.Commands.Sql.Database.Services;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management.Automation;
@@ -295,6 +295,13 @@ namespace Microsoft.Azure.Commands.Sql.Backup.Cmdlet
             HelpMessage = "The zone redundancy to associate with the Azure Sql Database. This property is only settable for Hyperscale edition databases.")]
         public SwitchParameter ZoneRedundant { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tags associated with the Azure Sql Database
+        /// </summary>
+        [Parameter(Mandatory = false,
+            HelpMessage = "The tags to associate with the Azure Sql Database")]
+        public Hashtable Tag { get; set; }
+
         protected static readonly string[] ListOfRegionsToShowWarningMessageForGeoBackupStorage = { "eastasia", "southeastasia", "brazilsouth", "east asia", "southeast asia", "brazil south" };
 
         /// <summary>
@@ -373,6 +380,7 @@ namespace Microsoft.Azure.Commands.Sql.Backup.Cmdlet
                 CreateMode = createMode,
                 LicenseType = LicenseType,
                 RequestedBackupStorageRedundancy = BackupStorageRedundancy,
+                Tags = TagsConversionHelper.CreateTagDictionary(Tag, validate: true),
                 ZoneRedundant = this.IsParameterBound(p => p.ZoneRedundant) ? ZoneRedundant.ToBool() : (bool?)null,
             };
 
@@ -391,7 +399,45 @@ namespace Microsoft.Azure.Commands.Sql.Backup.Cmdlet
                 model.Edition = Edition;
             }
 
-            return ModelAdapter.RestoreDatabase(this.ResourceGroupName, restorePointInTime, ResourceId, model);
+            /// get auth headers for cross-sub and cross-tenant restore operations
+            string targetSubscriptionId = ModelAdapter.Context?.Subscription.Id;
+            string sourceSubscriptionId = ParseSourceSubscriptionIdFromResourceId(ResourceId);
+            Dictionary<string, List<string>> auxAuthHeader = null;
+            if (!string.IsNullOrEmpty(ResourceId) && targetSubscriptionId!=sourceSubscriptionId)
+            {
+                List<string> resourceIds = new List<string>();
+                resourceIds.Add(ResourceId);
+                var auxHeaderDictionary = GetAuxilaryAuthHeaderFromResourceIds(resourceIds);
+                if (auxHeaderDictionary != null && auxHeaderDictionary.Count > 0)
+                {
+                    auxAuthHeader = new Dictionary<string, List<string>>(auxHeaderDictionary);
+                }
+            }
+
+            return ModelAdapter.RestoreDatabase(this.ResourceGroupName, restorePointInTime, ResourceId, model, sourceSubscriptionId, auxAuthHeader);
+        }
+
+        /// <summary>
+        /// Parse source subscription id from ResourceId
+        /// </summary>
+        /// <returns>Source Subscription Id</returns>
+        private string ParseSourceSubscriptionIdFromResourceId(string resourceId)
+        {
+            if (string.IsNullOrEmpty(resourceId))
+            {
+            return null;
+            }
+
+            string[] words = resourceId.Split('/');
+            string sourceSubscriptionId = "";
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (words[i] == "subscriptions")
+                {
+                    sourceSubscriptionId = words[i + 1];
+                }
+            }
+            return sourceSubscriptionId;
         }
     }
 }
