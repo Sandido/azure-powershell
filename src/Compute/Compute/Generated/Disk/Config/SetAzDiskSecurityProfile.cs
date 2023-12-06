@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,13 @@ namespace Microsoft.Azure.Commands.Compute
            HelpMessage = "ResourceId of the disk encryption set to use for enabling encryption at rest.")]
         public string SecureVMDiskEncryptionSet { get; set; }
 
+        [Parameter(
+           Mandatory = false,
+           ValueFromPipelineByPropertyName = true,
+           HelpMessage = "New parameter -ParameterFive is a string that is either One, Two, or Three.")]
+        [PSArgumentCompleter("One", "Two", "Three")]
+        public string ParameterFive { get; set; }
+
         protected override void ProcessRecord()
         {
             if (ShouldProcess("DiskSecurityProfile", "Set"))
@@ -64,6 +71,11 @@ namespace Microsoft.Azure.Commands.Compute
 
         private void Run()
         {
+            if (string.IsNullOrEmpty(ParameterFive))
+            {
+                throw new ArgumentException("ParameterFive does not allow an empty string.");
+            }
+
             // At this time, it is impossible to set SecurityType to Standard ("") as it is a mandatory property on the backend.
             // If Standard is used, then there should be no securityProfile at all for now.
             if (SecurityType.ToLower() != ConstantValues.StandardSecurityType)
@@ -92,6 +104,15 @@ namespace Microsoft.Azure.Commands.Compute
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
                 this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
+            }
+
+            if (this.IsParameterBound(c => c.ParameterFive))
+            {
+                if (this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.ParameterInput = this.ParameterFive;
             }
 
             WriteObject(this.Disk);
