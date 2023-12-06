@@ -20,6 +20,21 @@
 
 ## Upcoming Release
 
+## Version 3.1.1
+* Removed unnecessary breaking change messages.
+
+## Version 3.1.0
+* Fixed parameters' issues for `New-AzSentinelAlertRule` and `Update-AzSentinelAlertRule` [#21181][#21217][#22318]
+
+## Version 3.0.2
+* Added breaking change message for `Az.SecurityInsights`.
+
+## Version 3.0.1
+* Fixed for `Update-AzSentinelAlertRule` fails when using `-TriggerThreshold 0` [#20417]
+
+## Version 3.0.0
+* Changed `Az.SecurityInsights` to autorest-based module
+
 ## Version 1.1.0
 * Updated to `Get-AzSentinelIncident` parameters
     - Added `-Filter` to support OData filter

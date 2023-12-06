@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.RecoveryServices.Backup.dll-Help.xml
 Module Name: Az.RecoveryServices
 ms.assetid: D614B509-82DD-42FB-B975-D72CD3355E3E
-online version: https://docs.microsoft.com/powershell/module/az.recoveryservices/set-azrecoveryservicesbackupprotectionpolicy
+online version: https://learn.microsoft.com/powershell/module/az.recoveryservices/set-azrecoveryservicesbackupprotectionpolicy
 schema: 2.0.0
 ---
 
@@ -16,14 +16,17 @@ Modifies a Backup protection policy.
 ### ModifyPolicyParamSet
 ```
 Set-AzRecoveryServicesBackupProtectionPolicy [-Policy] <PolicyBase> [[-RetentionPolicy] <RetentionPolicyBase>]
- [[-SchedulePolicy] <SchedulePolicyBase>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [[-SchedulePolicy] <SchedulePolicyBase>] [-MoveToArchiveTier <Boolean>] [-TieringMode <TieringMode>]
+ [-TierAfterDuration <Int32>] [-TierAfterDurationType <String>] [-BackupSnapshotResourceGroup <String>]
+ [-BackupSnapshotResourceGroupSuffix <String>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
+ [-Token <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### FixPolicyParamSet
 ```
 Set-AzRecoveryServicesBackupProtectionPolicy [-Policy] <PolicyBase> [-FixForInconsistentItems]
- [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-BackupSnapshotResourceGroup <String>] [-BackupSnapshotResourceGroupSuffix <String>] [-VaultId <String>]
+ [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,14 +57,14 @@ $RetPol.WeeklySchedule.DurationCountInWeeks = 365
 $vault = Get-AzRecoveryServicesVault -ResourceGroupName "azurefiles" -Name "azurefilesvault"
 $Pol= Get-AzRecoveryServicesBackupProtectionPolicy -Name "TestPolicy" -VaultId $vault.ID
 $Pol.SnapshotRetentionInDays=5
-Set-AzRecoveryServicesBackupProtectionPolicy -Policy $Pol -SchedulePolicy $SchPol -RetentionPolicy $RetPol
+Set-AzRecoveryServicesBackupProtectionPolicy -Policy $Pol -SchedulePolicy $SchPol -RetentionPolicy $RetPol -BackupSnapshotResourceGroup "snapshotResourceGroupPrefix" -BackupSnapshotResourceGroupSuffix "snapshotResourceGroupSuffix"
 ```
 
 Here is the high-level description of the steps to be followed for modifying a protection policy: 
 1.	Get a base SchedulePolicyObject and base RetentionPolicyObject. Store them in some variable.
 2.	Set the different parameters of schedule and retention policy object as per your requirement. For example- In the above sample script, we are trying to set a weekly protection policy. Hence, we changed the schedule frequency to "Weekly" and also updated the schedule run time. In the retention policy object, we updated the weekly retention duration and set the correct "weekly schedule enabled" flag. In case you want to set a Daily policy, set the "daily schedule enabled" flag to true and assign appropriate values for other object parameters.
 3.	Get the backup protection policy that you want to modify and store it in a variable. In the above example, we retrieved the backup policy with the name "TestPolicy" that we wanted to modify.
-4.	Modify the backup protection policy retrieved in step 3 using the modified schedule policy object and retention policy object.
+4.	Modify the backup protection policy retrieved in step 3 using the modified schedule policy object and retention policy object. We use BackupSnapshotResourceGroup, BackupSnapshotResourceGroupSuffix parameter to update the snapshot resource group name for instant RPs.
 
 ### Example 2: Modify Azure fileshare policy for multiple backups per day
 ```powershell
@@ -84,7 +87,51 @@ Here is the high-level description of the steps to be followed for modifying a f
 3.	Get the backup protection policy that you want to modify and store it in a variable. In the above example, we retrieved the backup policy with the name "TestPolicy" that we wanted to modify.
 4.	Modify the backup protection policy retrieved in step 3 using the modified schedule policy object and retention policy object.
 
+### Example 3: Modify AzureWorkload policy to enable Archive smart tiering
+```powershell
+$pol = Set-AzRecoveryServicesBackupProtectionPolicy -VaultId $vault.ID -Policy $policy -MoveToArchiveTier $true -TieringMode TierAllEligible -TierAfterDuration 60 -TierAfterDurationType Days
+```
+
+This command is used to modify policy to enable archive smart tiering for the policy $policy, we set -MoveToArchiveTier parameter to $true to enable tiering. We choose TieringMode to be TierAllEligible to move all eligible recovery points to archive after certain duration given by TierAfterDuration and TierAfterDurationType parameters. In order to move recommended recovery points to Archive for AzureVM use TieringMode TierRecommended.
+
+### Example 4: Disable smart tiering on an existing policy
+```powershell
+$pol = Set-AzRecoveryServicesBackupProtectionPolicy -VaultId $vault.ID -Policy $policy -MoveToArchiveTier $false
+```
+
+This command is used to disable archive smart tiering for the policy $policy, we set -MoveToArchiveTier parameter to $false. Please note that disabling archive smart tiering might have cost implications.
+
 ## PARAMETERS
+
+### -BackupSnapshotResourceGroup
+Custom resource group name to store the instant recovery points of managed virtual machines. This is optional
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -BackupSnapshotResourceGroupSuffix
+Custom resource group name suffix to store the instant recovery points of managed virtual machines. This is optional
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -DefaultProfile
 The credentials, account, tenant, and subscription used for communication with azure.
@@ -110,6 +157,21 @@ Parameter Sets: FixPolicyParamSet
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MoveToArchiveTier
+Specifies whether recovery points should be moved to archive storage by the policy or not. Allowed values are $true, $false
+
+```yaml
+Type: System.Nullable`1[System.Boolean]
+Parameter Sets: ModifyPolicyParamSet
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -159,6 +221,68 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TierAfterDuration
+Specifies the duration after which recovery points should start moving to the archive tier, value can be in days or months. Applicable only when TieringMode is TierAllEligible
+
+```yaml
+Type: System.Nullable`1[System.Int32]
+Parameter Sets: ModifyPolicyParamSet
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TierAfterDurationType
+Specifies whether the TierAfterDuration is in Days or Months
+
+```yaml
+Type: System.String
+Parameter Sets: ModifyPolicyParamSet
+Aliases:
+Accepted values: Days, Months
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TieringMode
+Specifies whether to move recommended or all eligible recovery points to archive
+
+```yaml
+Type: Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets.Models.TieringMode
+Parameter Sets: ModifyPolicyParamSet
+Aliases:
+Accepted values: TierRecommended, TierAllEligible
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Token
+Auxiliary access token for authenticating critical operation to resource guard subscription
+
+```yaml
+Type: System.String
+Parameter Sets: ModifyPolicyParamSet
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

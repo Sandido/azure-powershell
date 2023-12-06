@@ -1,4 +1,3 @@
-
 <!--
     Please leave this section at the top of the change log.
 
@@ -20,6 +19,18 @@
 -->
 ## Upcoming Release
 
+## Version 0.12.0
+* Added cmdlet `Invoke-AzReservationReturn`
+* Removed parameters `RefreshSummary`, `Skiptoken`, `Take` from cmdlet `Get-AzReservation`
+* Added parameters `First`, `Skip` for cmdlet `Get-AzReservation`
+
+## Version 0.11.0
+* Added new commands to CalculateRefund and Return reservation
+* Added new commands to Archive/Unarchive cancelled/expired/failed reservation 
+
+## Version 0.10.0
+* Converted Az.Reservations to autorest-based module
+
 ## Version 0.9.0
 * Added new reserved resource types.
 
@@ -36,5 +47,3 @@
 	- new Api for calculate ReservationOrder price
 * Add new Api Purchase
 	- new Api for Purchase ReservationOrder in powershell
-
-## Version 0.7.1

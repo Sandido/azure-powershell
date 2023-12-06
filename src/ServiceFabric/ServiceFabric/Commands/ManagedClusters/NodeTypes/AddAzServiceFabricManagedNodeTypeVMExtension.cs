@@ -93,7 +93,7 @@ namespace Microsoft.Azure.Commands.ServiceFabric.Commands
         public override void ExecuteCmdlet()
         {
             this.SetParams();
-            if (ShouldProcess(target: this.Name, action: string.Format("Add Extenions {0} with type {1} to node type {2}", this.Name, this.Type, this.NodeTypeName)))
+            if (ShouldProcess(target: this.Name, action: string.Format("Add Extensions {0} with type {1} to node type {2}", this.Name, this.Type, this.NodeTypeName)))
             {
                 try
                 {
@@ -119,10 +119,10 @@ namespace Microsoft.Azure.Commands.ServiceFabric.Commands
 
             if (currentNodeType.VmExtensions == null)
             {
-                currentNodeType.VmExtensions = new List<VMSSExtension>();
+                currentNodeType.VmExtensions = new List<VmssExtension>();
             }
 
-            currentNodeType.VmExtensions.Add(new VMSSExtension()
+            currentNodeType.VmExtensions.Add(new VmssExtension()
             {
                 Name = this.Name,
                 Publisher = this.Publisher,

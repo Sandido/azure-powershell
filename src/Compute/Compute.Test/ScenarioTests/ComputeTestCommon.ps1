@@ -161,7 +161,8 @@ function Create-VirtualMachine
 
     # VM Profile & Hardware
     $vmsize = 'Standard_A2';
-    $p = New-AzVMConfig -VMName $vmname -VMSize $vmsize;
+    $stnd = "Standard";
+    $p = New-AzVMConfig -VMName $vmname -VMSize $vmsize -SecurityType $stnd;
     Assert-AreEqual $p.HardwareProfile.VmSize $vmsize;
 
     # NRP
@@ -267,7 +268,8 @@ function Create-VirtualMachineNoDataDisks
 
     # VM Profile & Hardware
     $vmsize = 'Standard_D2S_V3';
-    $p = New-AzVMConfig -VMName $vmname -VMSize $vmsize;
+    $stnd = "Standard";
+    $p = New-AzVMConfig -VMName $vmname -VMSize $vmsize -SecurityType $stnd;
     Assert-AreEqual $p.HardwareProfile.VmSize $vmsize;
 
     # NRP
@@ -473,7 +475,7 @@ Gets default CRP Image
 #>
 function Get-DefaultCRPImage
 {
-    param([string] $loc = "westus", [string] $query = '*Microsoft*Windows*Server*')
+    param([string] $loc = "westus", [string] $query = '*Microsoft*Windows*Server*', [bool] $New = $False)
 
     $result = (Get-AzVMImagePublisher -Location $loc) | select -ExpandProperty PublisherName | where { $_ -like $query };
     if ($result.Count -eq 1)
@@ -495,7 +497,12 @@ function Get-DefaultCRPImage
         $defaultOffer = $result[0];
     }
 
-    $result = (Get-AzVMImageSku -Location $loc -PublisherName $defaultPublisher -Offer $defaultOffer) | select -ExpandProperty Skus;
+    if ($New -eq $True){
+        $result = (Get-AzVMImageSku -Location $loc -PublisherName $defaultPublisher -Offer $defaultOffer) | select -ExpandProperty Skus| where { $_ -like '*2022-datacenter*'};
+    }
+    else {
+        $result = (Get-AzVMImageSku -Location $loc -PublisherName $defaultPublisher -Offer $defaultOffer) | select -ExpandProperty Skus;
+    }
     if ($result.Count -eq 1)
     {
         $defaultSku = $result;
@@ -516,6 +523,7 @@ function Get-DefaultCRPImage
     }
     
     $vmimg = Get-AzVMImage -Location $loc -Offer $defaultOffer -PublisherName $defaultPublisher -Skus $defaultSku -Version $defaultVersion;
+
 
     return $vmimg;
 }

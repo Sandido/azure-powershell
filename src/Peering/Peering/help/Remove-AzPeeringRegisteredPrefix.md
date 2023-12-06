@@ -1,87 +1,50 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Peering.dll-Help.xml
+external help file:
 Module Name: Az.Peering
-online version: https://docs.microsoft.com/powershell/module/az.peering/remove-azpeeringregisteredprefix
+online version: https://learn.microsoft.com/powershell/module/az.peering/remove-azpeeringregisteredprefix
 schema: 2.0.0
 ---
 
 # Remove-AzPeeringRegisteredPrefix
 
 ## SYNOPSIS
-Delete or remove a registered prefix from the parent peering resource.
+Deletes an existing registered prefix with the specified name under the given subscription, resource group and peering.
 
 ## SYNTAX
 
-### ByName (Default)
+### Delete (Default)
 ```
-Remove-AzPeeringRegisteredPrefix [-ResourceGroupName] <String> [-PeeringName] <String> [-Name] <String>
- [-Force] [-AsJob] [-PassThru] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
-```
-
-### InputObject
-```
-Remove-AzPeeringRegisteredPrefix -InputObject <PSPeeringServicePrefix> [-Force] [-AsJob] [-PassThru]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AzPeeringRegisteredPrefix -Name <String> -PeeringName <String> -ResourceGroupName <String>
+ [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-PassThru] [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
-### ByResourceId
+### DeleteViaIdentity
 ```
-Remove-AzPeeringRegisteredPrefix [-ResourceId] <String> [-Force] [-AsJob] [-PassThru]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AzPeeringRegisteredPrefix -InputObject <IPeeringIdentity> [-DefaultProfile <PSObject>] [-PassThru]
+ [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Allows the removal of registered prefix from parent peering resource.
+Deletes an existing registered prefix with the specified name under the given subscription, resource group and peering.
 
 ## EXAMPLES
 
-### Example 1
+### Example 1: Remove registered prefix
 ```powershell
-Remove-AzPeeringRegisteredPrefix -ResourceId $resourceId
+Remove-AzPeeringRegisteredPrefix -Name accessibilityTesting6 -PeeringName DemoPeering -ResourceGroupName DemoRG
 ```
 
-Remove a registerd prefix by resource id.
+Removes the specified registered prefix from peering
 
 ## PARAMETERS
-
-### -AsJob
-Run in the background.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -DefaultProfile
 The credentials, account, tenant, and subscription used for communication with Azure.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Force
-Force the operation to complete
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
@@ -91,11 +54,12 @@ Accept wildcard characters: False
 ```
 
 ### -InputObject
-Use a Get-AzPeering
+Identity Parameter
+To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeeringServicePrefix
-Parameter Sets: InputObject
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
+Parameter Sets: DeleteViaIdentity
 Aliases:
 
 Required: True
@@ -106,22 +70,22 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-The name of prefix.
+The name of the registered prefix.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
-Aliases:
+Parameter Sets: Delete
+Aliases: RegisteredPrefixName
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PassThru
-{{ Fill PassThru Description }}
+Returns true when the command succeeds
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -136,47 +100,47 @@ Accept wildcard characters: False
 ```
 
 ### -PeeringName
-The unique name of the PSPeering.
+The name of the peering.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
+Parameter Sets: Delete
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ResourceGroupName
-The create or use an existing resource group name.
+The name of the resource group.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
+Parameter Sets: Delete
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ResourceId
-The resource id string name.
+### -SubscriptionId
+The Azure subscription ID.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByResourceId
+Parameter Sets: Delete
 Aliases:
 
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
+Required: False
+Position: Named
+Default value: (Get-AzContext).Subscription.Id
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -216,9 +180,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeeringServicePrefix
-
-### System.String
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
 
 ## OUTPUTS
 
@@ -226,4 +188,24 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
+ALIASES
+
+COMPLEX PARAMETER PROPERTIES
+
+To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
+
+
+`INPUTOBJECT <IPeeringIdentity>`: Identity Parameter
+  - `[ConnectionMonitorTestName <String>]`: The name of the connection monitor test
+  - `[Id <String>]`: Resource identity path
+  - `[PeerAsnName <String>]`: The peer ASN name.
+  - `[PeeringName <String>]`: The name of the peering.
+  - `[PeeringServiceName <String>]`: The name of the peering service.
+  - `[PrefixName <String>]`: The name of the prefix.
+  - `[RegisteredAsnName <String>]`: The name of the registered ASN.
+  - `[RegisteredPrefixName <String>]`: The name of the registered prefix.
+  - `[ResourceGroupName <String>]`: The name of the resource group.
+  - `[SubscriptionId <String>]`: The Azure subscription ID.
+
 ## RELATED LINKS
+

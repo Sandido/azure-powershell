@@ -1,5 +1,5 @@
 # Introduction
-Output is the most important part of any interactive console application including Powershell. PowerShell has a set of  [format cmdlets](https://docs.microsoft.com/en-us/powershell/scripting/getting-started/cookbooks/using-format-commands-to-change-output-view?view=powershell-6) that allow you to control the cmdlet output format:
+Output is the most important part of any interactive console application including Powershell. PowerShell has a set of  [format cmdlets](https://learn.microsoft.com/en-us/powershell/scripting/getting-started/cookbooks/using-format-commands-to-change-output-view?view=powershell-6) that allow you to control the cmdlet output format:
 1. Format-Wide
 2. Format-List
 3. Format-Table
@@ -106,7 +106,7 @@ The default table output reveals some issues:
 
 # File format.ps1xml.
 
-Powershell allows to configure cmdlets output view with the [format.ps1xml](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_format.ps1xml) files.
+Powershell allows to configure cmdlets output view with the [format.ps1xml](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_format.ps1xml) files.
 
 To provide a better PowerShell Azure cmdlets output experience we worked out a mechanism to quickly generate a format.ps1xml file:
 
@@ -359,13 +359,13 @@ This will place the column at the very beginning of the table.
 
     * Below is an example of how to generate a format.ps1xml file for the ```Az.Storage``` module:
     ```Powershell
-    PS E:\git\azure-powershell> New-FormatPs1Xml -OnlyMarkedProperties -ModulePath .\artifacts\Debug\Az.Storage\Az.Storage.psd1
+    PS E:\git\azure-powershell> New-FormatPs1Xml -OnlyMarkedProperties -ModulePath .\src\Storage\Storage\Az.Storage.psd1
     E:\git\azure-powershell\Microsoft.Azure.PowerShell.Cmdlets.Storage.Management.generated.format.ps1xml
     E:\git\azure-powershell\Microsoft.Azure.PowerShell.Cmdlets.Storage.generated.format.ps1xml
     ```
     * Below is an example of how to generate a format.ps1xml file for the ```Az.Account``` module:
     ```powershell
-    PS E:\git\azure-powershell> New-FormatPs1Xml -OnlyMarkedProperties -ModulePath .\artifacts\Debug\Az.Accounts\Az.Accounts.psd1
+    PS E:\git\azure-powershell> New-FormatPs1Xml -OnlyMarkedProperties -ModulePath .\src\Accounts\Accounts\Az.Accounts.psd1
     E:\git\azure-powershell\Microsoft.Azure.PowerShell.Cmdlets.Accounts.generated.format.ps1xml
     PS E:\git\azure-powershell>
     ```
@@ -373,7 +373,7 @@ This will place the column at the very beginning of the table.
 # How to test the format.ps1xml file.
 
 ## Let's take a look at how to check the newly created format.ps1xml file for the ```Az.Account``` module.
-**Note:** All the paths used in the example in the section are under **_azure-powershell/artifacts/Debug_**
+**Note:** All the paths used in the example in the section are under **_azure-powershell/src/<module_name>_**
 
 1. **Copy** the generated format.ps1xml file to the built module folder (this is where your module manifest file psd1 is located). In our example the module folder is 
 ```

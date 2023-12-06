@@ -430,7 +430,9 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Helpers
             response.Duration = GetJobDuration(fileShareJob.Duration);
             response.Status = fileShareJob.Status;
             response.WorkloadName = fileShareJob.EntityFriendlyName;
-            response.ActivityId = fileShareJob.ActivityId;
+            response.ActivityId = fileShareJob.ActivityId;            
+            response.StorageAccountName = fileShareJob.StorageAccountName;
+
             response.BackupManagementType =
                 CmdletModel.ConversionUtils.GetPsBackupManagementType(fileShareJob.BackupManagementType);
             response.Operation = fileShareJob.Operation;
@@ -810,7 +812,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Helpers
                         detailedResponse.SubTasks.Add(new CmdletModel.AzureVmJobSubTask()
                         {
                             Name = vmJobTask.TaskId,
-                            Status = vmJobTask.Status
+                            Status = vmJobTask.Status, 
+                            Duration = (vmJobTask.StartTime != null && vmJobTask.EndTime != null) ? vmJobTask.Duration : null
                         });
                     }
                 }

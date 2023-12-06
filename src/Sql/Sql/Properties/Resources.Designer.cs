@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -205,6 +205,24 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job Private Endpoint with name &apos;{0}&apos; already exists in agent &apos;{1}&apos;.
+        /// </summary>
+        internal static string AzureElasticJobPrivateEndpointExists {
+            get {
+                return ResourceManager.GetString("AzureElasticJobPrivateEndpointExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job Private Endpoint with name &apos;{0}&apos; does not exist in agent &apos;{1}&apos;.
+        /// </summary>
+        internal static string AzureElasticJobPrivateEndpointNotExists {
+            get {
+                return ResourceManager.GetString("AzureElasticJobPrivateEndpointNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job step with name &apos;{0}&apos; already exists in job &apos;{1}&apos;.
         /// </summary>
         internal static string AzureElasticJobStepExists {
@@ -349,7 +367,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new Managed Instance Hybrid Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Creating a new instance link named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;..
         /// </summary>
         internal static string CreateAzureSqlInstanceLinkDescription {
             get {
@@ -358,7 +376,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to create a new Managed Instance Hybrid Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to create a new instance link named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
         /// </summary>
         internal static string CreateAzureSqlInstanceLinkWarning {
             get {
@@ -367,7 +385,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new Server Trust Certificate in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Creating a new SQL Server trust certificate named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;..
         /// </summary>
         internal static string CreateAzureSqlInstanceServerTrustCertificateDescription {
             get {
@@ -376,7 +394,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to create a new Server Trust Certificate in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to create a new SQL Server trust certificate named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
         /// </summary>
         internal static string CreateAzureSqlInstanceServerTrustCertificateWarning {
             get {
@@ -637,15 +655,6 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use the &apos;None&apos; option with other detection types.
-        /// </summary>
-        internal static string InvalidDetectionTypeList {
-            get {
-                return ResourceManager.GetString("InvalidDetectionTypeList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot use the None option with other event types..
         /// </summary>
         internal static string InvalidEventTypeSet {
@@ -692,8 +701,8 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Invalid format of the resource identifier. A long term retention backup resource Id should follow one of the following formats:
-        ////subscriptions/&lt;subscriptionId&gt;/providers/Microsoft.Sql/locations/&lt;location&gt;/longTermRetentionServers/&lt;serverName&gt;/longTermRetentionDatabases/&lt;databaseName&gt;/longTermRetentionBackups/&lt;backupName&gt;
-        ////subscriptions/&lt;subscriptionId&gt;/resourceGroups/&lt;resourceGroupName&gt;/providers/Microsoft.Sql/locations/&lt;location&gt;/longTermRetentionServers/&lt;serverName&gt;/longTermRetentionDatabases/&lt;databaseN [rest of string was truncated]&quot;;.
+        /// /subscriptions/&lt;subscriptionId&gt;/providers/Microsoft.Sql/locations/&lt;location&gt;/longTermRetentionServers/&lt;serverName&gt;/longTermRetentionDatabases/&lt;databaseName&gt;/longTermRetentionBackups/&lt;backupName&gt;
+        /// /subscriptions/&lt;subscriptionId&gt;/resourceGroups/&lt;resourceGroupName&gt;/providers/Microsoft.Sql/locations/&lt;location&gt;/longTermRetentionServers/&lt;serverName&gt;/longTermRetentionDatabases/&lt;databas [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InvalidLongTermRetentionBackupResourceIdFormat {
             get {
@@ -756,7 +765,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managed instance link with name &apos;{0}&apos; already exists on Azure Sql Managed Instance &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Instance link with name &apos;{0}&apos; already exists on managed instance &apos;{1}&apos;.
         /// </summary>
         internal static string ManagedInstanceLinkAlreadyExists {
             get {
@@ -815,15 +824,6 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         internal static string NoStorageAccountWhenConfiguringAuditingPolicy {
             get {
                 return ResourceManager.GetString("NoStorageAccountWhenConfiguringAuditingPolicy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot set threat detection policy without a storage account name..
-        /// </summary>
-        internal static string NoStorageAccountWhenConfiguringThreatDetectionPolicy {
-            get {
-                return ResourceManager.GetString("NoStorageAccountWhenConfiguringThreatDetectionPolicy", resourceCulture);
             }
         }
         
@@ -999,7 +999,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This operation may cause data loss if replicas last hardened LSNs are not in sync, are you sure you want to continue?.
+        ///   Looks up a localized string similar to This operation may cause data loss if replica&apos;s last hardened LSN is not in sync with the primary. Are you sure you want to proceed?.
         /// </summary>
         internal static string RemoveAzureSqlInstanceLinkAllowDataLoss {
             get {
@@ -1008,7 +1008,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Permanently removing Azure Sql Managed Instance Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Permanently removing instance link named &apos;{2}&apos; from managed instance &apos;{1}&apos; in resource group &apos;{0}&apos;..
         /// </summary>
         internal static string RemoveAzureSqlInstanceLinkDescription {
             get {
@@ -1017,7 +1017,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove the Azure Sql Instance Managed Instance Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to remove the instance link named &apos;{2}&apos; from managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
         /// </summary>
         internal static string RemoveAzureSqlInstanceLinkWarning {
             get {
@@ -1026,7 +1026,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Permanently removing Azure Sql Instance Server Trust Certificate in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Permanently removing SQL Server trust certificate named &apos;{2}&apos; from managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;..
         /// </summary>
         internal static string RemoveAzureSqlInstanceServerTrustCertificateDescription {
             get {
@@ -1035,7 +1035,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to remove the Azure Sql Instance Server Trust Certificate in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to remove SQL Server trust certificate named &apos;{2}&apos; from managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
         /// </summary>
         internal static string RemoveAzureSqlInstanceServerTrustCertificateWarning {
             get {
@@ -1139,6 +1139,24 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         internal static string RemoveAzureSqlServerFirewallRuleWarning {
             get {
                 return ResourceManager.GetString("RemoveAzureSqlServerFirewallRuleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanently removing IPv6 Firewall Rule &apos;{0}&apos; for Azure Sql Database Server &apos;{1}&apos;..
+        /// </summary>
+        internal static string RemoveAzureSqlServerIpv6FirewallRuleDescription {
+            get {
+                return ResourceManager.GetString("RemoveAzureSqlServerIpv6FirewallRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove the IPv6 Firewall Rule &apos;{0}&apos; for Azure Sql Database Server  &apos;{1}&apos;?.
+        /// </summary>
+        internal static string RemoveAzureSqlServerIpv6FirewallRuleWarning {
+            get {
+                return ResourceManager.GetString("RemoveAzureSqlServerIpv6FirewallRuleWarning", resourceCulture);
             }
         }
         
@@ -1287,6 +1305,15 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove the private endpoint &apos;{0}&apos; from agent &apos;{1}&apos;?.
+        /// </summary>
+        internal static string RemoveElasticJobPrivateEndpointWarning {
+            get {
+                return ResourceManager.GetString("RemoveElasticJobPrivateEndpointWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to remove the target group &apos;{0}&apos; from agent &apos;{1}&apos;.
         /// </summary>
         internal static string RemoveElasticJobTargetGroupWarning {
@@ -1422,6 +1449,24 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IPv6 Firewall Rule with name: &apos;{0}&apos; does not exist for server &apos;{1}&apos;..
+        /// </summary>
+        internal static string ServerIpv6FirewallRuleNameDoesNotExist {
+            get {
+                return ResourceManager.GetString("ServerIpv6FirewallRuleNameDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IPv6 Firewall Rule with name: &apos;{0}&apos; already exists for server &apos;{1}&apos;..
+        /// </summary>
+        internal static string ServerIpv6FirewallRuleNameExists {
+            get {
+                return ResourceManager.GetString("ServerIpv6FirewallRuleNameExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server with name: &apos;{0}&apos; already exists..
         /// </summary>
         internal static string ServerNameExists {
@@ -1449,15 +1494,6 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Threat detection is only available for the latest SQL Database Update (V12). Please upgrade to set it up on your database..
-        /// </summary>
-        internal static string ServerNotApplicableForThreatDetection {
-            get {
-                return ResourceManager.GetString("ServerNotApplicableForThreatDetection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Allowed FQDN with name &apos;{0}&apos; does not exist in the list of Outbound Firewall Rules (Allowed FQDNs) for Azure SQL Database server &apos;{1}&apos;..
         /// </summary>
         internal static string ServerOutboundFirewallRuleFQDNDoesNotExist {
@@ -1476,7 +1512,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Certificate with name &apos;{0}&apos; already exists on Azure Sql Managed Instance &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Certificate with name &apos;{0}&apos; already exists on managed instance &apos;{1}&apos;..
         /// </summary>
         internal static string ServerTrustCertificateAlreadyExists {
             get {
@@ -1539,7 +1575,25 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating Managed Instance Hybrid Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Updating DTC on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;..
+        /// </summary>
+        internal static string SetAzureSqlInstanceDtcDescription {
+            get {
+                return ResourceManager.GetString("SetAzureSqlInstanceDtcDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to update DTC on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
+        /// </summary>
+        internal static string SetAzureSqlInstanceDtcWarning {
+            get {
+                return ResourceManager.GetString("SetAzureSqlInstanceDtcWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating instance link named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;..
         /// </summary>
         internal static string SetAzureSqlInstanceLinkDescription {
             get {
@@ -1548,7 +1602,7 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to update Managed Instance Hybrid Link in resource group &apos;{0}&apos; under managed instance &apos;{1}&apos; with name &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Are you sure you want to update instance link named &apos;{2}&apos; on managed instance &apos;{1}&apos; located in resource group &apos;{0}&apos;?.
         /// </summary>
         internal static string SetAzureSqlInstanceLinkWarning {
             get {
@@ -1625,6 +1679,24 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         internal static string SetSecondaryNoOptionProvided {
             get {
                 return ResourceManager.GetString("SetSecondaryNoOptionProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting value &apos;{0}&apos; for the server configuration option named &apos;{1}&apos; on managed instance &apos;{2}&apos; located in resource group &apos;{3}&apos;..
+        /// </summary>
+        internal static string SetServerConfigurationOptionDescription {
+            get {
+                return ResourceManager.GetString("SetServerConfigurationOptionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to set the value &apos;{0}&apos; for the server configuration option named &apos;{1}&apos; on managed instance &apos;{2}&apos; located in resource group &apos;{3}&apos;?.
+        /// </summary>
+        internal static string SetServerConfigurationOptionWarning {
+            get {
+                return ResourceManager.GetString("SetServerConfigurationOptionWarning", resourceCulture);
             }
         }
         
@@ -1733,6 +1805,15 @@ namespace Microsoft.Azure.Commands.Sql.Properties {
         internal static string StopDatabaseActivityWarning {
             get {
                 return ResourceManager.GetString("StopDatabaseActivityWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot stop the log replay as database {0} on the instance {1} in the resource group {2} was not created with log replay service..
+        /// </summary>
+        internal static string StopLogReplayErrorDatabaseOrigin {
+            get {
+                return ResourceManager.GetString("StopLogReplayErrorDatabaseOrigin", resourceCulture);
             }
         }
         

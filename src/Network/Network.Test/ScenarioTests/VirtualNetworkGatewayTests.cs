@@ -163,5 +163,37 @@ namespace Commands.Network.Test.ScenarioTests
         {
             TestRunner.RunTestScript("Test-VirtualNetworkGatewayNatRuleCRUD");
         }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.brooklynft_subset2)]
+        public void TestVirtualNetworkGatewayPolicyGroupCRUD()
+        {
+            TestRunner.RunTestScript("Test-VirtualNetworkGatewayPolicyGroupCRUD");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.brooklynft_subset2)]
+        public void TestVirtualNetworkGatewayMultiAuth()
+        {
+            TestRunner.RunTestScript("Test-VirtualNetworkGatewayMultiAuth");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.exrdev)]
+        public void TestVirtualNetworkExpressRouteGatewayCRUDwithAdminState()
+        {
+            TestRunner.RunTestScript("Test-VirtualNetworkExpressRouteGatewayCRUDwithAdminState");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.exrdev)]
+        public void TestVirtualNetworkExpressRouteGatewayUpdatesForDifferentCustomerBlockTrafficPreferences()
+        {
+            TestRunner.RunTestScript("Test-VirtualNetworkExpressRouteGatewayForDifferentCustomerBlockTrafficPreferences");
+        }
     }
 }

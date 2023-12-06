@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Storage.dll-Help.xml
 Module Name: Az.Storage
 ms.assetid: 10D5B7E0-242B-4DC0-A527-8F6388E72E0A
-online version: https://docs.microsoft.com/powershell/module/az.storage/get-azstoragecontainerstoredaccesspolicy
+online version: https://learn.microsoft.com/powershell/module/az.storage/get-azstoragecontainerstoredaccesspolicy
 schema: 2.0.0
 ---
 
@@ -25,15 +25,15 @@ The **Get-AzStorageContainerStoredAccessPolicy** cmdlet lists the stored access 
 ## EXAMPLES
 
 ### Example 1: Get a stored access policy in a storage container
-```
-PS C:\>Get-AzStorageContainerStoredAccessPolicy -Container "Container07" -Policy "Policy22"
+```powershell
+Get-AzStorageContainerStoredAccessPolicy -Container "Container07" -Policy "Policy22"
 ```
 
 This command gets the access policy named Policy22 in the storage container named Container07.
 
 ### Example 2: Get all the stored access policies in a storage container
-```
-PS C:\>Get-AzStorageContainerStoredAccessPolicy -Container "Container07"
+```powershell
+Get-AzStorageContainerStoredAccessPolicy -Container "Container07"
 ```
 
 This command gets all access policies in the storage container named Container07.
@@ -153,7 +153,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

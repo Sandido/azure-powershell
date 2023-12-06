@@ -1,7 +1,6 @@
 pr: none
 trigger: none
-pool:
-  vmImage: 'windows-2019'
+pool: pool-windows-2019
 
 steps:
 - task: PowerShell@2
@@ -50,7 +49,7 @@ steps:
     packageType: 'runtime'
     version: '2.1.x'
 
-- task: EsrpCodeSigning@1
+- task: EsrpCodeSigning@4
   displayName: 'Signing'
   inputs:
     ConnectedServiceName: $(signServiceConnection)

@@ -1,7 +1,7 @@
 ---
 external help file: Az.Websites-help.xml
 Module Name: Az.Websites
-online version: https://docs.microsoft.com/powershell/module/az.websites/new-azstaticwebapp
+online version: https://learn.microsoft.com/powershell/module/az.websites/new-azstaticwebapp
 schema: 2.0.0
 ---
 
@@ -571,7 +571,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### Microsoft.Azure.PowerShell.Cmdlets.Websites.Models.Api20201201.IStaticSiteArmResource
 
 ## NOTES
-
-ALIASES
 
 ## RELATED LINKS

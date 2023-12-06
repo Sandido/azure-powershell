@@ -1,91 +1,111 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Relay.dll-Help.xml
+external help file:
 Module Name: Az.Relay
-online version: https://docs.microsoft.com/powershell/module/az.relay/set-azwcfrelay
+online version: https://learn.microsoft.com/powershell/module/az.relay/set-azwcfrelay
 schema: 2.0.0
 ---
 
 # Set-AzWcfRelay
 
 ## SYNOPSIS
-Updates the description of a WcfRelay in the specified Relay namespace.
+Creates or updates a WCF relay.
+This operation is idempotent.
 
 ## SYNTAX
 
-### WcfRelayInputObjectSet
+### UpdateExpanded (Default)
 ```
-Set-AzWcfRelay [-ResourceGroupName] <String> [-Namespace] <String> [-Name] <String>
- [-InputObject <PSWcfRelayAttributes>] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+Set-AzWcfRelay -Name <String> -Namespace <String> -ResourceGroupName <String> [-SubscriptionId <String>]
+ [-UserMetadata <String>] [-WcfRelayType <Relaytype>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
  [<CommonParameters>]
 ```
 
-### WcfRelayPropertiesSet
+### Update
 ```
-Set-AzWcfRelay [-ResourceGroupName] <String> [-Namespace] <String> [-Name] <String> [-UserMetadata <String>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Set-AzWcfRelay -Name <String> -Namespace <String> -ResourceGroupName <String> -InputObject <IWcfRelay>
+ [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The Set-AzWcfRelay cmdlet updates the description for the WcfRelay in the specified Relay namespace.
+Creates or updates a WCF relay.
+This operation is idempotent.
 
 ## EXAMPLES
 
-### Example 1 - InputObject
+### Example 1: Updates the description for the WcfRelay in the specified Relay namespace with InputObject
 ```powershell
-$getWcfRelay = Get-AzWcfRelay -ResourceGroupName Default-ServiceBus-WestUS -Namespace TestNameSpace-Relay1 -WcfRelay TestWCFRelay
-$getWcfRelay.UserMetadata = "usermetadata is a placeholder to store user-defined string data for the HybridConnection endpoint.e.g. it can be used to store desc
-riptive data, such as list of teams and their contact information also user-defined configuration settings can be stored."
-Set-AzWcfRelay -ResourceGroupName Default-ServiceBus-WestUS -Namespace TestNameSpace-Relay1 -Name TestWCFRelay1 -InputObject $getWcfRelay
+$wcf = Get-AzWcfRelay -ResourceGroupName Relay-ServiceBus-EastUS -Namespace namespace-pwsh01 -Name wcfRelay-01
+$wcf.UserMetadata = "User Meta Data"
+Set-AzWcfRelay -ResourceGroupName Relay-ServiceBus-EastUS -Namespace namespace-pwsh01 -Name wcfRelay-01 -InputObject $wcf | Format-List
 ```
 
 ```output
-RelayType                   : Http
-CreatedAt                   : 4/26/2017 5:14:46 PM
-UpdatedAt                   : 4/26/2017 5:16:50 PM
-ListenerCount               :
-RequiresClientAuthorization : False
-RequiresTransportSecurity   : True
-IsDynamic                   : False
-UserMetadata                : usermetadata is a placeholder to store user-defined string data for the HybridConnection endpoint.e.g. it can be used to store desc
-                              riptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.
-Id                          : /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/Default-Storage-WestUS/providers/Microsoft.Rel
-                              ay/namespaces/TestNameSpace-Relay1/WcfRelays/TestWCFRelay2
-Name                        : TestWCFRelay2
-Type                        : Microsoft.Relay/WcfRelays
+CreatedAt                    : 1/1/0001 12:00:00 AM 
+Id                           : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/Relay-ServiceBus-EastUS/providers/Microsoft.Relay/namespaces/namespace-pwsh01/wcfrelays/wcfRe 
+                               lay-01
+IsDynamic                    : False
+ListenerCount                : 0
+Location                     : eastus
+Name                         : wcfRelay-01
+RelayType                    : NetTcp
+RequiresClientAuthorization  : False
+RequiresTransportSecurity    : False
+ResourceGroupName            : Relay-ServiceBus-EastUS
+SystemDataCreatedAt          : 
+SystemDataCreatedBy          : 
+SystemDataCreatedByType      : 
+SystemDataLastModifiedAt     : 
+SystemDataLastModifiedBy     : 
+SystemDataLastModifiedByType : 
+Type                         : Microsoft.Relay/namespaces/wcfrelays
+UpdatedAt                    : 1/1/0001 12:00:00 AM
+UserMetadata                 : User Meta Data
 ```
 
-### Example 2 - Properties
+This command updates the description for the WcfRelay in the specified Relay namespace.
+
+### Example 2: Updates the description for the WcfRelay in the specified Relay namespace with Properties
 ```powershell
-Set-AzWcfRelay -ResourceGroupName Default-ServiceBus-WestUS -Namespace TestNameSpace-Relay1 -Name TestWCFRelay1 -UserMetadata "User Meta data"
+Set-AzWcfRelay -ResourceGroupName Relay-ServiceBus-EastUS -Namespace namespace-pwsh01 -Name wcfRelay-01 -UserMetadata "usermetadata is a placeholder to store user-defined string data for the HybridConnection endpoint.e.g. it can be used to store descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored." | Format-List
 ```
 
 ```output
-RelayType                   : NetTcp
-CreatedAt                   : 4/26/2017 5:20:08 PM
-UpdatedAt                   : 4/26/2017 5:26:09 PM
-ListenerCount               :
-RequiresClientAuthorization : True
-RequiresTransportSecurity   : True
-IsDynamic                   : False
-UserMetadata                : User Meta data
-Id                          : /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/Default-Storage-WestUS/providers/Microsoft.Rel
-                              ay/namespaces/TestNameSpace-Relay1/WcfRelays/TestWCFRelay
-Name                        : TestWCFRelay
-Type                        : Microsoft.Relay/WcfRelays
+CreatedAt                    : 3/30/2023 1:56:56 AM
+Id                           : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/Relay-ServiceBus-EastUS/providers/Microsoft.Relay/namespaces/namespace-pwsh01/wcfrelays/wcfRe 
+                               lay-01
+IsDynamic                    : False
+ListenerCount                : 0
+Location                     : eastus
+Name                         : wcfRelay-01
+RelayType                    : NetTcp
+RequiresClientAuthorization  : False
+RequiresTransportSecurity    : False
+ResourceGroupName            : Relay-ServiceBus-EastUS
+SystemDataCreatedAt          : 
+SystemDataCreatedBy          : 
+SystemDataCreatedByType      : 
+SystemDataLastModifiedAt     : 
+SystemDataLastModifiedBy     : 
+SystemDataLastModifiedByType : 
+Type                         : Microsoft.Relay/namespaces/wcfrelays
+UpdatedAt                    : 3/30/2023 2:53:03 AM
+UserMetadata                 : usermetadata is a placeholder to store user-defined string data for the HybridConnection endpoint.e.g. it can be used to store descriptive data, such as list    
+                               of teams and their contact information also user-defined configuration settings can be stored.
 ```
 
-Updates the specified WcfRelay with a new description in the specified namespace.
+This command updates the specified WcfRelay with a new description in the specified namespace.
 This example updates the UserMetadata property with new value.
 
 ## PARAMETERS
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
@@ -95,22 +115,23 @@ Accept wildcard characters: False
 ```
 
 ### -InputObject
-WcfRelay object.
+Description of the WCF relay resource.
+To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Relay.Models.PSWcfRelayAttributes
-Parameter Sets: WcfRelayInputObjectSet
+Type: Microsoft.Azure.PowerShell.Cmdlets.Relay.Models.Api20211101.IWcfRelay
+Parameter Sets: Update
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
 ### -Name
-WcfRelay Name.
+The relay name.
 
 ```yaml
 Type: System.String
@@ -118,14 +139,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -Namespace
-Namespace Name.
+The namespace name
 
 ```yaml
 Type: System.String
@@ -133,14 +154,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ResourceGroupName
-Resource Group Name.
+Name of the Resource group within the Azure subscription.
 
 ```yaml
 Type: System.String
@@ -148,25 +169,57 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SubscriptionId
+Subscription credentials which uniquely identify the Microsoft Azure subscription.
+The subscription ID forms part of the URI for every service call.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: (Get-AzContext).Subscription.Id
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -UserMetadata
-Gets or sets usermetadata is a placeholder to store user-defined string data for the WcfRelay endpoint.e.g.
-it can be used to store  descriptive data, such as list of teams and their contact information also user-defined configuration settings can be stored.
+The usermetadata is a placeholder to store user-defined string data for the WCF Relay endpoint.
+For example, it can be used to store descriptive data, such as list of teams and their contact information.
+Also, user-defined configuration settings can be stored.
 
 ```yaml
 Type: System.String
-Parameter Sets: WcfRelayPropertiesSet
+Parameter Sets: UpdateExpanded
 Aliases:
 
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WcfRelayType
+WCF relay type.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Relay.Support.Relaytype
+Parameter Sets: UpdateExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -202,18 +255,36 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### System.String
-
-### Microsoft.Azure.Commands.Relay.Models.PSWcfRelayAttributes
+### Microsoft.Azure.PowerShell.Cmdlets.Relay.Models.Api20211101.IWcfRelay
 
 ## OUTPUTS
 
-### Microsoft.Azure.Commands.Relay.Models.PSWcfRelayAttributes
+### Microsoft.Azure.PowerShell.Cmdlets.Relay.Models.Api20211101.IWcfRelay
 
 ## NOTES
 
+ALIASES
+
+COMPLEX PARAMETER PROPERTIES
+
+To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
+
+
+`INPUTOBJECT <IWcfRelay>`: Description of the WCF relay resource.
+  - `[RelayType <Relaytype?>]`: WCF relay type.
+  - `[RequiresClientAuthorization <Boolean?>]`: Returns true if client authorization is needed for this relay; otherwise, false.
+  - `[RequiresTransportSecurity <Boolean?>]`: Returns true if transport security is needed for this relay; otherwise, false.
+  - `[SystemDataCreatedAt <DateTime?>]`: The timestamp of resource creation (UTC).
+  - `[SystemDataCreatedBy <String>]`: The identity that created the resource.
+  - `[SystemDataCreatedByType <CreatedByType?>]`: The type of identity that created the resource.
+  - `[SystemDataLastModifiedAt <DateTime?>]`: The timestamp of resource last modification (UTC)
+  - `[SystemDataLastModifiedBy <String>]`: The identity that last modified the resource.
+  - `[SystemDataLastModifiedByType <CreatedByType?>]`: The type of identity that last modified the resource.
+  - `[UserMetadata <String>]`: The usermetadata is a placeholder to store user-defined string data for the WCF Relay endpoint. For example, it can be used to store descriptive data, such as list of teams and their contact information. Also, user-defined configuration settings can be stored.
+
 ## RELATED LINKS
+

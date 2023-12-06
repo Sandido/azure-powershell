@@ -47,16 +47,23 @@ namespace Microsoft.Azure.Commands.KeyVault.Test.ScenarioTests
 
         [Fact]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
-        public void TestCreateManagedHsmWithPublicNetworkAccess()
+        public void TestCreateAndUpdateManagedHsmWithPublicNetworkAccess()
         {
-            TestRunner.RunTestScript("Test-CreateManagedHsmWithPublicNetworkAccess");
+            TestRunner.RunTestScript("Test-CreateAndUpdateManagedHsmWithPublicNetworkAccess");
         }
 
         [Fact]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
-        public void TestUpdateManagedHsmWithPublicNetworkAccess()
+        public void TestManagedHsmWithManagedServiceIdentity()
         {
-            TestRunner.RunTestScript("Test-UpdateManagedHsmWithPublicNetworkAccess");
+            TestRunner.RunTestScript("Test-ManagedHsmWithManagedServiceIdentity");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestUndoManagedHsmRemoval()
+        {
+            TestRunner.RunTestScript("Test-UndoManagedHsmRemoval");
         }
     }
 }

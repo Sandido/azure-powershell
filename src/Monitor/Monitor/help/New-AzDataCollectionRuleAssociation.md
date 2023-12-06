@@ -1,123 +1,102 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Monitor.dll-Help.xml
+external help file: Az.DataCollectionRule.psm1-help.xml
 Module Name: Az.Monitor
-online version: https://docs.microsoft.com/powershell/module/az.monitor/new-azdatacollectionruleassociation
+online version: https://learn.microsoft.com/powershell/module/az.monitor/new-azdatacollectionruleassociation
 schema: 2.0.0
 ---
 
 # New-AzDataCollectionRuleAssociation
 
 ## SYNOPSIS
-Create data collection rule association.
+Create an association.
 
 ## SYNTAX
 
-### ByDataCollectionRuleId (Default)
+### CreateExpanded (Default)
 ```
-New-AzDataCollectionRuleAssociation
-   -TargetResourceId <string>
-   -AssociationName <string>
-   -RuleId <string>
-   [-Description <string>]
-   [-DefaultProfile <IAzureContextContainer>]
-   [-WhatIf]
-   [-Confirm]
-   [<CommonParameters>]
+New-AzDataCollectionRuleAssociation -AssociationName <String> -ResourceUri <String>
+ [-DataCollectionEndpointId <String>] [-DataCollectionRuleId <String>] [-Description <String>]
+ [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
-### ByInputObject
+### CreateViaJsonFilePath
 ```
-New-AzDataCollectionRuleAssociation
-   -TargetResourceId <string>
-   -AssociationName <string>
-   -InputObject <PSDataCollectionRuleResource>
-   [-Description <string>]
-   [-DefaultProfile <IAzureContextContainer>]
-   [-WhatIf]
-   [-Confirm]
-   [<CommonParameters>]
+New-AzDataCollectionRuleAssociation -AssociationName <String> -ResourceUri <String> -JsonFilePath <String>
+ [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
+### CreateViaJsonString
+```
+New-AzDataCollectionRuleAssociation -AssociationName <String> -ResourceUri <String> -JsonString <String>
+ [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
 
 ## DESCRIPTION
-The **New-AzDataCollectionRuleAssociation** cmdlet creates a data collection rules association (DCRA).
-
-To apply a DCR to a virtual machine, you create an association for the virtual machine. A virtual machine may have an association to multiple DCRs, and a DCR may have multiple virtual machines associated to it. This allows you to define a set of DCRs, each matching a particular requirement, and apply them to only the virtual machines where they apply. Here is the ["Configure data collection for the Azure Monitor agent"](https://docs.microsoft.com/azure/azure-monitor/platform/data-collection-rule-azure-monitor-agent) using DCRA article.
+Create an association.
 
 ## EXAMPLES
 
-### Example 1: Create data collection rule association
+### Example 1: Create data collection rule association with specified data collection rule
 ```powershell
-$dcr = Get-AzDataCollectionRule -ResourceGroupName $rg -RuleName $dcrName
-$vmId = '/subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Compute/virtualMachines/{vmName}'
-New-AzDataCollectionRuleAssociation -TargetResourceId $vmId -AssociationName "dcrAssoc" -RuleId $dcr.Id
+New-AzDataCollectionRuleAssociation -AssociationName myCollectionRule2-association1 -ResourceUri /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourcegroups/amcs-test/providers/microsoft.compute/virtualmachines/monitortestvm01 -DataCollectionRuleId /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/AMCS-TEST/providers/Microsoft.Insights/dataCollectionRules/myCollectionRule2
 ```
 
 ```output
-Description          :
-DataCollectionRuleId : /subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Insights/dataCollectionRules/{dcrName}
-ProvisioningState    :
-Etag                 : "{etag}"
-Id                   : /subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.Insights/dataCollectionRuleAssociations/dcrAssoc
-Name                 : dcrAssoc
-Type                 : Microsoft.Insights/dataCollectionRuleAssociations
+DataCollectionEndpointId        : 
+DataCollectionRuleId            : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/AMCS-TEST/providers/Microsoft.Insights/dataCollectionRules/myCollectionRule2
+Description                     : 
+Etag                            : "20017ecf-0000-0100-0000-651147350000"
+Id                              : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/amcs-test/providers/microsoft.compute/virtualmachines/monitortestvm01/providers/Microsof 
+                                  t.Insights/dataCollectionRuleAssociations/myCollectionRule2-association1
+MetadataProvisionedBy           : 
+MetadataProvisionedByResourceId : 
+Name                            : myCollectionRule2-association1
+ProvisioningState               : 
+ResourceGroupName               : amcs-test
+SystemDataCreatedAt             : 9/25/2023 8:39:15 AM
+SystemDataCreatedBy             : v-jiaji@microsoft.com
+SystemDataCreatedByType         : User
+SystemDataLastModifiedAt        : 9/25/2023 8:39:15 AM
+SystemDataLastModifiedBy        : v-jiaji@microsoft.com
+SystemDataLastModifiedByType    : User
+Type                            : Microsoft.Insights/dataCollectionRuleAssociations
 ```
 
-This command creates a data collection rule association for given rule and target resource ID.
+This command creates data collection rule association with specified data collection rule.
 
-### Example 2: Create data collection rule association from a DCR object
+### Example 2: Create data collection endpoint association with specified data collection endpoint
 ```powershell
-$dcr = Get-AzDataCollectionRule -ResourceGroupName $rg -RuleName $dcrName
-$vmId = '/subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Compute/virtualMachines/{vmName}'
-$dcr | New-AzDataCollectionRuleAssociation -TargetResourceId $vmId -AssociationName "dcrAssocInput"
+New-AzDataCollectionRuleAssociation -AssociationName configurationAccessEndpoint -ResourceUri /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourcegroups/amcs-test/providers/microsoft.compute/virtualmachines/monitortestvm01 -DataCollectionEndpointId /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/AMCS-TEST/providers/Microsoft.Insights/dataCollectionEndpoints/myCollectionEndpoint
 ```
 
 ```output
-Description          :
-DataCollectionRuleId : /subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Insights/dataCollectionRules/{dcrName}
-ProvisioningState    :
-Etag                 : "{etag}"
-Id                   : /subscriptions/{subId}/resourceGroups/{resourcegroup}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.Insights/dataCollectionRuleAssociations/dcrAssocInput
-Name                 : dcrAssocInput
-Type                 : Microsoft.Insights/dataCollectionRuleAssociations
+DataCollectionEndpointId        : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/AMCS-TEST/providers/Microsoft.Insights/dataCollectionEndpoints/myCollectionEndpoint      
+DataCollectionRuleId            : 
+Description                     : 
+Etag                            : "21017484-0000-0100-0000-6511505c0000"
+Id                              : /subscriptions/9e223dbe-3399-4e19-88eb-0975f02ac87f/resourceGroups/amcs-test/providers/microsoft.compute/virtualmachines/monitortestvm01/providers/Microsof 
+                                  t.Insights/dataCollectionRuleAssociations/configurationAccessEndpoint
+MetadataProvisionedBy           : 
+MetadataProvisionedByResourceId : 
+Name                            : configurationAccessEndpoint
+ProvisioningState               : 
+ResourceGroupName               : amcs-test
+SystemDataCreatedAt             : 9/25/2023 9:18:20 AM
+SystemDataCreatedBy             : v-jiaji@microsoft.com
+SystemDataCreatedByType         : User
+SystemDataLastModifiedAt        : 9/25/2023 9:18:20 AM
+SystemDataLastModifiedBy        : v-jiaji@microsoft.com
+SystemDataLastModifiedByType    : User
+Type                            : Microsoft.Insights/dataCollectionRuleAssociations
 ```
 
-This command creates a data collection rule association for given rule and target resource ID.
+This command creates specific data collection endpoint association with specified data collection endpoint.
 
 ## PARAMETERS
 
-### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with azure
-
-```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
-Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TargetResourceId
-The resource ID to associate
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases: ResourceUri
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -AssociationName
-The resource name
+The name of the association.
+The name is case insensitive.
 
 ```yaml
 Type: System.String
@@ -131,13 +110,74 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RuleId
-The data collection rule ID
+### -DataCollectionEndpointId
+The resource ID of the data collection endpoint that is to be associated.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByDataCollectionRuleId
-Aliases: DataCollectionRuleId
+Parameter Sets: CreateExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DataCollectionRuleId
+The resource ID of the data collection rule that is to be associated.
+
+```yaml
+Type: System.String
+Parameter Sets: CreateExpanded
+Aliases: RuleId
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DefaultProfile
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
+
+```yaml
+Type: System.Management.Automation.PSObject
+Parameter Sets: (All)
+Aliases: AzureRMContext, AzureCredential
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Description
+Description of the association.
+
+```yaml
+Type: System.String
+Parameter Sets: CreateExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonFilePath
+Path of Json file supplied to the Create operation
+
+```yaml
+Type: System.String
+Parameter Sets: CreateViaJsonFilePath
+Aliases:
 
 Required: True
 Position: Named
@@ -146,30 +186,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InputObject
-PSDataCollectionRuleResource Object
+### -JsonString
+Json string supplied to the Create operation
 
 ```yaml
 Type: System.String
-Parameter Sets: ByInputObject
+Parameter Sets: CreateViaJsonString
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: True
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Description
-The resource description
+### -ResourceUri
+The identifier of the resource.
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
-Aliases:
+Aliases: TargetResourceId
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -186,13 +226,14 @@ Aliases: cf
 
 Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -WhatIf
-Shows what would happen if the cmdlet runs. The cmdlet is not run.
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -201,7 +242,7 @@ Aliases: wi
 
 Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -211,15 +252,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
-
 ## OUTPUTS
 
-### Microsoft.Azure.Commands.Insights.OutputClasses.PSDataCollectionRuleAssociationProxyOnlyResource
+### Microsoft.Azure.PowerShell.Cmdlets.Monitor.DataCollection.Models.IDataCollectionRuleAssociationProxyOnlyResource
 
 ## NOTES
 
 ## RELATED LINKS
-
-[Remove-AzDataCollectionRuleAssociation](./Remove-AzDataCollectionRuleAssociation.md)
-[Get-AzDataCollectionRuleAssociation](./Get-AzDataCollectionRuleAssociation.md)

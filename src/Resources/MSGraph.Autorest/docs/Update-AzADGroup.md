@@ -1,7 +1,7 @@
 ---
 external help file:
 Module Name: Az.Resources
-online version: https://docs.microsoft.com/powershell/module/az.resources/update-azadgroup
+online version: https://learn.microsoft.com/powershell/module/az.resources/update-azadgroup
 schema: 2.0.0
 ---
 
@@ -31,8 +31,7 @@ Update entity in groups
 
 ### Example 1: Update description for group
 ```powershell
-PS C:\> Update-AzADGroup -ObjectId $objectid -Description $description
-
+Update-AzADGroup -ObjectId $objectid -Description $description
 ```
 
 Update description for group.

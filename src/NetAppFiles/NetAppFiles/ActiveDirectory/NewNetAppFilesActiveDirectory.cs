@@ -85,7 +85,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.BackupPolicy
 
         [Parameter(
             Mandatory = false,
-            HelpMessage = "Username of Active Directory domain administrator")]
+            HelpMessage = "A domain user account with permission to create machine accounts")]
         [ValidateNotNullOrEmpty]
         public string Username { get; set; }
 
@@ -168,6 +168,18 @@ namespace Microsoft.Azure.Commands.NetAppFiles.BackupPolicy
         public SwitchParameter EncryptDCConnection { get; set; }
 
         [Parameter(
+            Mandatory = false,
+            HelpMessage = "LDAP Search scope options.")]
+        [ValidateNotNullOrEmpty]
+        public PSNetAppFilesLdapSearchScopeOpt LdapSearchScope { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Comma separated list of IPv4 addresses of preferred servers for LDAP client. At most two comma separated IPv4 addresses can be passed.")]
+        [ValidateNotNullOrEmpty]
+        public string[] PreferredServersForLdapClient { get; set; }
+
+        [Parameter(
             ParameterSetName = ParentObjectParameterSet,
             Mandatory = true,
             ValueFromPipeline = true,
@@ -204,14 +216,16 @@ namespace Microsoft.Azure.Commands.NetAppFiles.BackupPolicy
                     OrganizationalUnit = OrganizationalUnit,
                     BackupOperators = BackupOperator,
                     KdcIP = KdcIP,
-                    ServerRootCACertificate = ServerRootCACertificate,
+                    ServerRootCaCertificate = ServerRootCACertificate,
                     SecurityOperators = SecurityOperator,
                     AesEncryption = AesEncryption,
                     LdapSigning = LdapSigning,
-                    LdapOverTLS = LdapOverTLS,
+                    LdapOverTls = LdapOverTLS,
                     AllowLocalNfsUsersWithLdap = AllowLocalNfsUsersWithLdap,
                     Administrators = Administrator,
-                    EncryptDCConnections = EncryptDCConnection
+                    EncryptDcConnections = EncryptDCConnection,
+                    LdapSearchScope = LdapSearchScope?.ConvertFromPs(),
+                    PreferredServersForLdapClient = PreferredServersForLdapClient is null ? null : string.Join(",", PreferredServersForLdapClient),
                 };
                 if (anfAccount.ActiveDirectories == null)
                 {
@@ -222,7 +236,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.BackupPolicy
                 {                        
                     ActiveDirectories = anfAccount.ActiveDirectories                        
                 };
-                var updatedAnfAccount = AzureNetAppFilesManagementClient.Accounts.Update(netAppAccountBody, ResourceGroupName, AccountName);
+                var updatedAnfAccount = AzureNetAppFilesManagementClient.Accounts.Update(ResourceGroupName, AccountName, netAppAccountBody);
                 var updatedActiveDirectory = updatedAnfAccount.ActiveDirectories.FirstOrDefault<Management.NetApp.Models.ActiveDirectory>(e => e.SmbServerName == SmbServerName);
                 WriteObject(updatedActiveDirectory.ConvertToPs(ResourceGroupName, AccountName));                
             }

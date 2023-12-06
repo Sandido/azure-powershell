@@ -19,6 +19,22 @@
 -->
 
 ## Upcoming Release
+
+## Version 1.5.1
+* Fixed bug for `Set-AzSecurityPricing`
+
+## Version 1.5.0
+* Fixed some minor issues
+* Updated Pricing cmdlets to support extensions
+    `Get-AzSecurityPricing`
+    `Set-AzSecurityPricing`
+
+## Version 1.4.0
+* Updated Alerts cmdlets:
+    `Get-AzSecurityAlert`
+    `Set-AzSecurityAlert`
+* Moving Security Contacts to be based on the latest API version '2020-01-01-preview' with backward compatibility support
+## Version 1.3.0
 * Added new cmdlet: `Get-AzSecuritySolution`
 * Added Alerts Suppression Rules to cmdlets:
     `Get-AlertsSuppressionRule`

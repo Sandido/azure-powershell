@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Sql.dll-Help.xml
 Module Name: Az.Sql
-online version: https://docs.microsoft.com/powershell/module/az.sql/get-azsqlinstancedatabase
+online version: https://learn.microsoft.com/powershell/module/az.sql/get-azsqlinstancedatabase
 schema: 2.0.0
 ---
 
@@ -31,7 +31,7 @@ Get-AzSqlInstanceDatabase [[-Name] <String>] [-InstanceObject] <AzureSqlManagedI
 ```
 
 ## DESCRIPTION
-The **Get-AzSqlInstanceDatabase** cmdlet gets one or more Azure SQL databases from an Azure SQL Database Managed Instance.
+The **Get-AzSqlInstanceDatabase** cmdlet gets one or more Azure SQL databases from an Azure SQL Managed Instance.
 
 ## EXAMPLES
 

@@ -1,14 +1,14 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Sql.dll-Help.xml
 Module Name: Az.Sql
-online version: https://docs.microsoft.com/powershell/module/az.sql/new-azsqlinstance
+online version: https://learn.microsoft.com/powershell/module/az.sql/new-azsqlinstance
 schema: 2.0.0
 ---
 
 # New-AzSqlInstance
 
 ## SYNOPSIS
-Creates an Azure SQL Database Managed Instance.
+Creates an Azure SQL Managed Instance.
 
 ## SYNTAX
 
@@ -68,7 +68,7 @@ New-AzSqlInstance [-Name] <String> [-ResourceGroupName] <String> [-Administrator
 ```
 
 ## DESCRIPTION
-The **New-AzSqlInstance** cmdlet creates an Azure SQL Database Managed instance.
+The **New-AzSqlInstance** cmdlet creates an Azure SQL Managed instance.
 
 ## EXAMPLES
 
@@ -153,7 +153,7 @@ This command creates a new instance in an instance pool using an instance pool o
 
 ### Example 4: Create a new instance in an instance pool using an instance pool resource identifier
 ```powershell
-$instancePool | New-AzSqlInstance -Name managedInstance2 -AdministratorCredential (Get-Credential) -LicenseType LicenseIncluded -StorageSizeInGB 1024 -VCore 2 -InstancePoolResourceId "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/resourcegroup01/providers/Microsoft.Sql/instancePools/instancePool0"
+New-AzSqlInstance -Name managedInstance2 -AdministratorCredential (Get-Credential) -StorageSizeInGB 1024 -VCore 2 -InstancePoolResourceId "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/resourcegroup01/providers/Microsoft.Sql/instancePools/instancePool0"
 ```
 
 ```output
@@ -238,7 +238,8 @@ MaintenanceConfigurationId			: /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx
 
 This command creates a new instance with maintenance configuration MI_2
 
-### Example 7: Create a new instance with External(Azure Active Directory) Administrator, Azure Active Directory Only Authentication and no SqlAdministratorCredentials
+### Example 7: Create a new instance with External (Microsoft Entra ID) Administrator, Microsoft Entra-only Authentication and no SqlAdministratorCredentials
+<!-- Skip: Output cannot be splitted from code -->
 ```powershell
 New-AzSqlInstance -Name managedInstance2 -ResourceGroupName ResourceGroup01 -ExternalAdminName DummyLogin -EnableActiveDirectoryOnlyAuthentication -Location westcentralus -SubnetId "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/resourcegroup01/providers/Microsoft.Network/virtualNetworks/vnet_name/subnets/subnet_name" -LicenseType LicenseIncluded -StorageSizeInGB 1024 -VCore 16 -Edition "GeneralPurpose" -ComputeGeneration Gen4
 
@@ -315,7 +316,7 @@ InstancePoolName         :
 ZoneRedundant            : true
 ```
 
-This command creates a new instance with external administrator properties and azure active directory only authentication enabled.
+This command creates a new instance with external administrator properties and Microsoft Entra-only authentication enabled.
 
 ### Example 9: Create a new instance with TDE CMK
 ```powershell
@@ -378,7 +379,7 @@ Accept wildcard characters: False
 ```
 
 ### -AssignIdentity
-Generate and assign an Azure Active Directory Identity for this Managed instance for use with key management services like Azure KeyVault.
+Generate and assign a Microsoft Entra identity for this Managed instance for use with key management services like Azure KeyVault.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -499,7 +500,7 @@ Accept wildcard characters: False
 ```
 
 ### -ExternalAdminName
-Specifies the display name of the user, group or application which is the Azure Active Directory administrator for the server. This display name must exist in the active directory associated with the current subscription.
+Specifies the display name of the user, group or application which is the Microsoft Entra administrator for the server. This display name must exist in the active directory associated with the current subscription.
 
 ```yaml
 Type: System.String
@@ -514,7 +515,7 @@ Accept wildcard characters: False
 ```
 
 ### -ExternalAdminSID
-Specifies the object ID of the user, group or application which is the Azure Active Directory administrator.
+Specifies the object ID of the user, group or application which is the Microsoft Entra administrator.
 
 ```yaml
 Type: System.Nullable`1[System.Guid]

@@ -1,101 +1,96 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Peering.dll-Help.xml
+external help file:
 Module Name: Az.Peering
-online version: https://docs.microsoft.com/powershell/module/az.peering/get-azpeeringservice
+online version: https://learn.microsoft.com/powershell/module/az.peering/get-azpeeringservice
 schema: 2.0.0
 ---
 
 # Get-AzPeeringService
 
 ## SYNOPSIS
-Get a list of peering service objects of a single object.
+Gets an existing peering service with the specified name under the given subscription and resource group.
 
 ## SYNTAX
 
-### ByResourceGroupName (Default)
+### List1 (Default)
 ```
-Get-AzPeeringService [[-ResourceGroupName] <String>] [-DefaultProfile <IAzureContextContainer>]
- [<CommonParameters>]
-```
-
-### ByResourceGroupAndName
-```
-Get-AzPeeringService [-ResourceGroupName] <String> -Name <String> [-DefaultProfile <IAzureContextContainer>]
- [<CommonParameters>]
+Get-AzPeeringService [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
-### ByResourceId
+### Get
 ```
-Get-AzPeeringService [-ResourceId] <String> [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+Get-AzPeeringService -Name <String> -ResourceGroupName <String> [-SubscriptionId <String[]>]
+ [-DefaultProfile <PSObject>] [<CommonParameters>]
+```
+
+### GetViaIdentity
+```
+Get-AzPeeringService -InputObject <IPeeringIdentity> [-DefaultProfile <PSObject>] [<CommonParameters>]
+```
+
+### List
+```
+Get-AzPeeringService -ResourceGroupName <String> [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets peering services for a subscription
+Gets an existing peering service with the specified name under the given subscription and resource group.
 
 ## EXAMPLES
 
-### Example 1
+### Example 1: List all peering services under subscription
 ```powershell
-Get-AzPeeringService -ResourceGroupName $rgName
+Get-AzPeeringService
 ```
 
 ```output
-PeeringServiceLocation : Washington
-PeeringServiceProvider : TestPeer1
-ProvisioningState      : Succeeded
-Location               : centralus
-Tags                   : {}
-Name                   : myPeeringService312
-Id                     : /subscriptions/resourceGroups/Building40/providers/Microsoft.Peering/peeringServices/myPeeringService312
-Type                   : Microsoft.Peering/peeringServices
-
-PeeringServiceLocation : Washington
-PeeringServiceProvider : TestPeer1
-ProvisioningState      : Succeeded
-Location               : centralus
-Tags                   : {}
-Name                   : myPeeringService3990
-Id                     : /subscriptions/resourceGroups/Building40/providers/Microsoft.Peering/peeringServices/myPeeringService3990
-Type                   : Microsoft.Peering/peeringServices
+Name                               ResourceGroupName PeeringServiceLocation Provider      ProvisioningState Location
+----                               ----------------- ---------------------- --------      ----------------- --------
+TestPrefixForAtlanta               DemoRG            Georgia                MicrosoftEdge Succeeded         East US 2
+TestExtension                      DemoRG            Virginia               MicrosoftEdge Succeeded         East US
+TestExtension2                     DemoRG            Virginia               MicrosoftEdge Succeeded         East US
+DemoPeeringServiceInterCloudLondon DemoRG            London                 InterCloud    Succeeded         UK South
+DRTestInterCloud                   DemoRG            Ile-de-France          InterCloud    Succeeded         UK South
+Gaurav Thareja                     DemoRG            Ile-de-France          InterCloud    Succeeded         UK South
+TestDRInterCloudZurich             DemoRG            Zurich                 InterCloud    Succeeded         France Central
+DRTest                             DemoRG            Ile-de-France          InterCloud    Succeeded         France Central
 ```
 
-Gets a peering service for a resource group
+Lists all peering services under default subscription
 
-### Example 2
+### Example 2: List all peering services under a specific resource group
 ```powershell
-Get-AzPeeringService -ResourceGroupName $rgName -Name $name
+Get-AzPeeringService -ResourceGroupName DemoRG
 ```
 
 ```output
-PeeringServiceLocation : Washington
-PeeringServiceProvider : TestPeer1
-ProvisioningState      : Succeeded
-Location               : centralus
-Tags                   : {}
-Name                   : myPeeringService312
-Id                     : /subscriptions/resourceGroups/Building40/providers/Microsoft.Peering/peeringServices/myPeeringService312
-Type                   : Microsoft.Peering/peeringServices
+Name                               ResourceGroupName PeeringServiceLocation Provider      ProvisioningState Location
+----                               ----------------- ---------------------- --------      ----------------- --------
+TestPrefixForAtlanta               DemoRG            Georgia                MicrosoftEdge Succeeded         East US 2
+TestExtension                      DemoRG            Virginia               MicrosoftEdge Succeeded         East US
+TestExtension2                     DemoRG            Virginia               MicrosoftEdge Succeeded         East US
+DemoPeeringServiceInterCloudLondon DemoRG            London                 InterCloud    Succeeded         UK South
+DRTestInterCloud                   DemoRG            Ile-de-France          InterCloud    Succeeded         UK South
+Gaurav Thareja                     DemoRG            Ile-de-France          InterCloud    Succeeded         UK South
+TestDRInterCloudZurich             DemoRG            Zurich                 InterCloud    Succeeded         France Central
+DRTest                             DemoRG            Ile-de-France          InterCloud    Succeeded         France Central
 ```
 
-Gets a peering service for a resource group and name
+Lists all the peering services under a resource group
 
-### Example 3
+### Example 3: List all peering services under a specific resource group
 ```powershell
-Get-AzPeeringService -ResourceId $rid
+Get-AzPeeringService -ResourceGroupName DemoRG -Name TestExtension
 ```
 
 ```output
-PeeringServiceLocation : Washington
-PeeringServiceProvider : TestPeer1
-ProvisioningState      : Succeeded
-Location               : centralus
-Tags                   : {}
-Name                   : myPeeringService312
-Id                     : /subscriptions/resourceGroups/Building40/providers/Microsoft.Peering/peeringServices/myPeeringService312
-Type                   : Microsoft.Peering/peeringServices
+Name                               ResourceGroupName PeeringServiceLocation Provider      ProvisioningState Location
+----                               ----------------- ---------------------- --------      ----------------- --------
+TestExtension                      DemoRG            Virginia               MicrosoftEdge Succeeded         East US
 ```
 
-Gets a peering service by resource id
+Gets a peering service with matching name and resource group
 
 ## PARAMETERS
 
@@ -103,9 +98,9 @@ Gets a peering service by resource id
 The credentials, account, tenant, and subscription used for communication with Azure.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
@@ -114,13 +109,29 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -InputObject
+Identity Parameter
+To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
+Parameter Sets: GetViaIdentity
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -Name
-The unique name of the PSPeering.
+The name of the peering.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByResourceGroupAndName
-Aliases:
+Parameter Sets: Get
+Aliases: PeeringServiceName
 
 Required: True
 Position: Named
@@ -130,44 +141,32 @@ Accept wildcard characters: False
 ```
 
 ### -ResourceGroupName
-The create or use an existing resource group name.
+The name of the resource group.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByResourceGroupName
+Parameter Sets: Get, List
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SubscriptionId
+The Azure subscription ID.
+
+```yaml
+Type: System.String[]
+Parameter Sets: Get, List, List1
 Aliases:
 
 Required: False
-Position: 0
-Default value: None
+Position: Named
+Default value: (Get-AzContext).Subscription.Id
 Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: System.String
-Parameter Sets: ByResourceGroupAndName
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ResourceId
-The resource id string name.
-
-```yaml
-Type: System.String
-Parameter Sets: ByResourceId
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -176,12 +175,32 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeeringService
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.Api20221001.IPeeringService
 
 ## NOTES
 
+ALIASES
+
+COMPLEX PARAMETER PROPERTIES
+
+To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
+
+
+`INPUTOBJECT <IPeeringIdentity>`: Identity Parameter
+  - `[ConnectionMonitorTestName <String>]`: The name of the connection monitor test
+  - `[Id <String>]`: Resource identity path
+  - `[PeerAsnName <String>]`: The peer ASN name.
+  - `[PeeringName <String>]`: The name of the peering.
+  - `[PeeringServiceName <String>]`: The name of the peering service.
+  - `[PrefixName <String>]`: The name of the prefix.
+  - `[RegisteredAsnName <String>]`: The name of the registered ASN.
+  - `[RegisteredPrefixName <String>]`: The name of the registered prefix.
+  - `[ResourceGroupName <String>]`: The name of the resource group.
+  - `[SubscriptionId <String>]`: The Azure subscription ID.
+
 ## RELATED LINKS
+

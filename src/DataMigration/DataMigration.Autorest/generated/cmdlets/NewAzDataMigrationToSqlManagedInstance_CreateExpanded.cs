@@ -17,6 +17,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
     [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi))]
     [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Description(@"Create a new database migration to a given SQL Managed Instance.")]
     [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Generated]
+    [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.HttpPath(Path = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Sql/managedInstances/{managedInstanceName}/providers/Microsoft.DataMigration/databaseMigrations/{targetDbName}", ApiVersion = "2022-03-30-preview")]
     public partial class NewAzDataMigrationToSqlManagedInstance_CreateExpanded : global::System.Management.Automation.PSCmdlet,
         Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener
     {
@@ -34,6 +35,9 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         /// </summary>
         private global::System.Threading.CancellationTokenSource _cancellationTokenSource = new global::System.Threading.CancellationTokenSource();
 
+        /// <summary>Database Migration Resource for SQL Managed Instance.</summary>
+        private Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi _parametersBody = new Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.DatabaseMigrationSqlMi();
+
         /// <summary>when specified, runs this cmdlet as a PowerShell job</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Run the command as a job")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Category(global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.ParameterCategory.Runtime)]
@@ -48,7 +52,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Storage Account Key.",
         SerializedName = @"accountKey",
         PossibleTypes = new [] { typeof(string) })]
-        public string AzureBlobAccountKey { get => ParametersBody.AzureBlobAccountKey ?? null; set => ParametersBody.AzureBlobAccountKey = value; }
+        public string AzureBlobAccountKey { get => _parametersBody.AzureBlobAccountKey ?? null; set => _parametersBody.AzureBlobAccountKey = value; }
 
         /// <summary>Blob container name where backups are stored.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Blob container name where backups are stored.")]
@@ -59,7 +63,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Blob container name where backups are stored.",
         SerializedName = @"blobContainerName",
         PossibleTypes = new [] { typeof(string) })]
-        public string AzureBlobContainerName { get => ParametersBody.AzureBlobContainerName ?? null; set => ParametersBody.AzureBlobContainerName = value; }
+        public string AzureBlobContainerName { get => _parametersBody.AzureBlobContainerName ?? null; set => _parametersBody.AzureBlobContainerName = value; }
 
         /// <summary>Resource Id of the storage account where backups are stored.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Resource Id of the storage account where backups are stored.")]
@@ -70,7 +74,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Resource Id of the storage account where backups are stored.",
         SerializedName = @"storageAccountResourceId",
         PossibleTypes = new [] { typeof(string) })]
-        public string AzureBlobStorageAccountResourceId { get => ParametersBody.AzureBlobStorageAccountResourceId ?? null; set => ParametersBody.AzureBlobStorageAccountResourceId = value; }
+        public string AzureBlobStorageAccountResourceId { get => _parametersBody.AzureBlobStorageAccountResourceId ?? null; set => _parametersBody.AzureBlobStorageAccountResourceId = value; }
 
         /// <summary>Wait for .NET debugger to attach</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "Wait for .NET debugger to attach")]
@@ -81,9 +85,10 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         public Microsoft.Azure.PowerShell.Cmdlets.DataMigration.DataMigration Client => Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Module.Instance.ClientAPI;
 
         /// <summary>
-        /// The credentials, account, tenant, and subscription used for communication with Azure
+        /// The DefaultProfile parameter is not functional. Use the SubscriptionId parameter when available if executing the cmdlet
+        /// against a different subscription
         /// </summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The credentials, account, tenant, and subscription used for communication with Azure.")]
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The DefaultProfile parameter is not functional. Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.")]
         [global::System.Management.Automation.ValidateNotNull]
         [global::System.Management.Automation.Alias("AzureRMContext", "AzureCredential")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Category(global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.ParameterCategory.Azure)]
@@ -98,7 +103,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Password for username to access file share location.",
         SerializedName = @"password",
         PossibleTypes = new [] { typeof(System.Security.SecureString) })]
-        public System.Security.SecureString FileSharePassword { get => ParametersBody.FileSharePassword ?? null; set => ParametersBody.FileSharePassword = value; }
+        public System.Security.SecureString FileSharePassword { get => _parametersBody.FileSharePassword ?? null; set => _parametersBody.FileSharePassword = value; }
 
         /// <summary>Location as SMB share or local drive where backups are placed.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Location as SMB share or local drive where backups are placed.")]
@@ -109,7 +114,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Location as SMB share or local drive where backups are placed.",
         SerializedName = @"path",
         PossibleTypes = new [] { typeof(string) })]
-        public string FileSharePath { get => ParametersBody.FileSharePath ?? null; set => ParametersBody.FileSharePath = value; }
+        public string FileSharePath { get => _parametersBody.FileSharePath ?? null; set => _parametersBody.FileSharePath = value; }
 
         /// <summary>Username to access the file share location for backups.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Username to access the file share location for backups.")]
@@ -120,7 +125,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Username to access the file share location for backups.",
         SerializedName = @"username",
         PossibleTypes = new [] { typeof(string) })]
-        public string FileShareUsername { get => ParametersBody.FileShareUsername ?? null; set => ParametersBody.FileShareUsername = value; }
+        public string FileShareUsername { get => _parametersBody.FileShareUsername ?? null; set => _parametersBody.FileShareUsername = value; }
 
         /// <summary>SendAsync Pipeline Steps to be appended to the front of the pipeline</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "SendAsync Pipeline Steps to be appended to the front of the pipeline")]
@@ -147,7 +152,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         SerializedName = @"kind",
         PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType) })]
         [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType))]
-        public Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType Kind { get => ParametersBody.Kind ?? ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType)""); set => ParametersBody.Kind = value; }
+        public Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType Kind { get => _parametersBody.Kind ?? ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Support.ResourceType)""); set => _parametersBody.Kind = value; }
 
         /// <summary>Backing field for <see cref="ManagedInstanceName" /> property.</summary>
         private string _managedInstanceName;
@@ -163,11 +168,11 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         public string ManagedInstanceName { get => this._managedInstanceName; set => this._managedInstanceName = value; }
 
         /// <summary>
-        /// <see cref="IEventListener" /> cancellation delegate. Stops the cmdlet when called.
+        /// <see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener" /> cancellation delegate. Stops the cmdlet when called.
         /// </summary>
         global::System.Action Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener.Cancel => _cancellationTokenSource.Cancel;
 
-        /// <summary><see cref="IEventListener" /> cancellation token.</summary>
+        /// <summary><see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener" /> cancellation token.</summary>
         global::System.Threading.CancellationToken Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener.Token => _cancellationTokenSource.Token;
 
         /// <summary>ID tracking current migration operation.</summary>
@@ -180,7 +185,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         SerializedName = @"migrationOperationId",
         PossibleTypes = new [] { typeof(string) })]
         [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.DoNotExport]
-        public string MigrationOperationId { get => ParametersBody.MigrationOperationId ?? null; set => ParametersBody.MigrationOperationId = value; }
+        public string MigrationOperationId { get => _parametersBody.MigrationOperationId ?? null; set => _parametersBody.MigrationOperationId = value; }
 
         /// <summary>Resource Id of the Migration Service.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Resource Id of the Migration Service.")]
@@ -191,7 +196,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Resource Id of the Migration Service.",
         SerializedName = @"migrationService",
         PossibleTypes = new [] { typeof(string) })]
-        public string MigrationService { get => ParametersBody.MigrationService ?? null; set => ParametersBody.MigrationService = value; }
+        public string MigrationService { get => _parametersBody.MigrationService ?? null; set => _parametersBody.MigrationService = value; }
 
         /// <summary>
         /// when specified, will make the remote call, and return an AsyncOperationResponse, letting the remote operation continue
@@ -210,7 +215,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Offline migration",
         SerializedName = @"offline",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter Offline { get => ParametersBody.OfflineConfigurationOffline ?? default(global::System.Management.Automation.SwitchParameter); set => ParametersBody.OfflineConfigurationOffline = value; }
+        public global::System.Management.Automation.SwitchParameter Offline { get => _parametersBody.OfflineConfigurationOffline ?? default(global::System.Management.Automation.SwitchParameter); set => _parametersBody.OfflineConfigurationOffline = value; }
 
         /// <summary>
         /// Last backup name for offline migration. This is optional for migrations from file share. If it is not provided, then the
@@ -224,13 +229,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Last backup name for offline migration. This is optional for migrations from file share. If it is not provided, then the service will determine the last backup file name based on latest backup files present in file share.",
         SerializedName = @"lastBackupName",
         PossibleTypes = new [] { typeof(string) })]
-        public string OfflineConfigurationLastBackupName { get => ParametersBody.OfflineConfigurationLastBackupName ?? null; set => ParametersBody.OfflineConfigurationLastBackupName = value; }
-
-        /// <summary>Backing field for <see cref="ParametersBody" /> property.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi _parametersBody= new Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.DatabaseMigrationSqlMi();
-
-        /// <summary>Database Migration Resource for SQL Managed Instance.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi ParametersBody { get => this._parametersBody; set => this._parametersBody = value; }
+        public string OfflineConfigurationLastBackupName { get => _parametersBody.OfflineConfigurationLastBackupName ?? null; set => _parametersBody.OfflineConfigurationLastBackupName = value; }
 
         /// <summary>
         /// When specified, forces the cmdlet return a 'bool' given that there isn't a return type by default.
@@ -254,7 +253,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         SerializedName = @"provisioningError",
         PossibleTypes = new [] { typeof(string) })]
         [global::Microsoft.Azure.PowerShell.Cmdlets.DataMigration.DoNotExport]
-        public string ProvisioningError { get => ParametersBody.ProvisioningError ?? null; set => ParametersBody.ProvisioningError = value; }
+        public string ProvisioningError { get => _parametersBody.ProvisioningError ?? null; set => _parametersBody.ProvisioningError = value; }
 
         /// <summary>The URI for the proxy server to use</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "The URI for the proxy server to use")]
@@ -298,7 +297,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Resource Id of the target resource (SQL VM or SQL Managed Instance)",
         SerializedName = @"scope",
         PossibleTypes = new [] { typeof(string) })]
-        public string Scope { get => ParametersBody.Scope ?? null; set => ParametersBody.Scope = value; }
+        public string Scope { get => _parametersBody.Scope ?? null; set => _parametersBody.Scope = value; }
 
         /// <summary>Name of the source database.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Name of the source database.")]
@@ -309,7 +308,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Name of the source database.",
         SerializedName = @"sourceDatabaseName",
         PossibleTypes = new [] { typeof(string) })]
-        public string SourceDatabaseName { get => ParametersBody.SourceDatabaseName ?? null; set => ParametersBody.SourceDatabaseName = value; }
+        public string SourceDatabaseName { get => _parametersBody.SourceDatabaseName ?? null; set => _parametersBody.SourceDatabaseName = value; }
 
         /// <summary>Authentication type.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Authentication type.")]
@@ -320,7 +319,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Authentication type.",
         SerializedName = @"authentication",
         PossibleTypes = new [] { typeof(string) })]
-        public string SourceSqlConnectionAuthentication { get => ParametersBody.SourceSqlConnectionAuthentication ?? null; set => ParametersBody.SourceSqlConnectionAuthentication = value; }
+        public string SourceSqlConnectionAuthentication { get => _parametersBody.SourceSqlConnectionAuthentication ?? null; set => _parametersBody.SourceSqlConnectionAuthentication = value; }
 
         /// <summary>Data source.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Data source.")]
@@ -331,7 +330,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Data source.",
         SerializedName = @"dataSource",
         PossibleTypes = new [] { typeof(string) })]
-        public string SourceSqlConnectionDataSource { get => ParametersBody.SourceSqlConnectionDataSource ?? null; set => ParametersBody.SourceSqlConnectionDataSource = value; }
+        public string SourceSqlConnectionDataSource { get => _parametersBody.SourceSqlConnectionDataSource ?? null; set => _parametersBody.SourceSqlConnectionDataSource = value; }
 
         /// <summary>Whether to encrypt connection or not.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Whether to encrypt connection or not.")]
@@ -342,7 +341,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Whether to encrypt connection or not.",
         SerializedName = @"encryptConnection",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter SourceSqlConnectionEncryptConnection { get => ParametersBody.SourceSqlConnectionEncryptConnection ?? default(global::System.Management.Automation.SwitchParameter); set => ParametersBody.SourceSqlConnectionEncryptConnection = value; }
+        public global::System.Management.Automation.SwitchParameter SourceSqlConnectionEncryptConnection { get => _parametersBody.SourceSqlConnectionEncryptConnection ?? default(global::System.Management.Automation.SwitchParameter); set => _parametersBody.SourceSqlConnectionEncryptConnection = value; }
 
         /// <summary>Password to connect to source SQL.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Password to connect to source SQL.")]
@@ -353,7 +352,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Password to connect to source SQL.",
         SerializedName = @"password",
         PossibleTypes = new [] { typeof(System.Security.SecureString) })]
-        public System.Security.SecureString SourceSqlConnectionPassword { get => ParametersBody.SourceSqlConnectionPassword ?? null; set => ParametersBody.SourceSqlConnectionPassword = value; }
+        public System.Security.SecureString SourceSqlConnectionPassword { get => _parametersBody.SourceSqlConnectionPassword ?? null; set => _parametersBody.SourceSqlConnectionPassword = value; }
 
         /// <summary>Whether to trust server certificate or not.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Whether to trust server certificate or not.")]
@@ -364,7 +363,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Whether to trust server certificate or not.",
         SerializedName = @"trustServerCertificate",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter SourceSqlConnectionTrustServerCertificate { get => ParametersBody.SourceSqlConnectionTrustServerCertificate ?? default(global::System.Management.Automation.SwitchParameter); set => ParametersBody.SourceSqlConnectionTrustServerCertificate = value; }
+        public global::System.Management.Automation.SwitchParameter SourceSqlConnectionTrustServerCertificate { get => _parametersBody.SourceSqlConnectionTrustServerCertificate ?? default(global::System.Management.Automation.SwitchParameter); set => _parametersBody.SourceSqlConnectionTrustServerCertificate = value; }
 
         /// <summary>User name to connect to source SQL.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "User name to connect to source SQL.")]
@@ -375,7 +374,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"User name to connect to source SQL.",
         SerializedName = @"userName",
         PossibleTypes = new [] { typeof(string) })]
-        public string SourceSqlConnectionUserName { get => ParametersBody.SourceSqlConnectionUserName ?? null; set => ParametersBody.SourceSqlConnectionUserName = value; }
+        public string SourceSqlConnectionUserName { get => _parametersBody.SourceSqlConnectionUserName ?? null; set => _parametersBody.SourceSqlConnectionUserName = value; }
 
         /// <summary>Storage Account Key.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Storage Account Key.")]
@@ -386,7 +385,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Storage Account Key.",
         SerializedName = @"accountKey",
         PossibleTypes = new [] { typeof(string) })]
-        public string StorageAccountKey { get => ParametersBody.TargetLocationAccountKey ?? null; set => ParametersBody.TargetLocationAccountKey = value; }
+        public string StorageAccountKey { get => _parametersBody.TargetLocationAccountKey ?? null; set => _parametersBody.TargetLocationAccountKey = value; }
 
         /// <summary>Resource Id of the storage account copying backups.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Resource Id of the storage account copying backups.")]
@@ -397,7 +396,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Resource Id of the storage account copying backups.",
         SerializedName = @"storageAccountResourceId",
         PossibleTypes = new [] { typeof(string) })]
-        public string StorageAccountResourceId { get => ParametersBody.TargetLocationStorageAccountResourceId ?? null; set => ParametersBody.TargetLocationStorageAccountResourceId = value; }
+        public string StorageAccountResourceId { get => _parametersBody.TargetLocationStorageAccountResourceId ?? null; set => _parametersBody.TargetLocationStorageAccountResourceId = value; }
 
         /// <summary>Backing field for <see cref="SubscriptionId" /> property.</summary>
         private string _subscriptionId;
@@ -426,7 +425,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         Description = @"Database collation to be used for the target database.",
         SerializedName = @"targetDatabaseCollation",
         PossibleTypes = new [] { typeof(string) })]
-        public string TargetDatabaseCollation { get => ParametersBody.TargetDatabaseCollation ?? null; set => ParametersBody.TargetDatabaseCollation = value; }
+        public string TargetDatabaseCollation { get => _parametersBody.TargetDatabaseCollation ?? null; set => _parametersBody.TargetDatabaseCollation = value; }
 
         /// <summary>Backing field for <see cref="TargetDbName" /> property.</summary>
         private string _targetDbName;
@@ -457,8 +456,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
         /// on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi">Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi</see>
+        /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onOk method should be processed, or if the method should return
         /// immediately (set to true to skip further processing )</param>
 
@@ -499,7 +498,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
             clone.ProxyUseDefaultCredentials = this.ProxyUseDefaultCredentials;
             clone.HttpPipelinePrepend = this.HttpPipelinePrepend;
             clone.HttpPipelineAppend = this.HttpPipelineAppend;
-            clone.ParametersBody = this.ParametersBody;
+            clone._parametersBody = this._parametersBody;
             clone.ResourceGroupName = this.ResourceGroupName;
             clone.ManagedInstanceName = this.ManagedInstanceName;
             clone.TargetDbName = this.TargetDbName;
@@ -665,12 +664,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
                 try
                 {
                     await ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.Events.CmdletBeforeAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                    await this.Client.DatabaseMigrationsSqlMiCreateOrUpdate(ResourceGroupName, ManagedInstanceName, TargetDbName, SubscriptionId, ParametersBody, onOk, onDefault, this, Pipeline);
+                    await this.Client.DatabaseMigrationsSqlMiCreateOrUpdate(ResourceGroupName, ManagedInstanceName, TargetDbName, SubscriptionId, _parametersBody, onOk, onDefault, this, Pipeline);
                     await ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.Events.CmdletAfterAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 }
                 catch (Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.UndeclaredResponseException urexception)
                 {
-                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  ResourceGroupName=ResourceGroupName,ManagedInstanceName=ManagedInstanceName,TargetDbName=TargetDbName,SubscriptionId=SubscriptionId,body=ParametersBody})
+                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  ResourceGroupName=ResourceGroupName,ManagedInstanceName=ManagedInstanceName,TargetDbName=TargetDbName,SubscriptionId=SubscriptionId,body=_parametersBody})
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(urexception.Message) { RecommendedAction = urexception.Action }
                     });
@@ -710,7 +709,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
                 // Error Response : default
                 // Unrecognized Response. Create an error record based on what we have.
                 var ex = new Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Runtime.RestException(responseMessage);
-                WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new { ResourceGroupName=ResourceGroupName, ManagedInstanceName=ManagedInstanceName, TargetDbName=TargetDbName, SubscriptionId=SubscriptionId, body=ParametersBody })
+                WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new { ResourceGroupName=ResourceGroupName, ManagedInstanceName=ManagedInstanceName, TargetDbName=TargetDbName, SubscriptionId=SubscriptionId, body=_parametersBody })
                 {
                   ErrorDetails = new global::System.Management.Automation.ErrorDetails(ex.Message) { RecommendedAction = ex.Action }
                 });
@@ -719,8 +718,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Cmdlets
 
         /// <summary>a delegate that is called when the remote service returns 200 (OK).</summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi">Microsoft.Azure.PowerShell.Cmdlets.DataMigration.Models.Api20220330Preview.IDatabaseMigrationSqlMi</see>
+        /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>

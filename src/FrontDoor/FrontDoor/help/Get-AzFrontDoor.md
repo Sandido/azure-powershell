@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.FrontDoor.dll-Help.xml
 Module Name: Az.FrontDoor
-online version: https://docs.microsoft.com/powershell/module/az.frontdoor/get-azfrontdoor
+online version: https://learn.microsoft.com/powershell/module/az.frontdoor/get-azfrontdoor
 schema: 2.0.0
 ---
 
@@ -18,7 +18,7 @@ Get-AzFrontDoor [-ResourceGroupName <String>] [-Name <String>] [-DefaultProfile 
 ```
 
 ## DESCRIPTION
-The **Get-AzFrontDoor** cmdletGet gets all existing Front Doors in the current subscription that matches provided information.
+The **Get-AzFrontDoor** cmdletGet gets all existing Front Doors (Classic Tier only) in the current subscription that matches provided information.
 
 ## EXAMPLES
 

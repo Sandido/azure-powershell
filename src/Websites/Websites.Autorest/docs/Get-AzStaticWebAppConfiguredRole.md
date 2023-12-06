@@ -1,7 +1,7 @@
 ---
 external help file:
 Module Name: Az.Websites
-online version: https://docs.microsoft.com/powershell/module/az.websites/get-azstaticwebappconfiguredrole
+online version: https://learn.microsoft.com/powershell/module/az.websites/get-azstaticwebappconfiguredrole
 schema: 2.0.0
 ---
 
@@ -38,7 +38,8 @@ This command lists the roles configured for the static site.
 ## PARAMETERS
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -140,8 +141,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### Microsoft.Azure.PowerShell.Cmdlets.Websites.Models.Api20201201.IStringList
 
 ## NOTES
-
-ALIASES
 
 ## RELATED LINKS
 

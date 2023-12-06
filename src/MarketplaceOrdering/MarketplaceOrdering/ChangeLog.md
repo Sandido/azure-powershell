@@ -19,6 +19,12 @@
 -->
 ## Upcoming Release
 
+## Version 2.0.0
+* Upgraded API version to 2021-01-01.
+
+## Version 1.0.3
+* Added a warning message for an upcoming breaking change to `Get-AzMarketplaceTerms`.
+
 ## Version 1.0.2
 * Update references in .psd1 to use relative path
 

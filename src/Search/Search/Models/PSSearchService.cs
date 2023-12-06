@@ -14,6 +14,7 @@
 
 using Microsoft.Azure.Management.Internal.Resources.Utilities.Models;
 using Microsoft.WindowsAzure.Commands.Common.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -65,6 +66,15 @@ namespace Microsoft.Azure.Commands.Management.Search.Models
 
         public IDictionary<string, string> Tags { get; set; }
 
+        [Ps1Xml(Label = "Disable local auth", Target = ViewControl.List, Position = 14)]
+        public bool? DisableLocalAuth { get; set; }
+
+        [Ps1Xml(Label = "Auth options", Target = ViewControl.List, Position = 15)]
+        public PSAuthOptions AuthOptions { get; set; }
+
+        [Ps1Xml(Label = "Semantic search", Target = ViewControl.List, Position = 16)]
+        public PSSemanticSearchMode SemanticSearchMode { get; set; }
+
         public PSSearchService(Azure.Management.Search.Models.SearchService searchService)
         {
             ResourceGroupName = new ResourceIdentifier(searchService.Id).ResourceGroupName;
@@ -97,7 +107,7 @@ namespace Microsoft.Azure.Commands.Management.Search.Models
             NetworkRuleSet = new List<PSIpRule>();
             if (searchService.NetworkRuleSet != null)
             {
-                NetworkRuleSet = searchService.NetworkRuleSet.IpRules.Select(ipRule => (PSIpRule)ipRule).ToList();
+                NetworkRuleSet = searchService.NetworkRuleSet.IPRules.Select(ipRule => (PSIpRule)ipRule).ToList();
             }
 
             PrivateEndpointConnections = new List<PSPrivateEndpointConnection>();
@@ -110,6 +120,19 @@ namespace Microsoft.Azure.Commands.Management.Search.Models
             if (searchService.SharedPrivateLinkResources != null)
             {
                 SharedPrivateLinkResources = searchService.SharedPrivateLinkResources.Select(splr => (PSSharedPrivateLinkResource)splr).ToList();
+            }
+
+            DisableLocalAuth = searchService.DisableLocalAuth;
+
+            if (searchService.AuthOptions != null)
+            {
+                AuthOptions = (PSAuthOptions)searchService.AuthOptions;
+            }
+
+            if (searchService.SemanticSearch != null &&
+                Enum.TryParse(searchService.SemanticSearch, ignoreCase: true, out PSSemanticSearchMode semanticSearchMode))
+            {
+                SemanticSearchMode = semanticSearchMode;
             }
         }
 

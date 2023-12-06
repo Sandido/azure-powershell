@@ -17,7 +17,7 @@ function GetAzManagedHsm {
     $resourceGroupName = GetRandomName -Prefix "rg"
     $Location = "eastus2"
     $administrator = "c1be1392-39b8-4521-aafc-819a47008545", 'd7e17135-d5a7-4b8b-89e5-252aa15b7e01'
-    $hsm = New-AzKeyVaultManagedHsm -Name $HsmName -ResourceGroupName $ResourceGroupName -Location $Location -Administrator $Administrator
+    $hsm = New-AzKeyVaultManagedHsm -Name $HsmName -ResourceGroupName $ResourceGroupName -Location $Location -Administrator $Administrator -SoftDeleteRetentionInDays 7
     return $hsm
 }
 
@@ -35,6 +35,6 @@ function ImportModules {
     $psd1Path = Join-Path $PSScriptRoot "../../../../artifacts/Debug/" -Resolve
     $accountsPsd1 = Join-Path $psd1Path "./Az.Accounts/Az.Accounts.psd1" -Resolve
     $keyVaultPsd1 = Join-Path $psd1Path "./Az.KeyVault/Az.KeyVault.psd1" -Resolve
-    Import-Module $accountsPsd1
-    Import-Module $keyVaultPsd1
+    Import-Module $accountsPsd1 -Force
+    Import-Module $keyVaultPsd1 -Force
 }

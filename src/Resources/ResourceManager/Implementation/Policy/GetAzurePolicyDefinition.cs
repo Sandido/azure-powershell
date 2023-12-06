@@ -18,6 +18,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
     using Microsoft.Azure.Commands.ResourceManager.Cmdlets.Entities.ErrorResponses;
     using Microsoft.Azure.Commands.ResourceManager.Cmdlets.Extensions;
     using Microsoft.Azure.Commands.ResourceManager.Common;
+    using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
 
     using Newtonsoft.Json.Linq;
     using Policy;
@@ -127,7 +128,7 @@ namespace Microsoft.Azure.Commands.ResourceManager.Cmdlets.Implementation
                 }
                 catch (ErrorResponseMessageException ex)
                 {
-                    if (!ex.Message.StartsWith("PolicyDefinitionNotFound", StringComparison.OrdinalIgnoreCase))
+                    if (!ex.Message.StartsWith("PolicyDefinitionNotFound", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(this.Name))
                     {
                         throw;
                     }

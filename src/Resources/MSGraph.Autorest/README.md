@@ -47,10 +47,15 @@ In this directory, run AutoRest:
 > see https://aka.ms/autorest
 
 ``` yaml
+version: "3.9.5"
+use-extension:
+  "@autorest/powershell": "4.0.0-dev.10"
+
 require:
   - $(this-folder)/../../readme.azure.noprofile.md
 
 input-file:
+  - ../OpenApiSpecs/v1.0/Identity.DirectoryManagement.yml
   - ../OpenApiSpecs/v1.0/Applications.yml
   - ../OpenApiSpecs/v1.0/Groups.yml
   - ../OpenApiSpecs/beta/Groups.yml
@@ -65,6 +70,7 @@ identity-correction-for-post: true
 endpoint-resource-id-key-name: MicrosoftGraphEndpointResourceId
 export-properties-for-dict: false
 nested-object-to-string: true
+add-api-version-in-model-namespace: true
 
 # Disable default settings and Set in to empty for msgraph
 default-exclude-tableview-properties: false
@@ -136,9 +142,46 @@ directive:
     remove: true
 
   - where:
-      subject: ^application$|^group$|^serviceprincipal$|^user$
-      variant: ^Update$
+      subject: ^serviceprincipalfederatedidentitycredentials$
     remove: true
+
+  - where:
+      subject: ^application$|^group$|^serviceprincipal$|^user$|^applicationfederatedidentitycredentials$
+      variant: ^Update$|^Create$
+    remove: true
+
+  - where:
+      subject: ^applicationfederatedidentitycredentials$
+      parameter-name: applicationid
+    set:
+      parameter-name: ApplicationObjectId
+
+  - where:
+      subject: ^applicationfederatedidentitycredentials$
+      parameter-name: FederatedIdentityCredentialId
+    set:
+      parameter-name: FederatedCredentialId 
+
+  - where:
+      subject: ^applicationfederatedidentitycredentials$
+      verb: ^Update$
+      parameter-name: Name
+    hide: true
+
+  - where:
+      subject: ^applicationfederatedidentitycredentials$
+      verb: Get|New
+    hide: true
+
+  - where:
+      subject: ^applicationfederatedidentitycredential$|GroupGraphRefMember$|grouprefmember$|groupmember$
+    set:
+      preview-message: This cmdlet is using API version beta which is under preview.
+
+  - where:
+      subject: ^applicationfederatedidentitycredentials$
+    set: 
+      subject: AppFederatedCredential
 
   - where:
       subject: ^application$|^serviceprincipal$|^group$
@@ -154,7 +197,10 @@ directive:
   - where:
       subject: application$|applicationpassword$|applicationkey$|serviceprincipal$|serviceprincipalpassword$|serviceprincipalkey$|groupmember$|user$|GroupGraphRefMember$|grouprefmember$
     hide: true
-
+  - where:
+      subject: organization
+      verb: New
+    hide: true
   - where:
       subject: ^group$
       verb: ^Update$
@@ -168,9 +214,49 @@ directive:
     hide: true
 
   - where:
-      subject: UserSigned$
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: ^Create(?!.*?Expanded)
+    remove: true
+
+  - where:
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: ^CreateExpanded$
     hide: true
 
+  - where:
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: Delete
+      parameter-name: Id
+    hide: true
+
+  - where:
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: Delete
+      parameter-name: IfMatch
+    hide: true
+
+  - where:
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: Delete
+      parameter-name: DirectoryObjectId
+    set: 
+      parameter-name: OwnerId
+
+  - where:
+      subject: ^GroupOwnerGraphBPreRef$
+      variant: Delete
+    set:
+      subject: GroupOwner
+
+  - where:
+      subject: UserSigned$
+    hide: true
+  - where:
+      parameter-name: AccountEnabled
+      verb: Update
+      subject: User
+    set:
+      parameter-description: "true for enabling the account; otherwise, false. Always true when combined with `-Password`. `-AccountEnabled $false` is ignored when changing the account's password."
   - where:
       verb: Get
       variant: ^List(.*)

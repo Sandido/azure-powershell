@@ -19,17 +19,151 @@
 -->
 
 ## Upcoming Release
+
+## Version 6.12.1
+* Used utf8 encoding for reading stdout & stderr when invoking Bicep. [#23246]
+* Fixed regression in `Publish-AzBicepModule` [Azure/bicep/12461](https://github.com/Azure/bicep/issues/12461)
+
+## Version 6.12.0
+* Supported $ref statements for user-defined types in Bicep files.
+* Fixed reporting duplicate warnings when compiling Bicep files.
+* Updated New and Set Management Group cmdlets to allow DeploymentSubscription to be optional.
+* Fixed inexplicable error message when subscription and scope are neither provided in RoleAssignment/RoleDefinition related commands. [#22716]
+
+## Version 6.11.2
+* Fixed bug where `.bicepparam` values were not being correctly serialized in the correct format.
+* Allowed supplemental parameters for Deployments cmdlets when used with `.bicepparam` file.
+
+## Version 6.11.1
+* Reverted commits that caused regression in `Get-AzRoleAssignment`. [#22863]
+
+## Version 6.11.0
+* Supported `TemplateParameterFile` to accept a `.bicepparam` file.
+* Fixed inexplicable error message when subscription and scope are neither provided in `Get-AzRoleDefinition`. [#22716]
+
+## Version 6.10.0
+* Added breaking change warnings for Azure Policy cmdlets.
+* Implemented logic that allows Deployment Stack objects to be piped into Save and Remove Deployment Stack cmdlets.
+
+## Version 6.9.1
+* Fixed the warning prompt condition check in New-Az*DeploymentStack cmdlets.
+
+## Version 6.9.0
+* Fixed the issue that `New-AzRoleAssignment` didn't work without subscription.
+* Added cmdlets for group owner
+    - `Get-AzADGroupOwner`
+    - `New-AzADGroupOwner`
+    - `Remove-AzADGroupOwner`
+* Updated Tags functionality in deployment stacks New and Set cmdlets
+
+## Version 6.8.0
+* Fixed the incorrect behavior of pagination for `Get-AzTag`
+* Updated API version to 2022-09-01
+* Added Deployment Stacks cmdlets
+* Added support for dynamic parameters when deploying symbolic name templates.
+* Fixed `Set-AzPolicyExemption` parameter PolicyDefinitionReferenceId not accept empty array.
+* Fixed `Get-AzPolicyExemption` output not contain system data.
+
+## Version 6.7.0
+* Added parameter `-CountVariable` for list operations, `odataCount` can now be assigned to this variable [#20982]
+    - `Get-AzADApplication`
+    - `Get-AzADServicePrincipal`
+    - `Get-AzADUser`
+    - `Get-AzADGroup`
+* Supported polymorphism for `Get-AzADGroupMember`, output of this cmdlet was now `Application` `ServicePrincipal`, `User` and `Group` based on the `odataType` [#19728]
+* Added `-Force` parameter on `Publish-AzBicepModule` for supporting overwriting existing modules.
+* Fixed `New-AzADApplication` when multiple redirect url types were provided. [#21108]
+* Fixed `Update-AzADServicePrincipal` when empty array passed for `IdentifierUri` [#21345]
+* Fixed an issue where location header was missing in the response from the service for `New-AzManagedApplication`.
+* Fixed `Get-AzResourceGroup` ignored the subscription ID in `-Id` [#21725]
+
+## Version 6.6.1
+* Added support for Azure resources deployment with parameters file using Bicep parameters syntax
+
+## Version 6.6.0
+* Fixed an issue when running the `New-AzManagementGroup` command where it tried to cast an async operation as a Management Group. [#21000]
+* Fixed an issue when running `Get-AzResourceGroup -Name 'some_name'`, it ignores '-Location' if specified[#21225]
+
+## Version 6.5.3
+* Updated behavior of Get-AzPolicyDefinition which previously returned all definitions when -Id was provided with a nonexistent policy definition id. Fixed to correctly throw a 404 exception in this case.
+* Updated `Publish-AzBicepModule` to include new optional parameter `-DocumentationUri`
+
+## Version 6.5.2
+* Fixed query issue when objectId in assignment is empty for `Get-DenyAssignment`
+* Fixed an issue where running deployment cmdlets with `-WhatIf` throws exception when formatting results with nested array changes
+
+## Version 6.5.1
+* Fixed issue introduced in previous fix for `Set-AzPolicySetDefinition` InternalServerError when the initiative is too large [#20238], which will remove space in value.
+* Fixed `Get-AzRoleAssignment` BadRequest when scope is '/' [#20323]
+
+## Version 6.5.0
+* Added cmdlet `Get-AzADOrganization`
+* Fixed `Set-AzPolicySetDefinition` InternalServerError when the initiative is too large [#20238]
+
+## Version 6.4.1
+* Upgraded AutoMapper to Microsoft.Azure.PowerShell.AutoMapper 6.2.2 with fix [#18721]
+
+## Version 6.4.0
+* Fixed parameter `Count` for
+    - Get-AzADApplication
+    - Get-AzADServicePrincipal
+    - Get-AzADUser
+* Polished preview warning message for:
+    - Add-AzADGroupMember
+    - Get-AzADGroupMember
+    - Remove-AzADGroupMember
+* Fixed a `NullReferenceException` when deploying a JSON template using Bicep extensibility
+* Added `-AsJob` to support running `Register-AzResourceProvider` as a Job
+
+## Version 6.3.1
+* Fixed NullReferenceException issue in `New-AzRoleAssignment` [#19793]
+
+## Version 6.3.0
+* Removed unused reference to resource identifier in role assignment create cmdlet
+* Exposed parameter `-Count` for `Get-AzADApplication`, `Get-AzADServicePrincipal`, `Get-AzADGroup` [#19476]
+
+## Version 6.2.0
+* Fixed bug `-Password` overwrite `-PasswordProfile` in `New-AzADUser` [#19265]
+* Exposed `EmployeeOrgData` `Manager` for `Get-AzADUSer` [#18205]
+* Exposed parameter `-Count` for `Get-AzADUser` [#16874]
+
+## Version 6.1.0
+* Removed the warning messages for MSGraph migration [#18856]
+* [Breaking Change] Renamed cmdlet from `{}-AzADAppFederatedIdentityCredential` to `{}-AzADAppFederatedCredential`
+* [Breaking Change] Renamed `-Id` to `-FederatedCredentialId` for
+    - `Get-AzADAppFederatedCredential`
+    - `Remove-AzADAppFederatedCredential`
+    - `Update-AzADAppFederatedCredential`
+* Upgraded API version from Beta to 1.0
+
+## Version 6.0.1
+* Added feedback when deleting role assignments even if passthru is not used
+* Fixed relative path failure in -AsJob scenario [#18084]
+* Fixed logic of `createtime` and `ChangedTime` in `Get-AzResource --ExpandProperties`. [#18206]
+* Fixed role assignment latency for `New-AzADServicePrincipal` [#16777]
+
+## Version 6.0.0
+* Added cmdlet for Application federated identity credential
+    - `Get-AzADAppFederatedIdentityCredential`
+    - `New-AzADAppFederatedIdentityCredential`
+    - `Remove-AzADAppFederatedIdentityCredential`
+    - `Update-AzADAppFederatedIdentityCredential`
+* Upgraded and revised `Get-AzLocation` cmdlet:
+    - Upgraded `subscriptionClient` for `Get-AzLocation`. Changed its apiVersion from 2016-01-01 to 2021-01-01.[#18002]
+    - Added all attributes of location info for `Get-AzLocation`, including `pairedRegion` and so on. [#18045][#17536]
+    - Support ExtendedLocations by `Get-AzLocation` [#18046]
 * Added the following cmdlets to remain in parity with 2021-04-01 API version:
     - `New-AzHierarchySetting`
     - `Get-AzHierarchySetting`
     - `Update-AzHierarchySetting`
     - `Remove-AzHierarchySetting`
     - `Get-AzManagementGroupSubscription`
-    - `Get-AzSubscriptionUnderManagementGroup` 
+    - `Get-AzSubscriptionUnderManagementGroup`
     - `Start-AzTenantBackfill`
-    - `Get-AzTenantBackfillStatus` 
+    - `Get-AzTenantBackfillStatus`
     - `Get-AzManagementGroupNameAvailability`
-    - `Get-AzEntity` 
+    - `Get-AzEntity`
+* [Breaking Change] Renamed property `isSyncedFromOnPremis` to `isSyncedFromOnPremise` to align with API spec
 
 ## Version 5.6.0
 * Fixed redundant quotes in list pagination [#17667]
@@ -47,17 +181,17 @@
     - `Get-AzRoleAssignmentScheduleRequest`
     - `Get-AzRoleEligibilitySchedule`
     - `Get-AzRoleEligibilityScheduleInstance`
-    - `Get-AzRoleEligibilityScheduleRequest` 
+    - `Get-AzRoleEligibilityScheduleRequest`
     - `Get-AzRoleEligibleChildResource`
-    - `Get-AzRoleManagementPolicy` 
+    - `Get-AzRoleManagementPolicy`
     - `Get-AzRoleManagementPolicyAssignment`
-    - `New-AzRoleAssignmentScheduleRequest` 
+    - `New-AzRoleAssignmentScheduleRequest`
     - `New-AzRoleEligibilityScheduleRequest`
-    - `New-AzRoleManagementPolicyAssignment` 
+    - `New-AzRoleManagementPolicyAssignment`
     - `Remove-AzRoleManagementPolicy`
-    - `Remove-AzRoleManagementPolicyAssignment` 
+    - `Remove-AzRoleManagementPolicyAssignment`
     - `Stop-AzRoleAssignmentScheduleRequest`
-    - `Stop-AzRoleEligibilityScheduleRequest` 
+    - `Stop-AzRoleEligibilityScheduleRequest`
     - `Update-AzRoleManagementPolicy`
 * Added `Get-AzResourceManagementPrivateLink`, `Remove-AzResourceManagementPrivateLink`, `Get-AzResourceManagementPrivateLinkAssociation` and  `Remove-AzResourceManagementPrivateLinkAssociation` cmdlets
 

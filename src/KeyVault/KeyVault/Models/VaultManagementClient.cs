@@ -12,19 +12,21 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using Microsoft.Azure.Commands.Common.Authentication;
+using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
+using Microsoft.Azure.Commands.Common.MSGraph.Version1_0;
 using Microsoft.Azure.Commands.ResourceManager.Common.Tags;
 using Microsoft.Azure.Management.KeyVault;
-using PSKeyVaultProperties = Microsoft.Azure.Commands.KeyVault.Properties;
 using Microsoft.Azure.Management.KeyVault.Models;
-using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Rest.Azure;
+
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft.Azure.Commands.Common.MSGraph.Version1_0;
+using System.Linq;
+using System.Net;
+
+using PSKeyVaultProperties = Microsoft.Azure.Commands.KeyVault.Properties;
 
 namespace Microsoft.Azure.Commands.KeyVault.Models
 {
@@ -73,6 +75,7 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
         /// </summary>
         /// <param name="parameters">vault creation parameters</param>
         /// <param name="graphClient">the active directory client</param>
+        /// <param name="networkRuleSet">the network rule set of the vault</param>
         /// <returns></returns>
         public PSKeyVault CreateNewVault(VaultCreationOrUpdateParameters parameters, IMicrosoftGraphClient graphClient = null, PSKeyVaultNetworkRuleSet networkRuleSet = null)
         {
@@ -220,6 +223,10 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
         /// <param name="updatedEnabledForDeployment">enabled for deployment</param>
         /// <param name="updatedEnabledForTemplateDeployment">enabled for template deployment</param>
         /// <param name="updatedEnabledForDiskEncryption">enabled for disk encryption</param>
+        /// <param name="updatedSoftDeleteSwitch">enabled for soft delete</param>
+        /// <param name="updatedPurgeProtectionSwitch">enabled for purge protection</param>
+        /// <param name="updatedRbacAuthorization">enabled for rbac authorization</param>
+        /// <param name="softDeleteRetentionInDays">soft delete retention period (days)</param>
         /// <param name="updatedNetworkAcls">updated network rule set</param>
         /// <param name="graphClient">the active directory client</param>
         /// <returns>the updated vault</returns>
@@ -410,7 +417,7 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
         /// <param name="parameters">vault creation parameters</param>
         /// <param name="graphClient">the active directory client</param>
         /// <returns></returns>
-        public PSManagedHsm CreateNewManagedHsm(VaultCreationOrUpdateParameters parameters, IMicrosoftGraphClient graphClient = null)
+        public PSManagedHsm CreateOrRecoverManagedHsm(VaultCreationOrUpdateParameters parameters, IMicrosoftGraphClient graphClient = null)
         {
             if (parameters == null)
                 throw new ArgumentNullException("parameters");
@@ -420,14 +427,14 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
                 throw new ArgumentNullException("parameters.ResourceGroupName");
             if (string.IsNullOrWhiteSpace(parameters.Location))
                 throw new ArgumentNullException("parameters.Location");
-            if (parameters.Administrator.Length == 0)
-                throw new ArgumentNullException("parameters.Administrator");
 
+            ManagedHsm response = null;
             var properties = new ManagedHsmProperties();
             var managedHsmSku = new ManagedHsmSku();
-
             if (parameters.CreateMode != CreateMode.Recover)
             {
+                if (parameters.Administrator?.Length == 0)
+                    throw new ArgumentNullException("parameters.Administrator");
                 if (string.IsNullOrWhiteSpace(parameters.SkuFamilyName))
                     throw new ArgumentNullException("parameters.SkuFamilyName");
                 if (parameters.TenantId == Guid.Empty)
@@ -455,22 +462,34 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
                     properties.NetworkAcls.DefaultAction = NetworkRuleAction.Deny.ToString();
                 }
 
+                ManagedServiceIdentity managedServiceIdentity = parameters.ManagedServiceIdentity;
+                response = KeyVaultManagementClient.ManagedHsms.CreateOrUpdate(
+                    resourceGroupName: parameters.ResourceGroupName,
+                    name: parameters.Name,
+                    parameters: new ManagedHsm
+                    {
+                        Location = parameters.Location,
+                        Sku = managedHsmSku,
+                        Tags = TagsConversionHelper.CreateTagDictionary(parameters.Tags, validate: true),
+                        Properties = properties,
+                        Identity = managedServiceIdentity
+                    });
             }
             else
             {
                 properties.CreateMode = CreateMode.Recover;
+                response = KeyVaultManagementClient.ManagedHsms.CreateOrUpdate(
+                    resourceGroupName: parameters.ResourceGroupName,
+                    name: parameters.Name,
+                    parameters: new ManagedHsm
+                    {
+                        Location = parameters.Location,
+                        // Can't update Tags
+                        // Tags = TagsConversionHelper.CreateTagDictionary(parameters.Tags, validate: true),
+                        Properties = properties
+                    });
             }
 
-            var response = KeyVaultManagementClient.ManagedHsms.CreateOrUpdate(
-                resourceGroupName: parameters.ResourceGroupName,
-                name: parameters.Name,
-                parameters: new ManagedHsm
-                {
-                    Location = parameters.Location,
-                    Sku = managedHsmSku,
-                    Tags = TagsConversionHelper.CreateTagDictionary(parameters.Tags, validate: true),
-                    Properties = properties
-                });
 
             return new PSManagedHsm(response, graphClient);
         }
@@ -635,7 +654,8 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
                         Name = (ManagedHsmSkuName)Enum.Parse(typeof(ManagedHsmSkuName), existingManagedHsm.Sku)
                     },
                     Tags = TagsConversionHelper.CreateTagDictionary(parameters.Tags, validate: true),
-                    Properties = properties
+                    Properties = properties,
+                    Identity = parameters.ManagedServiceIdentity
                 });
 
             return new PSManagedHsm(response, graphClient);
@@ -708,11 +728,11 @@ namespace Microsoft.Azure.Commands.KeyVault.Models
 
                 if (psRuleSet.IpAddressRanges != null && psRuleSet.IpAddressRanges.Count > 0)
                 {
-                    updatedRuleSet.IpRules = psRuleSet.IpAddressRanges.Select(ipAddress => new IPRule { Value = ipAddress }).ToList();
+                    updatedRuleSet.IPRules = psRuleSet.IpAddressRanges.Select(ipAddress => new IPRule { Value = ipAddress }).ToList();
                 }
                 else
                 {   // Send empty array [] to server to override default
-                    updatedRuleSet.IpRules = new List<IPRule>();
+                    updatedRuleSet.IPRules = new List<IPRule>();
                 }
 
                 if (psRuleSet.VirtualNetworkResourceIds != null && psRuleSet.VirtualNetworkResourceIds.Count > 0)

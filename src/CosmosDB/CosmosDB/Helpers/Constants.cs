@@ -53,17 +53,22 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string KeyVaultUriHelpMessage = "URI of the KeyVault";
         public const string EnableFreeTierHelpMessage = "Bool to indicate if FreeTier is enabled on the account.";
         public const string EnableAnalyticalStorageHelpMessage = "Bool to indicate if AnalyticalStorage is enabled on the account.";
+        public const string EnableBurstCapacityHelpMessage = "Bool to indicate if Burst Capacity is enabled on the account.";
         public const string ServerVersionHelpMessage = "ServerVersion, valid only in case of MongoDB Accounts.";
         public const string NetworkAclBypassHelpMessage = "Whether or not Network Acl Bypass is enabled for this account for Synapse Link. Possible values include: 'None', 'AzureServices'.";
         public const string NetworkAclBypassResourceIdHelpMessage = "List of Resource Ids to allow Network Acl Bypass for Synapse Link.";
         public const string DatabaseResourceIdHelpMessage = "ResourceId of the database.";
         public const string AnalyticalStorageSchemaTypeHelpMessage = "The schema type for analytical storage. Valid values include: 'WellDefined' and 'FullFidelity'.";
+        public const string EnablePartitionMergeHelpMessage = "Enables partition merge feature on the Cosmos DB database account. Accepted values: false, true";
+        public const string MinimalTlsVersionHelpMessage = "Indicates the minimum allowed Tls version. The default value is Tls 1.2. Cassandra and Mongo APIs only work with Tls 1.2. Possible values include: 'Tls', 'Tls11', 'Tls12'.";
 
         //Restore specific help messages
         public const string IsRestoreRequestHelpMessage = "Indicates that the new Cosmos DB account request is a restore request.";
         public const string RestoreSourceIdHelpMessage = "The restorable database account Id of the source account of the restore. Example: /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorabledatabaseaccounts/{instanceId}";
         public const string RestoreTimestampHelpMessage = "The timestamp to which the source account has to be restored to.";
         public const string DatabasesToRestoreHelpMessage = "The list of PSDatabaseToRestore objects which specify the subset of databases and collections to restore from the source account. (If not provided, all the databases will be restored)";
+        public const string GremlinDatabasesToRestoreHelpMessage = "The list of PSGremlinDatabaseToRestore objects which specify the subset of databases and graphs to restore from the source account. (If not provided, all the databases will be restored)";
+        public const string TablesToRestoreHelpMessage = "The list of PSTableToRestore objects which specify the subset of tables to restore from the source account. (If not provided, all the tables will be restored)";
         public const string RestoreDatabaseNameHelpMessage = "The name of the database to restore";
         public const string RestoreCollectionNamesHelpMessage = "The names of the collections to be restored. (If not provided, all the collections will be restored)";
         public const string RestoreSourceDatabaseAccountNameHelpMessage = "The name of the source database account of the restore.";
@@ -78,6 +83,7 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string BackupRetentionInHoursHelpMessage = "The time(in hours) for which each backup is retained (only for accounts with periodic mode backups)";
         public const string BackupTypeHelpMessage = "The type of backups on the Cosmos DB account. Accepted values: Periodic, Continuous";
         public const string BackupStorageRedundancyHelpMessage = "The redundancy type of the backup Storage account";
+        public const string ContinuousTierHelpMessage = "The continuous backup tier of the account";
 
         //Sql cmdlets help messages
         public const string DatabaseNameHelpMessage = "Database name.";
@@ -90,6 +96,7 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string SqlUniqueKeyPolciyHelpMessage = "UniqueKeyPolicy Object of type Microsoft.Azure.Commands.CosmosDB.PSSqlUniqueKeyPolicy. ";
         public const string UniqueKeyPolciyHelpMessage = "UniqueKeyPolicy Object of type Microsoft.Azure.Commands.CosmosDB.PSUniqueKeyPolicy. ";
         public const string SqlConflictResolutionPolicyHelpMessage = "ConflictResolutionPolicy Object of type PSSqlConflictResolutionPolicy, when provided this is set as the ConflictResolutionPolicy of the container.";
+        public const string SqlClientEncryptionPolicyHelpMessage = "ClientEncryptionPolicy Object of type PSSqlClientEncryptionPolicy, when provided this is set as the ClientEncryptionPolicy of the container.";
         public const string ConflictResolutionPolicyHelpMessage = "ConflictResolutionPolicy Object of type PSConflictResolutionPolicy, when provided this is set as the ConflictResolutionPolicy of the container.";
         public const string PartitionKeyPathHelpMessage = "Partition Key Path, e.g., '/address/zipcode'.";
         public const string SqlContainerThroughputHelpMessage = "The throughput of SQL container (RU/s). Default value is 400.";
@@ -131,6 +138,8 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string CompositePathOrderTypeHelpMessage = " Gets or sets sort order for composite paths. Possible values include: 'Ascending', 'Descending'";
         public const string SqlContainerAnalyticalStorageTtlHelpMessage = "TTL for Analytical Storage (in Seconds).";
         public const string ClientEncryptionKeyObjectHelpMessage = "Client Encryption Key object.";
+        public const string RestorableSqlContainersFeedStartTimeHelpMessage = "Restorable Sql containers event feed start time.";
+        public const string RestorableSqlContainersFeedEndTimeHelpMessage = "Restorable Sql containers event feed end time.";
 
         //SQL Client Side Encryption
         public const string ClientEncryptionKeyName = "Client Encryption Key name.";
@@ -151,11 +160,17 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string MongoIndexHelpMessage = "Array of PSMongoIndex objects.";
         public const string MongoCollectionThroughputHelpMessage = "The throughput of Mongo collection (RU/s). Default value is 400.";
         public const string MongoDatabaseThroughputHelpMessage = "The throughput of Mongo database (RU/s). Default value is 400.";
+        public const string RestorableMongoDBCollectionsFeedStartTimeHelpMessage = "Restorable MongoDB collections event feed start time.";
+        public const string RestorableMongoDBCollectionsFeedEndTimeHelpMessage = "Restorable MongoDB collections event feed end time.";
 
         //Table cmdlets help messages
         public const string TableNameHelpMessage = "Name of the Table.";
         public const string TableThroughputHelpMessage = "The throughput of Table (RU/s). Default value is 400.";
         public const string TableObjectHelpMessage = "Table Object.";
+        public const string RestorableTableObjectHelpMessage = "CosmosDB Restorable Table object.";
+        public const string RestorableTablesFeedStartTimeHelpMessage = "Restorable Tables event feed start time.";
+        public const string RestorableTablesFeedEndTimeHelpMessage = "Restorable Tables event feed end time.";
+        public const string RestoreTableNamesHelpMessage = "The names of the tables to be restored. (If not provided, all the tables will be restored)";
 
         //Cassandra cmdlets help messages
         public const string KeyspaceNameHelpMessage = "Cassandra Keyspace Name.";
@@ -172,9 +187,10 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string CassandraSchemaColumnHelpMessage = "PSColumn object.";
         public const string CassandraSchemaPartitionKeyHelpMessage = "Array of strings containing Partition Keys.";
         public const string CassandraSchemaClusterKeyHelpMessage = "Array of PSClusterKey objects.";
-        public const string AnalyticalStorageTtlHelpMessage = "Analytical Storage TTL."; 
+        public const string AnalyticalStorageTtlHelpMessage = "Analytical Storage TTL.";
 
         //Gremlin cmdlets help messages
+        public const string GremlinDatabaseNameHelpMessage = "Gremlin Database name.";
         public const string GraphNameHelpMessage = "Gremlin Graph Name.";
         public const string GremlinDatabaseObjectHelpMessage = "Gremlin Database object.";
         public const string GremlinGraphObjectHelpMessage = "Gremlin Graph object.";
@@ -184,6 +200,12 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string ConflictResolutionPolicyPathHelpMessage = "To be provided when the type is LastWriterWins.";
         public const string ConflictResolutionPolicyProcedureHelpMessage = "To be provided when the type is custom.";
         public const string UniqueKeysHelpMessage = "Array of objects of type PSUniqueKey.";
+        public const string RestorableGremlinDatabaseObjectHelpMessage = "CosmosDB Restorable Gremlin Database object.";
+        public const string RestorableGremlinGraphObjectHelpMessage = "CosmosDB Restorable Gremlin Graph object.";
+        public const string RestorableGremlinGraphsFeedStartTimeHelpMessage = "Restorable Gremlin graphs event feed start time.";
+        public const string RestorableGremlinGraphsFeedEndTimeHelpMessage = "Restorable Gremlin graphs event feed end time.";
+        public const string RestoreGremlinDatabaseNameHelpMessage = "The name of the gremlin database to restore";
+        public const string RestoreGraphNamesHelpMessage = "The names of the graphs to be restored. (If not provided, all the graphs will be restored)";
 
         // Throughput cmdlets for all APIs
         public const string ThroughputHelpMessage = "Throughput value in int.";
@@ -192,11 +214,11 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
 
         // Role cmdlets help messages
         public const string PrincipalIdHelpMessage = "Object ID (Guid) of the AAD principal to which the Role Assignment is being granted. This could be user, group, service principal, or managed identity.";
-        public const string ScopeHelpMessage  = "Resource path below which the Role Assignment shall grant access. Eg. '/', '/dbs/dbname','/dbs/dbname/colls/collname'.";
-        public const string RoleAssignmentHelpMessage  = "A Role Assignment attaches a Role Definition to an AAD principal at a specified resource scope for granting access.";
-        public const string RoleAssignmentIdHelpMessage  = "Unique ID (Guid) for the Role Assignment.";
-        public const string RoleDefinitionHelpMessage  = "A Role Definition is a collection of permissions.";
-        public const string RoleDefinitionIdHelpMessage  = "Unique ID (Guid) for the Role Definition.";
+        public const string ScopeHelpMessage = "Resource path below which the Role Assignment shall grant access. Eg. '/', '/dbs/dbname','/dbs/dbname/colls/collname'.";
+        public const string RoleAssignmentHelpMessage = "A Role Assignment attaches a Role Definition to an AAD principal at a specified resource scope for granting access.";
+        public const string RoleAssignmentIdHelpMessage = "Unique ID (Guid) for the Role Assignment.";
+        public const string RoleDefinitionHelpMessage = "A Role Definition is a collection of permissions.";
+        public const string RoleDefinitionIdHelpMessage = "Unique ID (Guid) for the Role Definition.";
         public const string TypeHelpMessage = "Type of the Role Definition, either CustomRole or BuiltInRole.";
         public const string RoleNameHelpMessage = "Unique display name for the Role Definition.";
         public const string DataActionsHelpMessage = "Set of data actions granted through the Role Definition. List of allowed actions can be found at: https://aka.ms/cosmos-native-rbac";
@@ -233,5 +255,32 @@ namespace Microsoft.Azure.Commands.CosmosDB.Helpers
         public const string ManagedCassandraDiskSku = "Disk SKU used for data centers. Default value is P30.";
         public const string ManagedCassandraDiskCapacity = "Number of disk used for data centers. Default value is 4.";
         public const string ManagedCassandraUseAvailabilityZone = "Deploy nodes across availability zones if they are available in this location.";
+
+        // MongoDB Role cmdlets help messages
+        public const string MongoDBRoleDefinitionHelpMessage = "A MongoDB Role Definition For Mongo DB.";
+        public const string MongoDBRoleDefinitionDatabaseName = "Database Name for the MongoDB Role Definition.";
+        public const string MongoRoleDefinitionPrivilegesHelpMessage = "MongoDB Role Definition Privileges define allowed actions for corresponding resources.";
+        public const string MongoDBRoleDefinitionIdHelpMessage = "Unique ID (<Databasename>.<RoleName>) for the MongoDB Role Definition.";
+        public const string MongoDBTypeHelpMessage = "Type of the MongoDB Role Definition, either CustomRole or BuiltInRole.";
+        public const string MongoDBRoleDefinitionNameHelpMessage = "Unique display name(per database) for the MongoDB Role Definition.";
+        public const string MongoDBRoleNameHelpMessage = "Unique display name(per database) for the Role Definition.";
+        public const string MongoDBInheritedRolesHelpMessage = "List of Inherited roles for MongoDB Role Definition.";
+        public const string MongoDBRoleDefinitionRoleDatabaseName = "Database Name for the MongoDB Role Definition Inherited Role.";
+        public const string MongoDBInheritedRoleNameHelpMessage = "Role Name for the MongoDB Role Definition Inherited Role.";
+        public const string MongoRoleDefinitionPrivilegeResourcHelpMessage = "MongoDB Role Definition Resource(Database and Collection name) for the Privilege.";
+        public const string MongoRoleDefinitionPrivilegeActionsHelpMessage = "MongoDB Role Definition list of actions(insert/update/delete) for the Privilege.";
+
+        // MongoDB User Definition cmdlets help messages
+        public const string MongoDBUserDefinitionHelpMessage = "A MongoDB User Definition for MongoDB.";
+        public const string MongoDBUserDefinitionIdHelpMessage = "Unique ID (<Databasename>.<UserName>) for the MongoDB User Definition.";
+        public const string MongoDBUserDefinitionUserNameHelpMessage = "Unique username(per database) for the user Definition.";
+        public const string MongoDBUserDefinitionPasswordHelpMessage = "Password for the user Definition.";
+        public const string MongoDBUserDefinitionMechanismsHelpMessage = "Mechanisms(e.g. SCRAM-SHA-256) for the user Definition.";
+        public const string MongoDBUserDefinitionCustomDataHelpMessage = "Additional information about the user Definition.";
+
+        // Service constants
+        public const string ServiceName = "Name of the service";
+        public const string ServiceInstanceSize = "Instance count of the service";
+        public const string ServiceInstanceCount = "Instance size of the service";
     }
 }

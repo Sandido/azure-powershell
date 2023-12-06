@@ -19,6 +19,7 @@ using Microsoft.Azure.Management.Storage.Models;
 using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
 using System.Globalization;
 using System.Management.Automation;
+using System.Security.Permissions;
 
 namespace Microsoft.Azure.Commands.Management.Storage
 {
@@ -27,6 +28,7 @@ namespace Microsoft.Azure.Commands.Management.Storage
     {
         protected const string BaseBlobParameterSet = "BaseBlob";
         protected const string BaseBlobLastAccessTimeParameterSet = "BaseBlobLastAccessTime";
+        protected const string BaseBlobCreationTimeParameterSet = "BaseBlobCreationTime";
         protected const string SnapshotParameterSet = "Snapshot";
         protected const string BlobVersionParameterSet = "BlobVersion";
         [Parameter(Mandatory = true,
@@ -35,9 +37,14 @@ namespace Microsoft.Azure.Commands.Management.Storage
         [Parameter(Mandatory = true,
             HelpMessage = "The management policy action for baseblob.",
             ParameterSetName = BaseBlobLastAccessTimeParameterSet)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "The management policy action for baseblob.",
+            ParameterSetName = BaseBlobCreationTimeParameterSet)]
         [ValidateSet(ManagementPolicyAction.Delete,
             ManagementPolicyAction.TierToArchive,
             ManagementPolicyAction.TierToCool,
+            ManagementPolicyAction.TierToCold,
+            ManagementPolicyAction.TierToHot,
             IgnoreCase = true)]
         public string BaseBlobAction { get; set; }
 
@@ -47,6 +54,8 @@ namespace Microsoft.Azure.Commands.Management.Storage
         [ValidateSet(ManagementPolicyAction.Delete,
             ManagementPolicyAction.TierToArchive,
             ManagementPolicyAction.TierToCool,
+            ManagementPolicyAction.TierToCold,
+            ManagementPolicyAction.TierToHot,
             IgnoreCase = true)]
         public string SnapshotAction { get; set; }
 
@@ -56,6 +65,8 @@ namespace Microsoft.Azure.Commands.Management.Storage
         [ValidateSet(ManagementPolicyAction.Delete,
             ManagementPolicyAction.TierToArchive,
             ManagementPolicyAction.TierToCool,
+            ManagementPolicyAction.TierToCold,
+            ManagementPolicyAction.TierToHot,
             IgnoreCase = true)]
         public string BlobVersionAction { get; set; }
 
@@ -65,8 +76,22 @@ namespace Microsoft.Azure.Commands.Management.Storage
         [Parameter(Mandatory = true,
             HelpMessage = "Integer value indicating the age in days after creation.",
             ParameterSetName = BlobVersionParameterSet)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "Integer value indicating the age in days after creation.",
+            ParameterSetName = BaseBlobCreationTimeParameterSet)]
         [ValidateNotNullOrEmpty]
-        public int DaysAfterCreationGreaterThan { get; set; }
+        public int DaysAfterCreationGreaterThan
+        {
+            get
+            {
+                return daysAfterCreationGreaterThan is null ? 0 : daysAfterCreationGreaterThan.Value;
+            }
+            set
+            {
+                daysAfterCreationGreaterThan = value;
+            }
+        }
+        public int? daysAfterCreationGreaterThan;
 
         [Parameter(Mandatory = true,
             HelpMessage = "Integer value indicating the age in days after last modification.",
@@ -149,6 +174,7 @@ namespace Microsoft.Azure.Commands.Management.Storage
             {
                 case BaseBlobParameterSet:
                 case BaseBlobLastAccessTimeParameterSet:
+                case BaseBlobCreationTimeParameterSet:
                     if (action.BaseBlob is null)
                     {
                         action.BaseBlob = new PSManagementPolicyBaseBlob();
@@ -172,17 +198,32 @@ namespace Microsoft.Azure.Commands.Management.Storage
                         case ManagementPolicyAction.Delete:
                             action.BaseBlob.Delete = new PSDateAfterModification(this.daysAfterModificationGreaterThan, 
                                 this.daysAfterLastAccessTimeGreaterThan, 
-                                this.daysAfterLastTierChangeGreaterThan);
+                                this.daysAfterLastTierChangeGreaterThan,
+                                this.daysAfterCreationGreaterThan);
                             break;
                         case ManagementPolicyAction.TierToCool:
                             action.BaseBlob.TierToCool = new PSDateAfterModification(this.daysAfterModificationGreaterThan,
                                 this.daysAfterLastAccessTimeGreaterThan,
-                                this.daysAfterLastTierChangeGreaterThan); 
-                    break;
+                                this.daysAfterLastTierChangeGreaterThan,
+                                this.daysAfterCreationGreaterThan);
+                            break;
                         case ManagementPolicyAction.TierToArchive:
                             action.BaseBlob.TierToArchive = new PSDateAfterModification(this.daysAfterModificationGreaterThan,
                                 this.daysAfterLastAccessTimeGreaterThan,
-                                this.daysAfterLastTierChangeGreaterThan); 
+                                this.daysAfterLastTierChangeGreaterThan,
+                                this.daysAfterCreationGreaterThan); 
+                            break;
+                        case ManagementPolicyAction.TierToCold:
+                            action.BaseBlob.TierToCold = new PSDateAfterModification(this.daysAfterModificationGreaterThan,
+                                this.daysAfterLastAccessTimeGreaterThan,
+                                this.daysAfterLastTierChangeGreaterThan,
+                                this.daysAfterCreationGreaterThan);
+                            break;
+                        case ManagementPolicyAction.TierToHot:
+                            action.BaseBlob.TierToHot = new PSDateAfterModification(this.daysAfterModificationGreaterThan,
+                                this.daysAfterLastAccessTimeGreaterThan,
+                                this.daysAfterLastTierChangeGreaterThan,
+                                this.daysAfterCreationGreaterThan);
                             break;
                         default:
                             throw new PSArgumentException(string.Format(CultureInfo.InvariantCulture, "Invalid BaseBlobAction: {0}", this.BaseBlobAction));
@@ -208,6 +249,12 @@ namespace Microsoft.Azure.Commands.Management.Storage
                         case ManagementPolicyAction.TierToArchive:
                             action.Snapshot.TierToArchive = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
                             break;
+                        case ManagementPolicyAction.TierToCold:
+                            action.Snapshot.TierToCold = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
+                            break;
+                        case ManagementPolicyAction.TierToHot:
+                            action.Snapshot.TierToHot = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
+                            break;
                         default:
                             throw new PSArgumentException(string.Format(CultureInfo.InvariantCulture, "Invalid SnapshotAction: {0}", this.SnapshotAction));
                     }
@@ -227,6 +274,12 @@ namespace Microsoft.Azure.Commands.Management.Storage
                             break;
                         case ManagementPolicyAction.TierToArchive:
                             action.Version.TierToArchive = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
+                            break;
+                        case ManagementPolicyAction.TierToCold:
+                            action.Version.TierToCold = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
+                            break;
+                        case ManagementPolicyAction.TierToHot:
+                            action.Version.TierToHot = new PSDateAfterCreation(this.DaysAfterCreationGreaterThan, this.daysAfterLastTierChangeGreaterThan);
                             break;
                         default:
                             throw new PSArgumentException(string.Format(CultureInfo.InvariantCulture, "Invalid BlobVersionAction: {0}", this.BlobVersionAction));

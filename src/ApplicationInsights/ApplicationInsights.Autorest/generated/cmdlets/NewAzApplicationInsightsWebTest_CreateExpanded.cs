@@ -14,7 +14,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
     /// </remarks>
     [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.InternalExport]
     [global::System.Management.Automation.Cmdlet(global::System.Management.Automation.VerbsCommon.New, @"AzApplicationInsightsWebTest_CreateExpanded", SupportsShouldProcess = true)]
-    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest))]
+    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest))]
     [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Description(@"Creates or updates an Application Insights web test definition.")]
     [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Generated]
     public partial class NewAzApplicationInsightsWebTest_CreateExpanded : global::System.Management.Automation.PSCmdlet,
@@ -34,6 +34,9 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         /// </summary>
         private global::System.Threading.CancellationTokenSource _cancellationTokenSource = new global::System.Threading.CancellationTokenSource();
 
+        /// <summary>An Application Insights WebTest definition.</summary>
+        private Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest _webTestDefinitionBody = new Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.WebTest();
+
         /// <summary>Wait for .NET debugger to attach</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "Wait for .NET debugger to attach")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Category(global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.ParameterCategory.Runtime)]
@@ -51,7 +54,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"The XML specification of a WebTest to run against an application.",
         SerializedName = @"WebTest",
         PossibleTypes = new [] { typeof(string) })]
-        public string Configuration { get => WebTestDefinitionBody.ConfigurationWebTest ?? null; set => WebTestDefinitionBody.ConfigurationWebTest = value; }
+        public string Configuration { get => _webTestDefinitionBody.ConfigurationWebTest ?? null; set => _webTestDefinitionBody.ConfigurationWebTest = value; }
 
         /// <summary>When set, this value makes the ContentMatch validation case insensitive.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "When set, this value makes the ContentMatch validation case insensitive.")]
@@ -62,7 +65,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"When set, this value makes the ContentMatch validation case insensitive.",
         SerializedName = @"IgnoreCase",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter ContentIgnoreCase { get => WebTestDefinitionBody.ContentValidationIgnoreCase ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.ContentValidationIgnoreCase = value; }
+        public global::System.Management.Automation.SwitchParameter ContentIgnoreCase { get => _webTestDefinitionBody.ContentValidationIgnoreCase ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.ContentValidationIgnoreCase = value; }
 
         /// <summary>Content to look for in the return of the WebTest. Must not be null or empty.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Content to look for in the return of the WebTest. Must not be null or empty.")]
@@ -73,7 +76,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Content to look for in the return of the WebTest. Must not be null or empty.",
         SerializedName = @"ContentMatch",
         PossibleTypes = new [] { typeof(string) })]
-        public string ContentMatch { get => WebTestDefinitionBody.ContentValidationContentMatch ?? null; set => WebTestDefinitionBody.ContentValidationContentMatch = value; }
+        public string ContentMatch { get => _webTestDefinitionBody.ContentValidationContentMatch ?? null; set => _webTestDefinitionBody.ContentValidationContentMatch = value; }
 
         /// <summary>
         /// When true, validation will pass if there is a match for the ContentMatch string. If false, validation will fail if there
@@ -87,7 +90,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"When true, validation will pass if there is a match for the ContentMatch string. If false, validation will fail if there is a match",
         SerializedName = @"PassIfTextFound",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter ContentPassIfTextFound { get => WebTestDefinitionBody.ContentValidationPassIfTextFound ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.ContentValidationPassIfTextFound = value; }
+        public global::System.Management.Automation.SwitchParameter ContentPassIfTextFound { get => _webTestDefinitionBody.ContentValidationPassIfTextFound ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.ContentValidationPassIfTextFound = value; }
 
         /// <summary>
         /// The credentials, account, tenant, and subscription used for communication with Azure
@@ -107,7 +110,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"User defined description for this WebTest.",
         SerializedName = @"Description",
         PossibleTypes = new [] { typeof(string) })]
-        public string Description { get => WebTestDefinitionBody.Description ?? null; set => WebTestDefinitionBody.Description = value; }
+        public string Description { get => _webTestDefinitionBody.Description ?? null; set => _webTestDefinitionBody.Description = value; }
 
         /// <summary>Is the test actively being monitored.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Is the test actively being monitored.")]
@@ -118,7 +121,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Is the test actively being monitored.",
         SerializedName = @"Enabled",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter Enabled { get => WebTestDefinitionBody.Enabled ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.Enabled = value; }
+        public global::System.Management.Automation.SwitchParameter Enabled { get => _webTestDefinitionBody.Enabled ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.Enabled = value; }
 
         /// <summary>Interval in seconds between test runs for this WebTest. Default value is 300.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Interval in seconds between test runs for this WebTest. Default value is 300.")]
@@ -129,7 +132,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Interval in seconds between test runs for this WebTest. Default value is 300.",
         SerializedName = @"Frequency",
         PossibleTypes = new [] { typeof(int) })]
-        public int Frequency { get => WebTestDefinitionBody.Frequency ?? default(int); set => WebTestDefinitionBody.Frequency = value; }
+        public int Frequency { get => _webTestDefinitionBody.Frequency ?? default(int); set => _webTestDefinitionBody.Frequency = value; }
 
         /// <summary>
         /// A list of where to physically run the tests from to give global coverage for accessibility of your application.
@@ -142,21 +145,23 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         ReadOnly = false,
         Description = @"A list of where to physically run the tests from to give global coverage for accessibility of your application.",
         SerializedName = @"Locations",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTestGeolocation) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTestGeolocation[] GeoLocation { get => WebTestDefinitionBody.PropertiesLocations ?? null /* arrayOf */; set => WebTestDefinitionBody.PropertiesLocations = value; }
+        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTestGeolocation) })]
+        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTestGeolocation[] GeoLocation { get => _webTestDefinitionBody.PropertiesLocations ?? null /* arrayOf */; set => _webTestDefinitionBody.PropertiesLocations = value; }
 
-        /// <summary>The kind of WebTest that this web test watches. Choices are ping and multistep.</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The kind of WebTest that this web test watches. Choices are ping and multistep.")]
+        /// <summary>
+        /// The kind of WebTest that this web test watches. Choices are ping, multistep and standard.
+        /// </summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The kind of WebTest that this web test watches. Choices are ping, multistep and standard.")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Category(global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.ParameterCategory.Body)]
         [Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Info(
         Required = false,
         ReadOnly = false,
-        Description = @"The kind of WebTest that this web test watches. Choices are ping and multistep.",
+        Description = @"The kind of WebTest that this web test watches. Choices are ping, multistep and standard.",
         SerializedName = @"kind",
         PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind) })]
         [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.DoNotExport]
         [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind))]
-        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind HideKind { get => WebTestDefinitionBody.Kind ?? ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind)""); set => WebTestDefinitionBody.Kind = value; }
+        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind HideKind { get => _webTestDefinitionBody.Kind ?? ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKind)""); set => _webTestDefinitionBody.Kind = value; }
 
         /// <summary>SendAsync Pipeline Steps to be appended to the front of the pipeline</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "SendAsync Pipeline Steps to be appended to the front of the pipeline")]
@@ -183,7 +188,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         SerializedName = @"Kind",
         PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum) })]
         [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum))]
-        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum Kind { get => WebTestDefinitionBody.WebTestKind ?? ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum)""); set => WebTestDefinitionBody.WebTestKind = value; }
+        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum Kind { get => _webTestDefinitionBody.WebTestKind ?? ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.WebTestKindEnum)""); set => _webTestDefinitionBody.WebTestKind = value; }
 
         /// <summary>Resource location</summary>
         [global::System.Management.Automation.Parameter(Mandatory = true, HelpMessage = "Resource location")]
@@ -194,14 +199,14 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Resource location",
         SerializedName = @"location",
         PossibleTypes = new [] { typeof(string) })]
-        public string Location { get => WebTestDefinitionBody.Location ?? null; set => WebTestDefinitionBody.Location = value; }
+        public string Location { get => _webTestDefinitionBody.Location ?? null; set => _webTestDefinitionBody.Location = value; }
 
         /// <summary>
-        /// <see cref="IEventListener" /> cancellation delegate. Stops the cmdlet when called.
+        /// <see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener" /> cancellation delegate. Stops the cmdlet when called.
         /// </summary>
         global::System.Action Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener.Cancel => _cancellationTokenSource.Cancel;
 
-        /// <summary><see cref="IEventListener" /> cancellation token.</summary>
+        /// <summary><see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener" /> cancellation token.</summary>
         global::System.Threading.CancellationToken Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener.Token => _cancellationTokenSource.Token;
 
         /// <summary>Backing field for <see cref="Name" /> property.</summary>
@@ -249,7 +254,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Base64 encoded string body to send with this web test.",
         SerializedName = @"RequestBody",
         PossibleTypes = new [] { typeof(string) })]
-        public string RequestBody { get => WebTestDefinitionBody.RequestBody ?? null; set => WebTestDefinitionBody.RequestBody = value; }
+        public string RequestBody { get => _webTestDefinitionBody.RequestBody ?? null; set => _webTestDefinitionBody.RequestBody = value; }
 
         /// <summary>Follow redirects for this web test.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Follow redirects for this web test.")]
@@ -260,7 +265,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Follow redirects for this web test.",
         SerializedName = @"FollowRedirects",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter RequestFollowRedirect { get => WebTestDefinitionBody.RequestFollowRedirect ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.RequestFollowRedirect = value; }
+        public global::System.Management.Automation.SwitchParameter RequestFollowRedirect { get => _webTestDefinitionBody.RequestFollowRedirect ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.RequestFollowRedirect = value; }
 
         /// <summary>List of headers and their values to add to the WebTest call.</summary>
         [global::System.Management.Automation.AllowEmptyCollection]
@@ -271,8 +276,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         ReadOnly = false,
         Description = @"List of headers and their values to add to the WebTest call.",
         SerializedName = @"Headers",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IHeaderField) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IHeaderField[] RequestHeader { get => WebTestDefinitionBody.RequestHeader ?? null /* arrayOf */; set => WebTestDefinitionBody.RequestHeader = value; }
+        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IHeaderField) })]
+        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IHeaderField[] RequestHeader { get => _webTestDefinitionBody.RequestHeader ?? null /* arrayOf */; set => _webTestDefinitionBody.RequestHeader = value; }
 
         /// <summary>Http verb to use for this web test.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Http verb to use for this web test.")]
@@ -283,7 +288,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Http verb to use for this web test.",
         SerializedName = @"HttpVerb",
         PossibleTypes = new [] { typeof(string) })]
-        public string RequestHttpVerb { get => WebTestDefinitionBody.RequestHttpVerb ?? null; set => WebTestDefinitionBody.RequestHttpVerb = value; }
+        public string RequestHttpVerb { get => _webTestDefinitionBody.RequestHttpVerb ?? null; set => _webTestDefinitionBody.RequestHttpVerb = value; }
 
         /// <summary>Parse Dependent request for this WebTest.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Parse Dependent request for this WebTest.")]
@@ -294,7 +299,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Parse Dependent request for this WebTest.",
         SerializedName = @"ParseDependentRequests",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter RequestParseDependent { get => WebTestDefinitionBody.RequestParseDependentRequest ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.RequestParseDependentRequest = value; }
+        public global::System.Management.Automation.SwitchParameter RequestParseDependent { get => _webTestDefinitionBody.RequestParseDependentRequest ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.RequestParseDependentRequest = value; }
 
         /// <summary>Url location to test.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Url location to test.")]
@@ -305,7 +310,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Url location to test.",
         SerializedName = @"RequestUrl",
         PossibleTypes = new [] { typeof(string) })]
-        public string RequestUrl { get => WebTestDefinitionBody.RequestUrl ?? null; set => WebTestDefinitionBody.RequestUrl = value; }
+        public string RequestUrl { get => _webTestDefinitionBody.RequestUrl ?? null; set => _webTestDefinitionBody.RequestUrl = value; }
 
         /// <summary>Backing field for <see cref="ResourceGroupName" /> property.</summary>
         private string _resourceGroupName;
@@ -330,7 +335,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Allow for retries should this WebTest fail.",
         SerializedName = @"RetryEnabled",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter RetryEnabled { get => WebTestDefinitionBody.RetryEnabled ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.RetryEnabled = value; }
+        public global::System.Management.Automation.SwitchParameter RetryEnabled { get => _webTestDefinitionBody.RetryEnabled ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.RetryEnabled = value; }
 
         /// <summary>Validate that the WebTest returns the http status code provided.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Validate that the WebTest returns the http status code provided.")]
@@ -341,7 +346,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Validate that the WebTest returns the http status code provided.",
         SerializedName = @"ExpectedHttpStatusCode",
         PossibleTypes = new [] { typeof(int) })]
-        public int RuleExpectedHttpStatusCode { get => WebTestDefinitionBody.ValidationRuleExpectedHttpStatusCode ?? default(int); set => WebTestDefinitionBody.ValidationRuleExpectedHttpStatusCode = value; }
+        public int RuleExpectedHttpStatusCode { get => _webTestDefinitionBody.ValidationRuleExpectedHttpStatusCode ?? default(int); set => _webTestDefinitionBody.ValidationRuleExpectedHttpStatusCode = value; }
 
         /// <summary>When set, validation will ignore the status code.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "When set, validation will ignore the status code.")]
@@ -352,7 +357,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"When set, validation will ignore the status code.",
         SerializedName = @"IgnoreHttpsStatusCode",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter RuleIgnoreHttpsStatusCode { get => WebTestDefinitionBody.ValidationRuleIgnoreHttpsStatusCode ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.ValidationRuleIgnoreHttpsStatusCode = value; }
+        public global::System.Management.Automation.SwitchParameter RuleIgnoreHttpsStatusCode { get => _webTestDefinitionBody.ValidationRuleIgnoreHttpsStatusCode ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.ValidationRuleIgnoreHttpsStatusCode = value; }
 
         /// <summary>
         /// A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck
@@ -366,7 +371,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"A number of days to check still remain before the the existing SSL cert expires. Value must be positive and the SSLCheck must be set to true.",
         SerializedName = @"SSLCertRemainingLifetimeCheck",
         PossibleTypes = new [] { typeof(int) })]
-        public int RuleSslCertRemainingLifetimeCheck { get => WebTestDefinitionBody.ValidationRuleSslCertRemainingLifetimeCheck ?? default(int); set => WebTestDefinitionBody.ValidationRuleSslCertRemainingLifetimeCheck = value; }
+        public int RuleSslCertRemainingLifetimeCheck { get => _webTestDefinitionBody.ValidationRuleSslCertRemainingLifetimeCheck ?? default(int); set => _webTestDefinitionBody.ValidationRuleSslCertRemainingLifetimeCheck = value; }
 
         /// <summary>Checks to see if the SSL cert is still valid.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Checks to see if the SSL cert is still valid.")]
@@ -377,7 +382,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Checks to see if the SSL cert is still valid.",
         SerializedName = @"SSLCheck",
         PossibleTypes = new [] { typeof(global::System.Management.Automation.SwitchParameter) })]
-        public global::System.Management.Automation.SwitchParameter RuleSslCheck { get => WebTestDefinitionBody.ValidationRuleSslCheck ?? default(global::System.Management.Automation.SwitchParameter); set => WebTestDefinitionBody.ValidationRuleSslCheck = value; }
+        public global::System.Management.Automation.SwitchParameter RuleSslCheck { get => _webTestDefinitionBody.ValidationRuleSslCheck ?? default(global::System.Management.Automation.SwitchParameter); set => _webTestDefinitionBody.ValidationRuleSslCheck = value; }
 
         /// <summary>Backing field for <see cref="SubscriptionId" /> property.</summary>
         private string _subscriptionId;
@@ -407,7 +412,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         SerializedName = @"SyntheticMonitorId",
         PossibleTypes = new [] { typeof(string) })]
         [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.DoNotExport]
-        public string SyntheticMonitorId { get => WebTestDefinitionBody.SyntheticMonitorId ?? null; set => WebTestDefinitionBody.SyntheticMonitorId = value; }
+        public string SyntheticMonitorId { get => _webTestDefinitionBody.SyntheticMonitorId ?? null; set => _webTestDefinitionBody.SyntheticMonitorId = value; }
 
         /// <summary>Resource tags</summary>
         [global::Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.ExportAs(typeof(global::System.Collections.Hashtable))]
@@ -418,8 +423,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         ReadOnly = false,
         Description = @"Resource tags",
         SerializedName = @"tags",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebtestsResourceTags) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebtestsResourceTags Tag { get => WebTestDefinitionBody.Tag ?? null /* object */; set => WebTestDefinitionBody.Tag = value; }
+        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebtestsResourceTags) })]
+        public Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebtestsResourceTags Tag { get => _webTestDefinitionBody.Tag ?? null /* object */; set => _webTestDefinitionBody.Tag = value; }
 
         /// <summary>User defined name if this WebTest.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "User defined name if this WebTest.")]
@@ -430,7 +435,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"User defined name if this WebTest.",
         SerializedName = @"Name",
         PossibleTypes = new [] { typeof(string) })]
-        public string TestName { get => WebTestDefinitionBody.WebTestName ?? null; set => WebTestDefinitionBody.WebTestName = value; }
+        public string TestName { get => _webTestDefinitionBody.WebTestName ?? null; set => _webTestDefinitionBody.WebTestName = value; }
 
         /// <summary>Seconds until this WebTest will timeout and fail. Default value is 30.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Seconds until this WebTest will timeout and fail. Default value is 30.")]
@@ -441,31 +446,30 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         Description = @"Seconds until this WebTest will timeout and fail. Default value is 30.",
         SerializedName = @"Timeout",
         PossibleTypes = new [] { typeof(int) })]
-        public int Timeout { get => WebTestDefinitionBody.Timeout ?? default(int); set => WebTestDefinitionBody.Timeout = value; }
-
-        /// <summary>Backing field for <see cref="WebTestDefinitionBody" /> property.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest _webTestDefinitionBody= new Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.WebTest();
-
-        /// <summary>An Application Insights WebTest definition.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest WebTestDefinitionBody { get => this._webTestDefinitionBody; set => this._webTestDefinitionBody = value; }
+        public int Timeout { get => _webTestDefinitionBody.Timeout ?? default(int); set => _webTestDefinitionBody.Timeout = value; }
 
         /// <summary>
         /// <c>overrideOnOk</c> will be called before the regular onOk has been processed, allowing customization of what happens
         /// on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest">Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest</see>
+        /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onOk method should be processed, or if the method should return
         /// immediately (set to true to skip further processing )</param>
 
-        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
+        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
 
         /// <summary>
         /// (overrides the default BeginProcessing method in global::System.Management.Automation.PSCmdlet)
         /// </summary>
         protected override void BeginProcessing()
         {
+            var telemetryId = Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Module.Instance.GetTelemetryId.Invoke();
+            if (telemetryId != "" && telemetryId != "internal")
+            {
+                __correlationId = telemetryId;
+            }
             Module.Instance.SetProxyConfiguration(Proxy, ProxyCredential, ProxyUseDefaultCredentials);
             if (Break)
             {
@@ -477,7 +481,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         /// <summary>Performs clean-up after the command execution</summary>
         protected override void EndProcessing()
         {
-            ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Events.CmdletEndProcessing).Wait(); if( ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
+
         }
 
         /// <summary>Handles/Dispatches events during the call to the REST service.</summary>
@@ -588,7 +592,6 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
         {
             using( NoSynchronizationContext )
             {
-                await ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Events.CmdletProcessRecordAsyncStart); if( ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 await ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Events.CmdletGetPipeline); if( ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 Pipeline = Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Module.Instance.CreatePipeline(InvocationInformation, __correlationId, __processRecordId, this.ParameterSetName);
                 if (null != HttpPipelinePrepend)
@@ -603,12 +606,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
                 try
                 {
                     await ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Events.CmdletBeforeAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                    await this.Client.WebTestsCreateOrUpdate(ResourceGroupName, SubscriptionId, Name, WebTestDefinitionBody, onOk, this, Pipeline);
+                    await this.Client.WebTestsCreateOrUpdate(ResourceGroupName, SubscriptionId, Name, _webTestDefinitionBody, onOk, this, Pipeline);
                     await ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Events.CmdletAfterAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 }
                 catch (Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.UndeclaredResponseException urexception)
                 {
-                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  ResourceGroupName=ResourceGroupName,SubscriptionId=SubscriptionId,Name=Name,body=WebTestDefinitionBody})
+                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  ResourceGroupName=ResourceGroupName,SubscriptionId=SubscriptionId,Name=Name,body=_webTestDefinitionBody})
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(urexception.Message) { RecommendedAction = urexception.Action }
                     });
@@ -629,12 +632,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
 
         /// <summary>a delegate that is called when the remote service returns 200 (OK).</summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest">Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest</see>
+        /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>
-        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest> response)
+        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest> response)
         {
             using( NoSynchronizationContext )
             {
@@ -646,7 +649,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Cmdlets
                     return ;
                 }
                 // onOk - response for 200 / application/json
-                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20180501Preview.IWebTest
+                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api20220615.IWebTest
                 WriteObject((await response));
             }
         }

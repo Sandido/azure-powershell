@@ -20,6 +20,7 @@ using Microsoft.Azure.Management.Network.Models;
 using System;
 using System.Management.Automation;
 using CNM = Microsoft.Azure.Commands.Network.Models;
+using MNM = Microsoft.Azure.Management.Network.Models;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
 
 namespace Microsoft.Azure.Commands.Network
@@ -55,8 +56,8 @@ namespace Microsoft.Azure.Commands.Network
             Mandatory = false,
             ParameterSetName = RouteServerParameterSetNames.ByRouteServerResourceId,
             HelpMessage = "Flag to allow branch to branch traffic for route server.")]
-        [ValidateNotNullOrEmpty]
-        public SwitchParameter AllowBranchToBranchTraffic { get; set; }
+        [PSDefaultValue(Value=null)]
+        public bool? AllowBranchToBranchTraffic { get; set; }
 
         [Parameter(
             ParameterSetName = RouteServerParameterSetNames.ByRouteServerResourceId,
@@ -66,6 +67,21 @@ namespace Microsoft.Azure.Commands.Network
         [ValidateNotNullOrEmpty]
         [ResourceIdCompleter("Microsoft.Network/virtualHubs")]
         public string ResourceId { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ParameterSetName = RouteServerParameterSetNames.ByRouteServerName,
+            HelpMessage = "Virtual Hub Routing Preference to route traffic")]
+        [Parameter(
+            Mandatory = false,
+            ParameterSetName = RouteServerParameterSetNames.ByRouteServerResourceId,
+            HelpMessage = "Virtual Hub Routing Preference to route traffic")]
+        [ValidateSet(
+            MNM.HubRoutingPreference.ExpressRoute,
+            MNM.HubRoutingPreference.VpnGateway,
+            MNM.HubRoutingPreference.ASPath,
+            IgnoreCase = true)]
+        public string HubRoutingPreference { get; set; }
 
         public override void Execute()
         {
@@ -79,7 +95,17 @@ namespace Microsoft.Azure.Commands.Network
             }
 
             var virtualHub = this.NetworkClient.NetworkManagementClient.VirtualHubs.Get(ResourceGroupName, RouteServerName);
-            virtualHub.AllowBranchToBranchTraffic = this.AllowBranchToBranchTraffic.IsPresent;
+
+            if (this.AllowBranchToBranchTraffic.HasValue)
+            {
+                virtualHub.AllowBranchToBranchTraffic = this.AllowBranchToBranchTraffic.Value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.HubRoutingPreference))
+            {
+                virtualHub.HubRoutingPreference = this.HubRoutingPreference;
+            }
+
             this.NetworkClient.NetworkManagementClient.VirtualHubs.CreateOrUpdate(this.ResourceGroupName, this.RouteServerName, virtualHub);
 
             var psVirtualHub = NetworkResourceManagerProfile.Mapper.Map<CNM.PSVirtualHub>(virtualHub);

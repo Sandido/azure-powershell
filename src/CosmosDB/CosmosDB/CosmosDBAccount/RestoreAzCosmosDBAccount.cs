@@ -13,6 +13,7 @@
 // ----------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,12 +22,16 @@ using Microsoft.Azure.Commands.CosmosDB.Helpers;
 using Microsoft.Azure.Commands.CosmosDB.Models;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
 using Microsoft.Azure.Management.CosmosDB.Models;
+using Microsoft.Extensions.Azure;
+using Newtonsoft.Json.Converters;
+using SDKModel = Microsoft.Azure.Management.CosmosDB.Models;
 
 namespace Microsoft.Azure.Commands.CosmosDB
 {
     [Cmdlet("Restore", ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "CosmosDBAccount", DefaultParameterSetName = NameParameterSet, SupportsShouldProcess = true), OutputType(typeof(PSDatabaseAccountGetResults))]
     public class RestoreAzCosmosDBAccount : AzureCosmosDBCmdletBase
     {
+        [Newtonsoft.Json.JsonConverter(typeof(IsoDateTimeConverter))]
         [Parameter(Mandatory = true, HelpMessage = Constants.RestoreTimestampHelpMessage)]
         public DateTime RestoreTimestampInUtc { get; set; }
 
@@ -49,8 +54,18 @@ namespace Microsoft.Azure.Commands.CosmosDB
         [Parameter(Mandatory = false, HelpMessage = Constants.DatabasesToRestoreHelpMessage)]
         public PSDatabaseToRestore[] DatabasesToRestore { get; set; }
 
+        [Parameter(Mandatory = false, HelpMessage = Constants.GremlinDatabasesToRestoreHelpMessage)]
+        public PSGremlinDatabaseToRestore[] GremlinDatabasesToRestore { get; set; }
+
+        [Parameter(Mandatory = false, HelpMessage = Constants.TablesToRestoreHelpMessage)]
+        public PSTablesToRestore TablesToRestore { get; set; }
+
         [Parameter(Mandatory = false, HelpMessage = Constants.AsJobHelpMessage)]
         public SwitchParameter AsJob { get; set; }
+
+        [Parameter(Mandatory = false, HelpMessage = Constants.PublicNetworkAccessHelpMessage)]
+        [PSArgumentCompleter(SDKModel.PublicNetworkAccess.Disabled, SDKModel.PublicNetworkAccess.Enabled)]
+        public string PublicNetworkAccess { get; set; }
 
         public override void ExecuteCmdlet()
         {
@@ -83,10 +98,15 @@ namespace Microsoft.Azure.Commands.CosmosDB
                     if (restorableAccount.CreationTime.HasValue &&
                         restorableAccount.CreationTime < utcRestoreDateTime)
                     {
-                        if (!restorableAccount.DeletionTime.HasValue || restorableAccount.DeletionTime > utcRestoreDateTime)
+                        if (restorableAccount.DeletionTime.HasValue && restorableAccount.DeletionTime >= utcRestoreDateTime)
                         {
                             sourceAccountToRestore = restorableAccount;
                             isSourceRestorableAccountDeleted = true;
+                            break;
+                        }
+                        else
+                        {
+                            sourceAccountToRestore = restorableAccount;
                             break;
                         }
                     }
@@ -102,16 +122,18 @@ namespace Microsoft.Azure.Commands.CosmosDB
             // Validate if source account is empty if the source account is a live account.
             if (!isSourceRestorableAccountDeleted)
             {
-                IEnumerable<DatabaseRestoreResource> restorableResources = null;
+                bool restorableResourcesNotFound = false;
                 if (sourceAccountToRestore.ApiType.Equals("Sql", StringComparison.OrdinalIgnoreCase))
                 {
                     try
                     {
-                        restorableResources = CosmosDBManagementClient.RestorableSqlResources.ListWithHttpMessagesAsync(
+                        IEnumerable<RestorableSqlResourcesGetResult> restorableResources = CosmosDBManagementClient.RestorableSqlResources.ListWithHttpMessagesAsync(
                             sourceAccountToRestore.Location,
                             sourceAccountToRestore.Name,
                             Location,
                             utcRestoreDateTime.ToString()).GetAwaiter().GetResult().Body;
+
+                        restorableResourcesNotFound = restorableResources == null || !restorableResources.Any();
                     }
                     catch (Exception)
                     {
@@ -123,11 +145,49 @@ namespace Microsoft.Azure.Commands.CosmosDB
                 {
                     try
                     {
-                        restorableResources = CosmosDBManagementClient.RestorableMongodbResources.ListWithHttpMessagesAsync(
+                        IEnumerable<RestorableMongodbResourcesGetResult> restorableResources = CosmosDBManagementClient.RestorableMongodbResources.ListWithHttpMessagesAsync(
                         sourceAccountToRestore.Location,
                         sourceAccountToRestore.Name,
                         Location,
                         utcRestoreDateTime.ToString()).GetAwaiter().GetResult().Body;
+
+                        restorableResourcesNotFound = restorableResources == null || !restorableResources.Any();
+                    }
+                    catch (Exception)
+                    {
+                        WriteWarning($"No database accounts found with matching account name {SourceDatabaseAccountName} that was alive at given utc-timestamp {utcRestoreDateTime} in location {Location}");
+                        return;
+                    }
+                }
+                else if (sourceAccountToRestore.ApiType.Equals("Gremlin, Sql", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        IEnumerable<RestorableGremlinResourcesGetResult> restorableResources = CosmosDBManagementClient.RestorableGremlinResources.ListWithHttpMessagesAsync(
+                        sourceAccountToRestore.Location,
+                        sourceAccountToRestore.Name,
+                        Location,
+                        utcRestoreDateTime.ToString()).GetAwaiter().GetResult().Body;
+
+                        restorableResourcesNotFound = restorableResources == null || !restorableResources.Any();
+                    }
+                    catch (Exception)
+                    {
+                        WriteWarning($"No database accounts found with matching account name {SourceDatabaseAccountName} that was alive at given utc-timestamp {utcRestoreDateTime} in location {Location}");
+                        return;
+                    }
+                }
+                else if (sourceAccountToRestore.ApiType.Equals("Table, Sql", StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        IEnumerable<RestorableTableResourcesGetResult> restorableResources = CosmosDBManagementClient.RestorableTableResources.ListWithHttpMessagesAsync(
+                        sourceAccountToRestore.Location,
+                        sourceAccountToRestore.Name,
+                        Location,
+                        utcRestoreDateTime.ToString()).GetAwaiter().GetResult().Body;
+
+                        restorableResourcesNotFound = restorableResources == null || !restorableResources.Any();
                     }
                     catch (Exception)
                     {
@@ -141,7 +201,7 @@ namespace Microsoft.Azure.Commands.CosmosDB
                     return;
                 }
 
-                if (restorableResources == null || !restorableResources.Any())
+                if (restorableResourcesNotFound)
                 {
                     WriteWarning($"Database account {SourceDatabaseAccountName} contains no restorable resources in location {Location} at given restore timestamp {utcRestoreDateTime} in location {Location}");
                     return;
@@ -153,7 +213,9 @@ namespace Microsoft.Azure.Commands.CosmosDB
             {
                 RestoreSource = sourceAccountToRestore.Id,
                 RestoreTimestampInUtc = utcRestoreDateTime,
-                DatabasesToRestore = DatabasesToRestore
+                DatabasesToRestore = DatabasesToRestore,
+                TablesToRestore = TablesToRestore,
+                GremlinDatabasesToRestore = GremlinDatabasesToRestore
             };
 
             Collection<Location> LocationCollection = new Collection<Location>();
@@ -170,7 +232,8 @@ namespace Microsoft.Azure.Commands.CosmosDB
             {
                 Kind = apiKind,
                 CreateMode = CreateMode.Restore,
-                RestoreParameters = restoreParameters.ToSDKModel()
+                RestoreParameters = restoreParameters.ToSDKModel(),
+                PublicNetworkAccess = PublicNetworkAccess
             };
 
             if (ShouldProcess(TargetDatabaseAccountName,

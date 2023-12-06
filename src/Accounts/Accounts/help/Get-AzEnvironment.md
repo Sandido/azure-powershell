@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Accounts.dll-Help.xml
 Module Name: Az.Accounts
-online version: https://docs.microsoft.com/powershell/module/az.accounts/get-azenvironment
+online version: https://learn.microsoft.com/powershell/module/az.accounts/get-azenvironment
 schema: 2.0.0
 ---
 
@@ -9,6 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 Get endpoints and metadata for an instance of Azure services.
+`GalleryUrl` will be removed from ArmMetadata and so Azure PowerShell will no longer provide for its value in `PSAzureEnvironment`. Currently `GalleryUrl` is not used in Azure PowerShell products. Please do not reply on `GalleryUrl` anymore. 
 
 ## SYNTAX
 
@@ -30,7 +31,6 @@ Get-AzEnvironment
 Name              Resource Manager Url                  ActiveDirectory Authority          Type
 ----              --------------------                  -------------------------          ----
 AzureUSGovernment https://management.usgovcloudapi.net/ https://login.microsoftonline.us/  Built-in
-AzureGermanCloud  https://management.microsoftazure.de/ https://login.microsoftonline.de/  Built-in
 AzureCloud        https://management.azure.com/         https://login.microsoftonline.com/ Built-in
 AzureChinaCloud   https://management.chinacloudapi.cn/  https://login.chinacloudapi.cn/    Built-in
 ```

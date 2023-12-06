@@ -1,89 +1,47 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Peering.dll-Help.xml
+external help file:
 Module Name: Az.Peering
-online version: https://docs.microsoft.com/powershell/module/az.peering/update-azpeering
+online version: https://learn.microsoft.com/powershell/module/az.peering/update-azpeering
 schema: 2.0.0
 ---
 
 # Update-AzPeering
 
 ## SYNOPSIS
-Sets the Peering. Use this Command in conjunction with `Set-AzDirectPeeringConnectionObject` or `Set-AzExchangePeeringConnectionObject`.
+Updates tags for a peering with the specified name under the given subscription and resource group.
 
 ## SYNTAX
 
-### DefaultExchange (Default)
+### UpdateExpanded (Default)
 ```
-Update-AzPeering -InputObject <PSPeering> [[-ExchangeConnection] <PSExchangeConnection[]>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### DefaultDirect
-```
-Update-AzPeering -InputObject <PSPeering> [-DirectConnection <PSDirectConnection[]>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-AzPeering -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>] [-Tag <Hashtable>]
+ [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
-### ByResourceIdDirect
+### UpdateViaIdentityExpanded
 ```
-Update-AzPeering -ResourceId <String> [-DirectConnection <PSDirectConnection[]>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### ByResourceIdExchange
-```
-Update-AzPeering -ResourceId <String> [-ExchangeConnection] <PSExchangeConnection[]>
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### Direct
-```
-Update-AzPeering [-ResourceGroupName] <String> [-Name] <String> [-DirectConnection <PSDirectConnection[]>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### Exchange
-```
-Update-AzPeering [-ResourceGroupName] <String> [-Name] <String> [-ExchangeConnection] <PSExchangeConnection[]>
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-AzPeering -InputObject <IPeeringIdentity> [-Tag <Hashtable>] [-DefaultProfile <PSObject>] [-Confirm]
+ [-WhatIf] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Sets the PSPeering Object
+Updates tags for a peering with the specified name under the given subscription and resource group.
 
 ## EXAMPLES
 
-### Example 1: Update Md5 Authentication Key
+### Example 1: Update peering tags
 ```powershell
-$peering = Get-AzPeering -ResourceGroupName rg1 -Name "ContosoPeering"  
-$peering.Connections[0] = $peering.Connections[0] | Set-AzPeeringDirectConnectionObject -MD5AuthenticationKey $hash
-$peering | Update-AzPeering
-```
-
-Sets the Md5 Authentication Key
-
-### Example 2: Update IPv4 Address for Exchange Peering
-```powershell
-$peering = Get-AzPeering -ResourceGroupName rg1 -Name "ContosoExchangePeering" 
-$peering.Connections[0] = $peering.Connections[0] | Set-AzPeeringExchangeConnectionObject -PeerSessionIPv4Address $ipv4Address
-Update-AzPeering -ResourceId $peering.Id $peering.Connections
+$tags=@{hello='world'}
+Update-AzPeering -Name DemoPeering -ResourceGroupName DemoRG -Tag $tags
 ```
 
 ```output
-Name              : ContosoExchangePeering
-Sku.Name          : Basic_Exchange_Free
-Kind              : Exchange
-Connections       : {13, 13}
-PeerAsn.Id        : /subscriptions//providers/Microsoft.Peering/peerAsns/PeerName6935
-PeeringLocation   : Seattle
-ProvisioningState : Succeeded
-Location          : West US 2
-Id                : /subscriptions//resourceGroups/rg1/providers/Microsoft.Peering/peerings/ContosoExchangePeering
-Type              : Microsoft.Peering/peerings
-Tags              : {}
+Name        SkuName             Kind   PeeringLocation ProvisioningState Location
+----        -------             ----   --------------- ----------------- --------
+DemoPeering Premium_Direct_Free Direct Dallas          Succeeded         South Central US
 ```
 
-Sets the Ipv4 Address for an Exchange Peering using ResourceId
+Updates the specified peering's tags
 
 ## PARAMETERS
 
@@ -91,65 +49,24 @@ Sets the Ipv4 Address for an Exchange Peering using ResourceId
 The credentials, account, tenant, and subscription used for communication with Azure.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DirectConnection
-Create a new Direct connections using the New-AzDirectPeeringConnectionObject and pipe to this command.
-
-```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSDirectConnection[]
-Parameter Sets: DefaultDirect, ByResourceIdDirect, Direct
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExchangeConnection
-Create a new Exchange connection using the New-AzExchangePeeringConnectionObject and pipe to this command.
-
-```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSExchangeConnection[]
-Parameter Sets: DefaultExchange
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSExchangeConnection[]
-Parameter Sets: ByResourceIdExchange, Exchange
-Aliases:
-
-Required: True
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -InputObject
-The Peering object 
+Identity Parameter
+To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
-Parameter Sets: DefaultExchange, DefaultDirect
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
+Parameter Sets: UpdateViaIdentityExpanded
 Aliases:
 
 Required: True
@@ -160,47 +77,62 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-The unique name of the PSPeering.
+The name of the peering.
 
 ```yaml
 Type: System.String
-Parameter Sets: Direct, Exchange
-Aliases:
+Parameter Sets: UpdateExpanded
+Aliases: PeeringName
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ResourceGroupName
-The resource group name.
+The name of the resource group.
 
 ```yaml
 Type: System.String
-Parameter Sets: Direct, Exchange
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ResourceId
-The resource id string name.
-
-```yaml
-Type: System.String
-Parameter Sets: ByResourceIdDirect, ByResourceIdExchange
+Parameter Sets: UpdateExpanded
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SubscriptionId
+The Azure subscription ID.
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: (Get-AzContext).Subscription.Id
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Tag
+Gets or sets the tags, a dictionary of descriptors arm object
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -240,14 +172,32 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
-
-### System.String
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.IPeeringIdentity
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.Api20221001.IPeering
 
 ## NOTES
 
+ALIASES
+
+COMPLEX PARAMETER PROPERTIES
+
+To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
+
+
+`INPUTOBJECT <IPeeringIdentity>`: Identity Parameter
+  - `[ConnectionMonitorTestName <String>]`: The name of the connection monitor test
+  - `[Id <String>]`: Resource identity path
+  - `[PeerAsnName <String>]`: The peer ASN name.
+  - `[PeeringName <String>]`: The name of the peering.
+  - `[PeeringServiceName <String>]`: The name of the peering service.
+  - `[PrefixName <String>]`: The name of the prefix.
+  - `[RegisteredAsnName <String>]`: The name of the registered ASN.
+  - `[RegisteredPrefixName <String>]`: The name of the registered prefix.
+  - `[ResourceGroupName <String>]`: The name of the resource group.
+  - `[SubscriptionId <String>]`: The Azure subscription ID.
+
 ## RELATED LINKS
+

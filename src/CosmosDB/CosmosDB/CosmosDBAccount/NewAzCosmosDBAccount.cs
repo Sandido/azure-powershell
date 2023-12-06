@@ -60,6 +60,11 @@ namespace Microsoft.Azure.Commands.CosmosDB
         [Parameter(Mandatory = false, HelpMessage = Constants.LocationObjectHelpMessage)]
         [ValidateNotNullOrEmpty]
         public PSLocation[] LocationObject { get; set; }
+        
+        // As of 03082022, using this list only for Mongo Accounts >= 3.6
+        [Parameter(Mandatory = false, HelpMessage = Constants.LocationHelpMessage)]
+        [ValidateNotNullOrEmpty]
+        public string[] Capabilities { get; set; }
 
         public override void ExecuteCmdlet()
         {
@@ -118,12 +123,6 @@ namespace Microsoft.Azure.Commands.CosmosDB
                 }
             }
 
-            if (string.IsNullOrEmpty(writeLocation))
-            {
-                WriteWarning("Cannot create Account without a Write Location.");
-                return;
-            }
-
             Dictionary<string, string> tags = new Dictionary<string, string>();
             if (Tag != null)
             {
@@ -171,10 +170,12 @@ namespace Microsoft.Azure.Commands.CosmosDB
             databaseAccountCreateUpdateParameters.EnableAnalyticalStorage = EnableAnalyticalStorage;
             Collection<string> networkAclBypassResourceId = NetworkAclBypassResourceId != null ? new Collection<string>(NetworkAclBypassResourceId) : new Collection<string>();
             databaseAccountCreateUpdateParameters.NetworkAclBypassResourceIds = networkAclBypassResourceId;
+            databaseAccountCreateUpdateParameters.EnableBurstCapacity = EnableBurstCapacity;
+            databaseAccountCreateUpdateParameters.MinimalTlsVersion = MinimalTlsVersion;
 
             if (IpRule != null && IpRule.Length > 0)
             {
-                databaseAccountCreateUpdateParameters.IpRules = base.PopulateIpRules(IpRule);
+                databaseAccountCreateUpdateParameters.IPRules = base.PopulateIpRules(IpRule);
             }
 
             if (KeyVaultKeyUri != null)
@@ -192,12 +193,29 @@ namespace Microsoft.Azure.Commands.CosmosDB
             {
                 if (ApiKind.Equals("MongoDB", StringComparison.OrdinalIgnoreCase))
                 {
+                    bool isServerVersion32 = false;
+
                     if (ServerVersion != null)
                     {
                         databaseAccountCreateUpdateParameters.ApiProperties = new ApiProperties
                         {
                             ServerVersion = ServerVersion
                         };
+
+                        isServerVersion32 = String.Equals("3.2", ServerVersion);
+                    }
+
+                    // Add Mongo Capabilities for ServerVersion > 3.2
+                    if (!isServerVersion32 && Capabilities != null && Capabilities.Length > 0)
+                    {
+                        List<Capability> capabilitiesList = new List<Capability>();
+
+                        foreach (string capability in Capabilities)
+                        {
+                            capabilitiesList.Add(new Capability { Name = capability });
+                        }
+
+                        databaseAccountCreateUpdateParameters.Capabilities = capabilitiesList;
                     }
                 }
                 else
@@ -228,22 +246,45 @@ namespace Microsoft.Azure.Commands.CosmosDB
 
             if (!string.IsNullOrEmpty(BackupPolicyType))
             {
-                PSBackupPolicy backupPolicy = new PSBackupPolicy()
+                if (BackupPolicyType.Equals(PSBackupPolicy.PeriodicModeBackupType, StringComparison.OrdinalIgnoreCase))
                 {
-                    BackupType = BackupPolicyType,
-                    BackupIntervalInMinutes = BackupIntervalInMinutes,
-                    BackupRetentionIntervalInHours = BackupRetentionIntervalInHours,
-                    BackupStorageRedundancy = BackupStorageRedundancy
-                };
+                    if (!string.IsNullOrEmpty(ContinuousTier))
+                    {
+                        WriteWarning("Cannot accept ContinuousBackupTier parameter for PeriodicModeBackupType");
+                        return;
+                    }
 
-                if (BackupPolicyType.Equals(PSBackupPolicy.ContinuousModeBackupType, StringComparison.OrdinalIgnoreCase) &&
-                    (BackupIntervalInMinutes.HasValue || BackupRetentionIntervalInHours.HasValue))
+                    databaseAccountCreateUpdateParameters.BackupPolicy = new PeriodicModeBackupPolicy()
+                    {
+                        PeriodicModeProperties = new PeriodicModeProperties()
+                        {
+                            BackupIntervalInMinutes = BackupIntervalInMinutes,
+                            BackupRetentionIntervalInHours = BackupRetentionIntervalInHours,
+                            BackupStorageRedundancy = BackupStorageRedundancy
+                        }
+                    };
+                }
+                else if (BackupPolicyType.Equals(PSBackupPolicy.ContinuousModeBackupType, StringComparison.OrdinalIgnoreCase))
                 {
-                    WriteWarning("Cannot accept BackupInterval or BackupRetention parameters for ContinuousModeBackupType");
+                    if (BackupIntervalInMinutes.HasValue || BackupRetentionIntervalInHours.HasValue || !string.IsNullOrEmpty(BackupStorageRedundancy))
+                    {
+                        WriteWarning("Cannot accept BackupInterval or BackupRetention or BackupStorageRedundancy parameters for ContinuousModeBackupType");
+                        return;
+                    }
+
+                    databaseAccountCreateUpdateParameters.BackupPolicy = new ContinuousModeBackupPolicy
+                    {
+                        ContinuousModeProperties = new ContinuousModeProperties()
+                        {
+                            Tier = ContinuousTier
+                        }
+                    };
+                }
+                else
+                {
+                    WriteWarning("Invalid BackupPolicyType provided");
                     return;
                 }
-
-                databaseAccountCreateUpdateParameters.BackupPolicy = backupPolicy.ToSDKModel();
             }
             else if (BackupIntervalInMinutes.HasValue || BackupRetentionIntervalInHours.HasValue || !string.IsNullOrEmpty(BackupStorageRedundancy))
             {

@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Sql.dll-Help.xml
 Module Name: Az.Sql
 ms.assetid: A1327BC6-F090-490E-8DC2-2CC48A21C2C0
-online version: https://docs.microsoft.com/powershell/module/az.sql/new-azsqldatabaseimport
+online version: https://learn.microsoft.com/powershell/module/az.sql/new-azsqldatabaseimport
 schema: 2.0.0
 ---
 
@@ -102,8 +102,8 @@ The acceptable values for this parameter are:
 SQL authentication.
 Set the *AdministratorLogin* and *AdministratorLoginPassword* parameters to the SQL administrator username and password. 
 - ADPassword.
-Azure Active Directory authentication.
-Set *AdministratorLogin* and *AdministratorLoginPassword* to the Azure Active Directory administrator username and password.
+Microsoft Entra authentication.
+Set *AdministratorLogin* and *AdministratorLoginPassword* to the Microsoft Entra administrator username and password.
 This parameter is only available on SQL Database V12 servers.
 
 ```yaml
@@ -378,5 +378,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 [New-AzSqlDatabaseExport](./New-AzSqlDatabaseExport.md)
 
-[SQL Database Documentation](https://docs.microsoft.com/azure/sql-database/)
-
+[SQL Database Documentation](https://learn.microsoft.com/azure/sql-database/)

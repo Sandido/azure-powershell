@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Batch.dll-Help.xml
 Module Name: Az.Batch
-online version: https://docs.microsoft.com/powershell/module/az.batch/get-azbatchcommandnodeextension
+online version: https://learn.microsoft.com/powershell/module/az.batch/get-azbatchcomputenodeextension
 schema: 2.0.0
 ---
 
@@ -33,8 +33,10 @@ If an extension name is provided, a single extension with a matching name is ret
 
 ### Example 1 Get all extensions from a compute node.
 ```powershell
-PS C:\> Get-AzBatchComputeNodeExtension "testPool" "testNode" -BatchContext $context
+Get-AzBatchComputeNodeExtension "testPool" "testNode" -BatchContext $context
+```
 
+```output
 InstanceView                                                    ProvisioningState VmExtension
 ------------                                                    ----------------- -----------
 Microsoft.Azure.Commands.Batch.Models.PSVMExtensionInstanceView Succeeded         Microsoft.Azure.Commands.Batch.Models.PSVMExtension
@@ -44,8 +46,10 @@ Microsoft.Azure.Commands.Batch.Models.PSVMExtensionInstanceView Failed          
 ### Example 2 Get a specific extension from a compute node.
 
 ```powershell
-PS C:\> Get-AzBatchComputeNodeExtension "testPool" "testNode" "secretext" -BatchContext $context
+Get-AzBatchComputeNodeExtension "testPool" "testNode" "secretext" -BatchContext $context
+```
 
+```output
 InstanceView                                                    ProvisioningState VmExtension
 ------------                                                    ----------------- -----------
 Microsoft.Azure.Commands.Batch.Models.PSVMExtensionInstanceView Failed            Microsoft.Azure.Commands.Batch.Models.PSVMExtension
@@ -55,7 +59,7 @@ Microsoft.Azure.Commands.Batch.Models.PSVMExtensionInstanceView Failed          
 
 ### -BatchContext
 The BatchAccountContext instance to use when interacting with the Batch service.
-If you use the Get-AzBatchAccount cmdlet to get your BatchAccountContext, then Azure Active Directory authentication will be used when interacting with the Batch service.
+If you use the Get-AzBatchAccount cmdlet to get your BatchAccountContext, then Microsoft Entra authentication will be used when interacting with the Batch service.
 To use shared key authentication instead, use the Get-AzBatchAccountKeys cmdlet to get a BatchAccountContext object with its access keys populated.
 When using shared key authentication, the primary access key is used by default.
 To change the key to use, set the BatchAccountContext.KeyInUse property.

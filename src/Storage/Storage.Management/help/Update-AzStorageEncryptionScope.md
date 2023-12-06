@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Storage.Management.dll-Help.xml
 Module Name: Az.Storage
-online version: https://docs.microsoft.com/powershell/module/az.storage/update-azstorageencryptionscope
+online version: https://learn.microsoft.com/powershell/module/az.storage/update-azstorageencryptionscope
 schema: 2.0.0
 ---
 
@@ -58,10 +58,12 @@ The **Update-AzStorageEncryptionScope** cmdlet modifies an encryption scope for 
 ## EXAMPLES
 
 ### Example 1: Disable an encryption scope
+```powershell
+Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -State Disabled
 ```
-PS C:\> Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -State Disabled 
 
-   ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
+```output
+ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
 
 Name      State    Source            KeyVaultKeyUri RequireInfrastructureEncryption                                         
 ----      -----    ------            -------------- -------------------------------                                         
@@ -71,10 +73,12 @@ testscope Disabled Microsoft.Storage
 This command disables an encryption scope.
 
 ### Example 2: Enable an encryption scope
+```powershell
+Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -State Enabled
 ```
-PS C:\> Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -State Enabled 
 
-   ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
+```output
+ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
 
 Name      State    Source            KeyVaultKeyUri RequireInfrastructureEncryption                                                                           
 ----      -----    ------            -------------- -------------------------------                                                                          
@@ -84,10 +88,12 @@ testscope Enabled  Microsoft.Storage
 This command enables an encryption scope.
 
 ### Example 3: Update an encryption scope to use Storage Encryption
+```powershell
+Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -StorageEncryption
 ```
-PS C:\> Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount"  -EncryptionScopeName testscope -StorageEncryption
 
-   ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
+```output
+ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
 
 Name      State    Source            KeyVaultKeyUri RequireInfrastructureEncryption                                          
 ----      -----    ------            -------------- -------------------------------                                         
@@ -97,10 +103,12 @@ testscope Enabled  Microsoft.Storage
 This command updates an encryption scope to use Storage Encryption.
 
 ### Example 4: Update an encryption scope to use Keyvault Encryption
+```powershell
+Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -EncryptionScopeName testscope -KeyvaultEncryption -KeyUri "https://keyvalutname.vault.azure.net:443/keys/keyname/34a0ba563b4243d9a0ef2b1d3c0c7d57"
 ```
-PS C:\> Update-AzStorageEncryptionScope -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -EncryptionScopeName testscope -KeyvaultEncryption -KeyUri "https://keyvalutname.vault.azure.net:443/keys/keyname/34a0ba563b4243d9a0ef2b1d3c0c7d57"
 
-   ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
+```output
+ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
 
 Name      State    Source             KeyVaultKeyUri                                                                          RequireInfrastructureEncryption 
 ----      -----    ------             --------------                                                                          -------------------------------
@@ -295,7 +303,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

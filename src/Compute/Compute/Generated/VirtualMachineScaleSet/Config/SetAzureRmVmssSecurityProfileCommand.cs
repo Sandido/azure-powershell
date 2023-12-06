@@ -28,6 +28,7 @@ using Microsoft.Azure.Commands.Compute.Automation.Models;
 using Microsoft.Azure.Management.Compute.Models;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
+using Microsoft.Azure.Commands.Compute.Common;
 
 namespace Microsoft.Azure.Commands.Compute.Automation
 {
@@ -43,11 +44,11 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         public PSVirtualMachineScaleSet VirtualMachineScaleSet { get; set; }
 
         [Parameter(
-            HelpMessage = "Parameter to toggle vTPM on the VMs of the scale set",
+            HelpMessage = "Parameter to set the SecurityType on the VMs of the scale set. Possible values are: TrustedLaunch, ConfidentialVM",
             Mandatory = false,
             Position = 1,
             ValueFromPipelineByPropertyName = true)]
-        [PSArgumentCompleter("TrustedLaunch")]
+        [PSArgumentCompleter("TrustedLaunch", "ConfidentialVM", "Standard")]
         public string SecurityType { get; set; }
 
         protected override void ProcessRecord()
@@ -72,6 +73,5 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             }
             WriteObject(this.VirtualMachineScaleSet);
         }
-
     }
 }

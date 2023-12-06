@@ -17,6 +17,7 @@ namespace Microsoft.Azure.Commands.Network.Models
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using WindowsAzure.Commands.Common.Attributes;
+    using Microsoft.Azure.Management.Network.Models;
 
     public class PSVirtualNetworkGateway : PSTopLevelResource
     {
@@ -47,6 +48,8 @@ namespace Microsoft.Azure.Commands.Network.Models
         [Ps1Xml(Label = "Sku Name", Target = ViewControl.Table, ScriptBlock = "$_.Sku.Name")]
         public PSVirtualNetworkGatewaySku Sku { get; set; }
 
+        public List<PSVirtualNetworkGatewayPolicyGroup> VirtualNetworkGatewayPolicyGroups { get; set; }
+
         public PSVpnClientConfiguration VpnClientConfiguration { get; set; }
 
         public PSBgpSettings BgpSettings { get; set; }
@@ -55,15 +58,45 @@ namespace Microsoft.Azure.Commands.Network.Models
 
         public string VpnGatewayGeneration { get; set; }
 
+        [Ps1Xml(Target = ViewControl.Table)]
+        public PSExtendedLocation ExtendedLocation { get; set; }
+
+        [Ps1Xml(Target = ViewControl.Table)]
+        public string VNetExtendedLocationResourceId { get; set; }
+
         public List<PSVirtualNetworkGatewayNatRule> NatRules { get; set; }
 
         [Ps1Xml(Target = ViewControl.Table)]
         public bool EnableBgpRouteTranslationForNat { get; set; }
 
+        [Ps1Xml(Target = ViewControl.Table)]
+        public string AdminState { get; set; }
+
+        [Ps1Xml(Target = ViewControl.Table)]
+        public bool AllowRemoteVnetTraffic { get; set; }
+
+        [Ps1Xml(Target = ViewControl.Table)]
+        public bool AllowVirtualWanTraffic { get; set; }
+
+        [Ps1Xml(Label = "AutoScaleConfiguration", Target = ViewControl.Table)]
+        public PSVirtualNetworkGatewayAutoscaleConfiguration AutoScaleConfiguration { get; set; }
+
         [JsonIgnore]
         public string IpConfigurationsText
         {
             get { return JsonConvert.SerializeObject(IpConfigurations, Formatting.Indented, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }); }
+        }
+
+        [JsonIgnore]
+        public string ExtendedLocationText
+        {
+            get { return JsonConvert.SerializeObject(ExtendedLocation, Formatting.Indented, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }); }
+        }
+
+        [JsonIgnore]
+        public string VNetExtendedLocationResourceIdText
+        {
+            get { return JsonConvert.SerializeObject(VNetExtendedLocationResourceId, Formatting.Indented, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }); }
         }
 
         [JsonIgnore]
@@ -100,6 +133,12 @@ namespace Microsoft.Azure.Commands.Network.Models
         public string CustomRoutesText
         {
             get { return JsonConvert.SerializeObject(CustomRoutes, Formatting.Indented, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }); }
+        }
+
+        [JsonIgnore]
+        public string AutoScaleConfigurationText
+        {
+            get { return JsonConvert.SerializeObject(AutoScaleConfiguration, Formatting.Indented, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }); }
         }
     }
 }

@@ -37,6 +37,8 @@ namespace Microsoft.WindowsAzure.Commands.Storage.Common
         /// <param name="startTime">start time of the policy</param>
         /// <param name="expiryTime">end time of the policy</param>
         /// <param name="permission">the permission of the policy</param>
+        /// <param name="noStartTime"></param>
+        /// <param name="noExpiryTime"></param>
         internal static void SetupAccessPolicy<T>(T policy, DateTime? startTime, DateTime? expiryTime, string permission, bool noStartTime = false, bool noExpiryTime = false)
         {
             if (!(typeof(T) == typeof(SharedAccessTablePolicy) ||
@@ -199,6 +201,8 @@ namespace Microsoft.WindowsAzure.Commands.Storage.Common
             }
 
             var accessPolicy = (identifier).GetType().GetProperty("AccessPolicy").GetValue(identifier);
+            string policyStartsOn = typeof(T) == typeof(QueueSignedIdentifier) ? "StartsOn" : "PolicyStartsOn";
+            string policyExpiresOn = typeof(T) == typeof(QueueSignedIdentifier) ? "ExpiresOn" : "PolicyExpiresOn";
 
             return PowerShellUtilities.ConstructPSObject(
                 typeof(PSObject).FullName,
@@ -207,30 +211,32 @@ namespace Microsoft.WindowsAzure.Commands.Storage.Common
                 "Permissions",
                 (accessPolicy).GetType().GetProperty("Permissions").GetValue(accessPolicy) is null ? null: (accessPolicy).GetType().GetProperty("Permissions").GetValue(accessPolicy).ToString(),
                 "StartTime",
-                (accessPolicy).GetType().GetProperty("PolicyStartsOn").GetValue(accessPolicy),
+                (accessPolicy).GetType().GetProperty(policyStartsOn).GetValue(accessPolicy),
                 "ExpiryTime",
-                (accessPolicy).GetType().GetProperty("PolicyExpiresOn").GetValue(accessPolicy));
+                (accessPolicy).GetType().GetProperty(policyExpiresOn).GetValue(accessPolicy));
         }
 
         /// <summary>
-        /// Order Blob permission
+        /// Sort characters of rawPermission in the order of fullPermission
         /// </summary>
-        public static string OrderBlobPermission(string rawPermission)
+        /// <param name="fullPermission"></param>
+        /// <param name="rawPermission"></param>
+        /// <returns></returns>
+        internal static string OrderPermission(string fullPermission, string rawPermission)
         {
-            string fullBlobPermission = "racwdxlti";
-            string OrderedPermission = "";
+            string orderedPermission = "";
             int rawLength = rawPermission.Length;
-            foreach (char c in fullBlobPermission)
+            foreach (char c in fullPermission)
             {
                 if (rawPermission.Contains(c.ToString()))
                 {
-                    OrderedPermission = OrderedPermission + c.ToString();
+                    orderedPermission += c.ToString();
                     rawLength--;
                 }
             }
             if (rawLength == 0)
             {
-                return OrderedPermission;
+                return orderedPermission;
             }
             else // some permission in rawstringLength not in current full permission list, so can't order. will use the raw permission string to try best to set permission.
             {
@@ -238,5 +244,22 @@ namespace Microsoft.WindowsAzure.Commands.Storage.Common
             }
         }
 
+        /// <summary>
+        /// Order Blob permission
+        /// </summary>
+        public static string OrderBlobPermission(string rawPermission)
+        {
+            string fullBlobPermission = "racwdxyltfmeopi";
+            return OrderPermission(fullBlobPermission, rawPermission);
+        }
+
+        /// <summary>
+        /// Order Queue permission
+        /// </summary>
+        public static string OrderQueuePermission(string rawPermission)
+        {
+            string fullQueuePermission = "raup";
+            return OrderPermission(fullQueuePermission, rawPermission);
+        }
     }
 }

@@ -1,144 +1,55 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Peering.dll-Help.xml
+external help file:
 Module Name: Az.Peering
-online version: https://docs.microsoft.com/powershell/module/az.peering/new-azpeering
+online version: https://learn.microsoft.com/powershell/module/az.peering/new-azpeering
 schema: 2.0.0
 ---
 
 # New-AzPeering
 
 ## SYNOPSIS
-Creates a new Peering ARM Resource
+Creates a new peering or updates an existing peering with the specified name under the given subscription and resource group.
 
 ## SYNTAX
 
-### Exchange (Default)
 ```
-New-AzPeering [-ResourceGroupName] <String> [-Name] <String> [-PeeringLocation] <String>
- [-PeerAsnResourceId] <String> -ExchangeConnection <PSExchangeConnection[]> [-Tag <Hashtable>] [-AsJob]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### ConvertLegacyPeering
-```
-New-AzPeering -InputObject <PSPeering> [-ResourceGroupName] <String> [-Name] <String>
- [-PeerAsnResourceId] <String> [-ExchangeConnection <PSExchangeConnection[]>]
- [-DirectConnection <PSDirectConnection[]>] [-Tag <Hashtable>] [-AsJob]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### Direct
-```
-New-AzPeering [-ResourceGroupName] <String> [-Name] <String> [-PeeringLocation] <String>
- -MicrosoftNetwork <String> [-PeerAsnResourceId] <String> -DirectConnection <PSDirectConnection[]>
- -Sku <String> [-Tag <Hashtable>] [-AsJob] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+New-AzPeering -Name <String> -ResourceGroupName <String> -Kind <Kind> -Location <String>
+ [-SubscriptionId <String>] [-DirectConnection <IDirectConnection[]>] [-DirectPeerAsnId <String>]
+ [-DirectPeeringType <DirectPeeringType>] [-ExchangeConnection <IExchangeConnection[]>]
+ [-ExchangePeerAsnId <String>] [-PeeringLocation <String>] [-Sku <String>] [-Tag <Hashtable>]
+ [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates an ARM Peering for the subscription. See [New-AzPeeringDirectConnectionObject](https://docs.microsoft.com/powershell/module/az.peering/new-azpeeringdirectconnectionobject) or [New-AzPeeringExchangeConnectionObject](https://docs.microsoft.com/powershell/module/az.peering/new-azpeeringexchangeconnectionobject) for more information on creating a connection object.
+Creates a new peering or updates an existing peering with the specified name under the given subscription and resource group.
 
 ## EXAMPLES
 
-### Create New Direct Peering
+### Example 1: Create a new direct peering object
 ```powershell
-#Gets the ASN
-$asn = Get-AzPeerAsn -Name Contoso
-#Gets the Direct Peering Location
-$location = Get-AzPeeringLocation Direct -PeeringLocation Seattle
-#Creates the ARM Resource
-New-AzPeering -Name ContosoSeattlePeering -ResourceGroupName testCarrier -PeeringLocation $location.PeeringLocation -PeerAsnResourceId $asn.Id -DirectConnection $connection
+$peerAsnId = "/subscriptions/{subId}/providers/Microsoft.Peering/peerAsns/ContosoEdgeTest"
+$directConnections = New-AzPeeringDirectConnectionObject -BandwidthInMbps 10000 -BgpSessionMaxPrefixesAdvertisedV4 20000
+
+New-AzPeering -Name TestPeeringPs -ResourceGroupName DemoRG -Kind Direct -Location "South Central US" -DirectConnection $directConnections -DirectPeeringType Cdn -DirectPeerAsnId $peerAsnId -PeeringLocation Dallas -Sku Premium_Direct_Unlimited
 ```
 
 ```output
-Name                 : ContosoSeattlePeering
-Sku.Name             : Basic_Direct_Free
-Kind                 : Direct
-Connections          : {99999}
-PeerAsn.Id           : /subscriptions//providers/Microsoft.Peering/peerAsns/Contoso
-UseForPeeringService : False
-PeeringLocation      : Seattle
-ProvisioningState    : Succeeded
-Location             : centralus
-Id                   : /subscriptions//resourceGroups/testCarrier/providers/Microsoft.Peering/peerings/ContosoSeattlePeering
-Type                 : Microsoft.Peering/peerings
-Tags                 : {}
+Name        SkuName                  Kind   PeeringLocation ProvisioningState Location
+----        -------                  ----   --------------- ----------------- --------
+TestPeering Premium_Direct_Unlimited Direct Dallas          Succeeded         South Central US
 ```
 
-Create a new Direct Peering with a single connection at the Seattle facility using PeerAsn 65000
-
-### Create New Exchange Peering
-```powershell
-#Gets the ASN
-$asn = Get-AzPeerAsn -Name Contoso
-#Gets the Exchange Peering Location
-$location = Get-AzPeeringLocation Exchange -PeeringLocation Seattle
-#Creates the ARM Resource
-New-AzPeering -Name ContosoSeattlePeering -ResourceGroupName testCarrier -PeeringLocation $location.PeeringLocation -PeerAsnResourceId $asn.Id -ExchangeConnection $connection
-```
-
-```output
-Name              : myExchangePeering1
-Sku.Name          : Basic_Exchange_Free
-Kind              : Exchange
-Connections       : {99999}
-PeerAsn.Id        : /subscriptions//providers/Microsoft.Peering/peerAsns/Contoso
-PeeringLocation   : Seattle
-ProvisioningState : Succeeded
-Location          : centralus
-Id                : /subscriptions//resourceGroups/test/providers/Microsoft.Peering/peerings/myExchangePeering1
-Type              : Microsoft.Peering/peerings
-Tags              : {}
-```
-
-Create a new exchange peering
-
-### Convert Legacy Peering to ARM Peering
-```powershell
-#Gets the ASN
-$asn = Get-AzPeerAsn -Name Contoso
-#Gets the legacy Peering
-$legacy = Get-AzLegacyPeering -PeeringLocation Amsterdam -Kind Direct | New-AzPeering -Name ContosoAmsterdamPeering -ResourceGroupName testCarrier -PeeringLocation $location.PeeringLocation -PeerAsnResourceId $asn.Id
-```
-
-```output
-Name              : ContosoAmsterdamPeering
-Sku.Name          : Basic_Direct_Free
-Kind              : Direct
-Connections       : {64}
-PeerAsn.Id        : /subscriptions//providers/Microsoft.Peering/peerAsns/Contoso
-PeeringLocation   : Seattle
-ProvisioningState : Succeeded
-Location          : centralus
-Id                : /subscriptions//resourceGroups/test/providers/Microsoft.Peering/peerings/ContosoAmsterdamPeering
-Type              : Microsoft.Peering/peerings
-Tags              : {}
-```
+Create a new direct peering object
 
 ## PARAMETERS
-
-### -AsJob
-Run in the background.
-
-```yaml
-Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -DefaultProfile
 The credentials, account, tenant, and subscription used for communication with Azure.
 
 ```yaml
-Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
@@ -148,11 +59,12 @@ Accept wildcard characters: False
 ```
 
 ### -DirectConnection
-Create a new Direct connections using the New-AzExchangePeeringConnection and pipe to this command.
+The set of connections that constitute a direct peering.
+To construct, see NOTES section for DIRECTCONNECTION properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSDirectConnection[]
-Parameter Sets: ConvertLegacyPeering
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.Api20221001.IDirectConnection[]
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -162,12 +74,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -DirectPeerAsnId
+The identifier of the referenced resource.
+
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSDirectConnection[]
-Parameter Sets: Direct
+Type: System.String
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DirectPeeringType
+The type of direct peering.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Support.DirectPeeringType
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -175,23 +105,12 @@ Accept wildcard characters: False
 ```
 
 ### -ExchangeConnection
-Create a new Exchange connections using the New-AzExchangePeeringConnection and pipe to this command.
+The set of connections that constitute an exchange peering.
+To construct, see NOTES section for EXCHANGECONNECTION properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSExchangeConnection[]
-Parameter Sets: Exchange
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSExchangeConnection[]
-Parameter Sets: ConvertLegacyPeering
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.Api20221001.IExchangeConnection[]
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -201,27 +120,42 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InputObject
-Use Get-AzLegacyPeering to retrieve this object.
+### -ExchangePeerAsnId
+The identifier of the referenced resource.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
-Parameter Sets: ConvertLegacyPeering
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Kind
+The kind of the peering.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Peering.Support.Kind
+Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: True (ByValue)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -MicrosoftNetwork
-Select the Microsoft network you want to peer with.
+### -Location
+The location of the resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Direct
+Parameter Sets: (All)
 Aliases:
 
 Required: True
@@ -232,72 +166,41 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-The unique name of the PSPeering.
+The name of the peering.
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
-Aliases:
+Aliases: PeeringName
 
 Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PeerAsnResourceId
-The Peer Asn Resource Id. Use Get-AzPeerAsn to retrieve the Id.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 3
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PeeringLocation
-The Physical Location Different from Azure Region.
-Use Get-AzPeeringLocation -Kind \<kind\> use City name as key.
-
-```yaml
-Type: System.String
-Parameter Sets: Exchange, Direct
-Aliases:
-
-Required: True
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ResourceGroupName
-The resource group name.
+The location of the peering.
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 0
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Sku
-Select Basic_Direct_Free or Premium_Direct_Free unless explicitly told to select another option.
+### -ResourceGroupName
+The name of the resource group.
 
 ```yaml
 Type: System.String
-Parameter Sets: Direct
+Parameter Sets: (All)
 Aliases:
 
 Required: True
@@ -307,8 +210,38 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Sku
+The name of the peering SKU.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases: SkuName
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SubscriptionId
+The Azure subscription ID.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: (Get-AzContext).Subscription.Id
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Tag
-The tags to associate with the Microsoft Peering Service.
+The resource tags.
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -338,7 +271,8 @@ Accept wildcard characters: False
 ```
 
 ### -WhatIf
-Shows what would happen if the cmdlet runs. The cmdlet is not run.
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -357,12 +291,47 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
-
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.PSPeering
+### Microsoft.Azure.PowerShell.Cmdlets.Peering.Models.Api20221001.IPeering
 
 ## NOTES
 
+ALIASES
+
+COMPLEX PARAMETER PROPERTIES
+
+To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
+
+
+`DIRECTCONNECTION <IDirectConnection[]>`: The set of connections that constitute a direct peering.
+  - `[BandwidthInMbps <Int32?>]`: The bandwidth of the connection.
+  - `[BgpSessionMaxPrefixesAdvertisedV4 <Int32?>]`: The maximum number of prefixes advertised over the IPv4 session.
+  - `[BgpSessionMaxPrefixesAdvertisedV6 <Int32?>]`: The maximum number of prefixes advertised over the IPv6 session.
+  - `[BgpSessionMd5AuthenticationKey <String>]`: The MD5 authentication key of the session.
+  - `[BgpSessionMicrosoftSessionIPv4Address <String>]`: The IPv4 session address on Microsoft's end.
+  - `[BgpSessionMicrosoftSessionIPv6Address <String>]`: The IPv6 session address on Microsoft's end.
+  - `[BgpSessionPeerSessionIPv4Address <String>]`: The IPv4 session address on peer's end.
+  - `[BgpSessionPeerSessionIPv6Address <String>]`: The IPv6 session address on peer's end.
+  - `[BgpSessionPrefixV4 <String>]`: The IPv4 prefix that contains both ends' IPv4 addresses.
+  - `[BgpSessionPrefixV6 <String>]`: The IPv6 prefix that contains both ends' IPv6 addresses.
+  - `[ConnectionIdentifier <String>]`: The unique identifier (GUID) for the connection.
+  - `[PeeringDbFacilityId <Int32?>]`: The PeeringDB.com ID of the facility at which the connection has to be set up.
+  - `[SessionAddressProvider <SessionAddressProvider?>]`: The field indicating if Microsoft provides session ip addresses.
+  - `[UseForPeeringService <Boolean?>]`: The flag that indicates whether or not the connection is used for peering service.
+
+`EXCHANGECONNECTION <IExchangeConnection[]>`: The set of connections that constitute an exchange peering.
+  - `[BgpSessionMaxPrefixesAdvertisedV4 <Int32?>]`: The maximum number of prefixes advertised over the IPv4 session.
+  - `[BgpSessionMaxPrefixesAdvertisedV6 <Int32?>]`: The maximum number of prefixes advertised over the IPv6 session.
+  - `[BgpSessionMd5AuthenticationKey <String>]`: The MD5 authentication key of the session.
+  - `[BgpSessionMicrosoftSessionIPv4Address <String>]`: The IPv4 session address on Microsoft's end.
+  - `[BgpSessionMicrosoftSessionIPv6Address <String>]`: The IPv6 session address on Microsoft's end.
+  - `[BgpSessionPeerSessionIPv4Address <String>]`: The IPv4 session address on peer's end.
+  - `[BgpSessionPeerSessionIPv6Address <String>]`: The IPv6 session address on peer's end.
+  - `[BgpSessionPrefixV4 <String>]`: The IPv4 prefix that contains both ends' IPv4 addresses.
+  - `[BgpSessionPrefixV6 <String>]`: The IPv6 prefix that contains both ends' IPv6 addresses.
+  - `[ConnectionIdentifier <String>]`: The unique identifier (GUID) for the connection.
+  - `[PeeringDbFacilityId <Int32?>]`: The PeeringDB.com ID of the facility at which the connection has to be set up.
+
 ## RELATED LINKS
+

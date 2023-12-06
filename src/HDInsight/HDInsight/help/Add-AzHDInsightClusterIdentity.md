@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.HDInsight.dll-Help.xml
 Module Name: Az.HDInsight
 ms.assetid: A40AB6AB-D3CB-4A6C-B614-0B22085759DA
-online version: https://docs.microsoft.com/powershell/module/az.hdinsight/add-azhdinsightclusteridentity
+online version: https://learn.microsoft.com/powershell/module/az.hdinsight/add-azhdinsightclusteridentity
 schema: 2.0.0
 ---
 
@@ -62,7 +62,7 @@ New-AzHDInsightClusterConfig `
             | Add-AzHDInsightClusterIdentity `
                 -AadTenantId $tenantId `
                 -ObjectId $objectId `
-                -ApplicationId $applicationId
+                -ApplicationId $applicationId `
                 -CertificateFilePath $certificateFilePath `
                 -CertificatePassword $certificatePassword `
             | New-AzHDInsightCluster `
@@ -83,7 +83,7 @@ This command adds Cluster Identity info to the cluster named your-hadoop-001, al
 ## PARAMETERS
 
 ### -AadTenantId
-Specifies the Azure AD Tenant ID that will be used when accessing Azure Data Lake Store.
+Specifies the Microsoft Entra tenant ID that will be used when accessing Azure Data Lake Store.
 
 ```yaml
 Type: System.Guid
@@ -191,7 +191,7 @@ Accept wildcard characters: False
 ```
 
 ### -ObjectId
-Specifies the Azure AD object ID (a GUID) of the Azure AD Service Principal that represents the cluster.
+Specifies the Microsoft Entra object ID (a GUID) of the Microsoft Entra service principal that represents the cluster.
 The cluster will use this when accessing Azure Data Lake Store.
 
 ```yaml
@@ -224,5 +224,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [New-AzHDInsightClusterConfig](./New-AzHDInsightClusterConfig.md)
-
-

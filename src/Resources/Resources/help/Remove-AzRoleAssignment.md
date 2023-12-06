@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Resources.dll-Help.xml
 Module Name: Az.Resources
 ms.assetid: 8C1D738C-825D-4718-AD2A-9CFEAA7DBD3B
-online version: https://docs.microsoft.com/powershell/module/az.resources/remove-azroleassignment
+online version: https://learn.microsoft.com/powershell/module/az.resources/remove-azroleassignment
 schema: 2.0.0
 ---
 
@@ -172,7 +172,7 @@ Accept wildcard characters: False
 ```
 
 ### -ObjectId
-Azure AD ObjectId of the user, group or service principal.
+Microsoft Entra ObjectId of the user, group or service principal.
 
 ```yaml
 Type: System.String
@@ -322,7 +322,7 @@ Accept wildcard characters: False
 ```
 
 ### -ServicePrincipalName
-The ServicePrincipalName of the Azure AD application
+The ServicePrincipalName of the Microsoft Entra application
 
 ```yaml
 Type: System.String
@@ -404,4 +404,3 @@ Keywords: azure, azurerm, arm, resource, management, manager, resource, group, t
 [Get-AzRoleAssignment](./Get-AzRoleAssignment.md)
 
 [Get-AzRoleDefinition](./Get-AzRoleDefinition.md)
-

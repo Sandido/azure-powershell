@@ -145,7 +145,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         ///     Translate Health errors to Powershell object.
         /// </summary>
-        /// <param name="ASREventSpecificDetails">Rest API ASREventSpecificDetails object.</param>
+        /// <param name="eventSpecificDetails">Rest API EventSpecificDetails object.</param>
         /// <returns></returns>
         private ASREventSpecificDetails TranslateEventSpecificDetails(
             EventSpecificDetails eventSpecificDetails)
@@ -160,7 +160,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         ///     Translate Health errors to Powershell object.
         /// </summary>
-        /// <param name="ASREventSpecificDetails">Rest API ASREventSpecificDetails object.</param>
+        /// <param name="eventSpecificDetails">Rest API EventProviderSpecificDetails object.</param>
         /// <returns></returns>
         private ASREventProviderSpecificDetails TranslateProviderSpecificEventDetails(
             EventProviderSpecificDetails eventSpecificDetails)
@@ -319,7 +319,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         /// <summary>
         ///     Converts REST API object to Powershell object.
         /// </summary>
-        /// <param name="eventSettings">Internal object for a monitoring event.</param>
+        /// <param name="eventDetails">Internal object for a monitoring event.</param>
         /// <returns>
         ///     REST API object for HyperVReplica E2A event provider specific
         ///     details.
@@ -436,7 +436,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
 
         /// <summary>
         ///     Gets or sets InMage Event type.
-        ///     Takes one of the values of <see cref="InMageMonitoringEventType" />.
+        ///     Takes one of the values of <see cref="EventType" />.
         /// </summary>
         public string EventType { get; set; }
 
@@ -470,7 +470,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public ASRInMageRcmEventDetails(InMageRcmEventDetails inMageRcmEventDetails)
         {
             this.ProtectedItemName = inMageRcmEventDetails.ProtectedItemName;
-            this.VmName = inMageRcmEventDetails.VmName;
+            this.VmName = inMageRcmEventDetails.VMName;
             this.LatestAgentVersion = inMageRcmEventDetails.LatestAgentVersion;
             this.JobId = inMageRcmEventDetails.JobId;
             this.FabricName = inMageRcmEventDetails.FabricName;
@@ -539,7 +539,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.SiteRecovery
         public ASRInMageRcmFailbackEventDetails(InMageRcmFailbackEventDetails inMageRcmFailbackEventDetails)
         {
             this.ProtectedItemName = inMageRcmFailbackEventDetails.ProtectedItemName;
-            this.VmName = inMageRcmFailbackEventDetails.VmName;
+            this.VmName = inMageRcmFailbackEventDetails.VMName;
             this.ApplianceName = inMageRcmFailbackEventDetails.ApplianceName;
             this.ServerType = inMageRcmFailbackEventDetails.ServerType;
             this.ComponentDisplayName = inMageRcmFailbackEventDetails.ComponentDisplayName;

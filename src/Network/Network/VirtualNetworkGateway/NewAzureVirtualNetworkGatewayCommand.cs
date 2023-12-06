@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace Microsoft.Azure.Commands.Network
 {
-    [Cmdlet("New", ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "VirtualNetworkGateway",SupportsShouldProcess = true,DefaultParameterSetName = VirtualNetworkGatewayParameterSets.Default),OutputType(typeof(PSVirtualNetworkGateway))]
+    [Cmdlet("New", ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "VirtualNetworkGateway", SupportsShouldProcess = true, DefaultParameterSetName = VirtualNetworkGatewayParameterSets.Default), OutputType(typeof(PSVirtualNetworkGateway))]
     public class NewAzureVirtualNetworkGatewayCommand : VirtualNetworkGatewayBaseCmdlet
     {
         [Alias("ResourceName")]
@@ -69,12 +69,26 @@ namespace Microsoft.Azure.Commands.Network
         [Parameter(
             Mandatory = false,
             ValueFromPipelineByPropertyName = true,
-            HelpMessage = "The type of this virtual network gateway: Vpn, ExoressRoute")]
+            HelpMessage = "The type of this virtual network gateway: Vpn, ExpressRoute, LocalGateway")]
         [ValidateSet(
             MNM.VirtualNetworkGatewayType.Vpn,
             MNM.VirtualNetworkGatewayType.ExpressRoute,
+            MNM.VirtualNetworkGatewayType.LocalGateway,
             IgnoreCase = true)]
         public string GatewayType { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "The extended location of this virtual network gateway")]
+        public string ExtendedLocation { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "VNetExtendedLocationResourceId for Virtual network gateway.")]
+        [ValidateNotNullOrEmpty]
+        public string VNetExtendedLocationResourceId { get; set; }
 
         [Parameter(
             Mandatory = false,
@@ -130,6 +144,7 @@ namespace Microsoft.Azure.Commands.Network
             MNM.VirtualNetworkGatewaySkuTier.ErGw1AZ,
             MNM.VirtualNetworkGatewaySkuTier.ErGw2AZ,
             MNM.VirtualNetworkGatewaySkuTier.ErGw3AZ,
+            MNM.VirtualNetworkGatewaySkuTier.ErGwScale,
             IgnoreCase = true)]
         public string GatewaySku { get; set; }
 
@@ -151,7 +166,7 @@ namespace Microsoft.Azure.Commands.Network
             ValueFromPipelineByPropertyName = true,
             HelpMessage = "The list of P2S VPN client tunneling protocols")]
         [ValidateSet(
-            MNM.VpnClientProtocol.SSTP,
+            MNM.VpnClientProtocol.Sstp,
             MNM.VpnClientProtocol.IkeV2,
             MNM.VpnClientProtocol.OpenVPN)]
         [ValidateNotNullOrEmpty]
@@ -284,8 +299,39 @@ namespace Microsoft.Azure.Commands.Network
             MNM.VpnGatewayGeneration.Generation2)]
         public string VpnGatewayGeneration { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "P2S policy group added to this gateway")]
+        public PSVirtualNetworkGatewayPolicyGroup[] VirtualNetworkGatewayPolicyGroup { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "P2S Client Connection Configuration that assiociate between address and policy group")]
+        public PSClientConnectionConfiguration[] ClientConnectionConfiguration { get; set; }
+
         [Parameter(Mandatory = false, HelpMessage = "Run cmdlet in the background")]
         public SwitchParameter AsJob { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet: Enabled/Disabled")]
+        [ValidateSet(
+            "Enabled",
+            "Disabled",
+            IgnoreCase = true)]
+        [PSArgumentCompleter(
+            "Enabled",
+            "Disabled")]
+        public string AdminState  { get; set; }
+
+        [Parameter(Mandatory = false, HelpMessage = "Set min scale units for scalable gateways")]
+        public Int32 MinScaleUnit { get; set; }
+
+        [Parameter(Mandatory = false, HelpMessage = "Set max scale units for scalable gateways")]
+        public Int32 MaxScaleUnit { get; set; }
 
         public override void Execute()
         {
@@ -294,10 +340,26 @@ namespace Microsoft.Azure.Commands.Network
             string warningMsg = string.Empty;
             string continueMsg = Properties.Resources.CreatingResourceMessage;
             bool force = true;
+            var useShouldContinue = present;
+            var isCertConfigured = (this.VpnClientRootCertificates != null && this.VpnClientRootCertificates.Count() > 0) || (this.VpnClientRevokedCertificates != null && this.VpnClientRevokedCertificates.Count() > 0);
+            var isRadiusConfigured = !string.IsNullOrEmpty(this.RadiusServerAddress) && this.RadiusServerSecret != null && !string.IsNullOrEmpty(SecureStringExtensions.ConvertToString(this.RadiusServerSecret));
+            var isAadConfigured = this.AadTenantUri != null && this.AadAudienceId != null && this.AadIssuerUri != null;
+            
             if (!string.IsNullOrEmpty(GatewaySku)
                 && GatewaySku.Equals(MNM.VirtualNetworkGatewaySkuTier.UltraPerformance, StringComparison.InvariantCultureIgnoreCase))
             {
                 warningMsg = string.Format(Properties.Resources.UltraPerformaceGatewayWarning, this.Name);
+                force = false;
+            }
+            else if (this.VpnClientProtocol != null &&
+                this.VpnClientProtocol.Count() > 0 &&
+                this.VpnClientProtocol.Contains(MNM.VpnClientProtocol.OpenVPN) &&
+                this.VpnClientProtocol.Contains(MNM.VpnClientProtocol.IkeV2) &&
+                isAadConfigured &&
+                (isRadiusConfigured || isCertConfigured))
+            {
+                warningMsg = Properties.Resources.VpnMultiAuthIkev2OpenvpnAadWarning;
+                useShouldContinue = true;
                 force = false;
             }
             else
@@ -319,7 +381,7 @@ namespace Microsoft.Azure.Commands.Network
                     var virtualNetworkGateway = CreateVirtualNetworkGateway();
                     WriteObject(virtualNetworkGateway);
                 },
-                () => present);
+                () => useShouldContinue);
 
         }
 
@@ -364,11 +426,21 @@ namespace Microsoft.Azure.Commands.Network
 
             }
             vnetGateway.GatewayType = this.GatewayType;
+            if (this.ExtendedLocation != null && (vnetGateway.GatewayType == "LocalGateway" || vnetGateway.GatewayType == "ExpressRoute"))
+            {
+                vnetGateway.ExtendedLocation = new PSExtendedLocation(this.ExtendedLocation);
+                vnetGateway.VNetExtendedLocationResourceId = this.VNetExtendedLocationResourceId;
+            }
             vnetGateway.VpnType = this.VpnType;
             vnetGateway.EnableBgp = this.EnableBgp;
             vnetGateway.DisableIPsecProtection = this.DisableIPsecProtection;
             vnetGateway.ActiveActive = this.EnableActiveActiveFeature.IsPresent;
             vnetGateway.EnablePrivateIpAddress = this.EnablePrivateIpAddress.IsPresent;
+
+            if (this.VirtualNetworkGatewayPolicyGroup != null && this.VirtualNetworkGatewayPolicyGroup.Length > 0)
+            {
+                vnetGateway.VirtualNetworkGatewayPolicyGroups = this.VirtualNetworkGatewayPolicyGroup.ToList();
+            }
 
             if (this.GatewayDefaultSite != null)
             {
@@ -450,8 +522,21 @@ namespace Microsoft.Azure.Commands.Network
                         throw new ArgumentException("AadTenantUri, AadIssuerUri and AadAudienceId must be specified if AAD authentication is being configured for P2S.");
                     }
 
-                    if (vnetGateway.VpnClientConfiguration.VpnClientProtocols.Count() == 1 && 
-                        vnetGateway.VpnClientConfiguration.VpnClientProtocols.First().Equals(MNM.VpnClientProtocol.OpenVPN))
+                    // In the case of multi-auth with OpenVPN and IkeV2, block user from configuring with just AAD since AAD is not supported for IkeV2
+                    var isCertConfigured = (this.VpnClientRootCertificates != null && this.VpnClientRootCertificates.Count() > 0) || (this.VpnClientRevokedCertificates != null && this.VpnClientRevokedCertificates.Count() > 0);
+                    var isRadiusConfigured = !string.IsNullOrEmpty(this.RadiusServerAddress) && this.RadiusServerSecret != null && !string.IsNullOrEmpty(SecureStringExtensions.ConvertToString(this.RadiusServerSecret));
+
+                    if (!isCertConfigured &&
+                        !isRadiusConfigured &&
+                        vnetGateway.VpnClientConfiguration.VpnClientProtocols.Contains(MNM.VpnClientProtocol.IkeV2) &&
+                        vnetGateway.VpnClientConfiguration.VpnClientProtocols.Contains(MNM.VpnClientProtocol.OpenVPN) &&
+                        vnetGateway.VpnClientConfiguration.VpnClientProtocols.Count() == 2)
+                    {
+                        throw new ArgumentException(Properties.Resources.VpnMultiAuthIkev2OpenvpnOnlyAad);
+                    }
+
+                    if (vnetGateway.VpnClientConfiguration.VpnClientProtocols.Count() >= 1 &&
+                        vnetGateway.VpnClientConfiguration.VpnClientProtocols.Contains(MNM.VpnClientProtocol.OpenVPN))
                     {
                         vnetGateway.VpnClientConfiguration.AadTenant = this.AadTenantUri;
                         vnetGateway.VpnClientConfiguration.AadIssuer = this.AadIssuerUri;
@@ -459,8 +544,20 @@ namespace Microsoft.Azure.Commands.Network
                     }
                     else
                     {
-                        throw new ArgumentException("Virtual Network Gateway VpnClientProtocol should be :" + MNM.VpnClientProtocol.OpenVPN + " when P2S AAD authentication is being configured.");
+                        throw new ArgumentException("Virtual Network Gateway VpnClientProtocol should contain :" + MNM.VpnClientProtocol.OpenVPN + " when P2S AAD authentication is being configured.");
                     }
+                }
+
+                if (this.ClientConnectionConfiguration != null && this.ClientConnectionConfiguration.Any())
+                {
+                    foreach( var config in this.ClientConnectionConfiguration)
+                    {
+                        foreach (var policyGroup  in config.VirtualNetworkGatewayPolicyGroups)
+                        {
+                            policyGroup.Id = string.Format("/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworkGateways/{2}/virtualNetworkGatewayPolicyGroups/{3}", this.NetworkClient.NetworkManagementClient.SubscriptionId, vnetGateway.ResourceGroupName, Name, policyGroup.Id);
+                         }
+                    }
+                    vnetGateway.VpnClientConfiguration.ClientConnectionConfigurations = this.ClientConnectionConfiguration.ToList();
                 }
             }
             else
@@ -493,6 +590,11 @@ namespace Microsoft.Azure.Commands.Network
                 if(vnetGateway.BgpSettings == null)
                 {
                     vnetGateway.BgpSettings = new PSBgpSettings();
+                }
+
+                if(this.IpConfigurationBgpPeeringAddresses.Any(address => address.CustomBgpIpAddresses == null || !address.CustomBgpIpAddresses.Any()))
+                {
+                    throw new ArgumentException("if IpConfigurationBgpPeeringAddresses are provided, CustomBgpIpAddresses must be a provided in create gateway");
                 }
 
                 vnetGateway.BgpSettings.BgpPeeringAddresses = new List<PSIpConfigurationBgpPeeringAddress>();
@@ -535,6 +637,33 @@ namespace Microsoft.Azure.Commands.Network
                 vnetGateway.NatRules = this.NatRule?.ToList();
             }
 
+            if (this.AdminState != null)
+            {
+                if (!GatewayType.Equals(MNM.VirtualNetworkGatewayType.ExpressRoute.ToString(), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new ArgumentException("AdminState parameter is only supported for Express Route gateways.");
+                }
+
+                vnetGateway.AdminState = this.AdminState;
+            }
+
+            if (!string.IsNullOrEmpty(this.GatewaySku) && this.GatewaySku.Equals(MNM.VirtualNetworkGatewaySkuTier.ErGwScale))
+            {
+                if (this.MaxScaleUnit > 0 && this.MinScaleUnit > this.MaxScaleUnit)
+                {
+                   throw new PSArgumentException(string.Format(Properties.Resources.InvalidAutoScaleConfiguration, this.MinScaleUnit, this.MaxScaleUnit));
+                }
+
+                if (this.MaxScaleUnit > 40) {
+                   throw new PSArgumentException(Properties.Resources.InvalidAutoScaleConfigurationBounds);          
+                }
+
+                vnetGateway.AutoScaleConfiguration = new PSVirtualNetworkGatewayAutoscaleConfiguration();
+                vnetGateway.AutoScaleConfiguration.Bounds = new PSVirtualNetworkGatewayPropertiesAutoScaleConfigurationBounds();
+                vnetGateway.AutoScaleConfiguration.Bounds.Min = Convert.ToInt32(this.MinScaleUnit);
+                vnetGateway.AutoScaleConfiguration.Bounds.Max = (this.MaxScaleUnit > 0) ? Convert.ToInt32(this.MaxScaleUnit) : Convert.ToInt32(this.MinScaleUnit);    
+            }
+                
             // Set the EnableBgpRouteTranslationForNat, if it is specified by customer.
             vnetGateway.EnableBgpRouteTranslationForNat = EnableBgpRouteTranslationForNat.IsPresent;
 

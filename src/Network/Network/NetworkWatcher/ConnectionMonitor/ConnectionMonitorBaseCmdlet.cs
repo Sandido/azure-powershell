@@ -195,11 +195,11 @@ namespace Microsoft.Azure.Commands.Network
                                 Name = testConfiguration.Name,
                                 PreferredIPVersion = testConfiguration.PreferredIPVersion,
                                 TestFrequencySec = testConfiguration.TestFrequencySec,
-                                SuccessThreshold = testConfiguration.SuccessThreshold == null ? null : 
+                                SuccessThreshold = testConfiguration.SuccessThreshold == null ? null :
                                     new PSNetworkWatcherConnectionMonitorSuccessThreshold()
                                     {
                                         ChecksFailedPercent = testConfiguration.SuccessThreshold.ChecksFailedPercent,
-                                        RoundTripTimeMs = testConfiguration.SuccessThreshold.RoundTripTimeMs
+                                        RoundTripTimeMs = testConfiguration.SuccessThreshold.RoundTripTimeMS
                                     },
                                 ProtocolConfiguration = this.GetPSProtocolConfiguration(testConfiguration)
                             };
@@ -271,8 +271,8 @@ namespace Microsoft.Azure.Commands.Network
         }
 
         public ConnectionMonitor PopulateConnectionMonitorParametersFromV2Request(
-            PSNetworkWatcherConnectionMonitorTestGroupObject[] testGroups, 
-            PSNetworkWatcherConnectionMonitorOutputObject[] outputs, 
+            PSNetworkWatcherConnectionMonitorTestGroupObject[] testGroups,
+            PSNetworkWatcherConnectionMonitorOutputObject[] outputs,
             string notes)
         {
             ConnectionMonitor connectionMonitor = new ConnectionMonitor()
@@ -621,7 +621,8 @@ namespace Microsoft.Azure.Commands.Network
                     cmTestConfiguration.TcpConfiguration = new ConnectionMonitorTcpConfiguration()
                     {
                         Port = tcpConfiguration.Port,
-                        DisableTraceRoute = tcpConfiguration.DisableTraceRoute
+                        DisableTraceRoute = tcpConfiguration.DisableTraceRoute,
+                        DestinationPortBehavior = tcpConfiguration.DestinationPortBehavior,
                     };
                 }
                 else if (testConfiguration.ProtocolConfiguration is PSNetworkWatcherConnectionMonitorHttpConfiguration httpConfiguration)
@@ -632,7 +633,7 @@ namespace Microsoft.Azure.Commands.Network
                         Port = httpConfiguration.Port,
                         Method = httpConfiguration.Method,
                         Path = httpConfiguration.Path,
-                        PreferHTTPS = httpConfiguration.PreferHTTPS,
+                        PreferHttps = httpConfiguration.PreferHTTPS,
                         ValidStatusCodeRanges = httpConfiguration.ValidStatusCodeRanges,
                         RequestHeaders = this.GetRequestHeaders(httpConfiguration)
                     };
@@ -667,13 +668,13 @@ namespace Microsoft.Azure.Commands.Network
             {
                 cmOutputs.Add(
                     new ConnectionMonitorOutput()
+                    {
+                        Type = output.Type,
+                        WorkspaceSettings = new ConnectionMonitorWorkspaceSettings()
                         {
-                            Type = output.Type,
-                            WorkspaceSettings = new ConnectionMonitorWorkspaceSettings()
-                            {
-                                WorkspaceResourceId = output.WorkspaceSettings.WorkspaceResourceId
-                            },
-                        });
+                            WorkspaceResourceId = output.WorkspaceSettings.WorkspaceResourceId
+                        },
+                    });
             }
 
             return cmOutputs;
@@ -689,7 +690,7 @@ namespace Microsoft.Azure.Commands.Network
             return new ConnectionMonitorSuccessThreshold()
             {
                 ChecksFailedPercent = testConfiguration.SuccessThreshold.ChecksFailedPercent,
-                RoundTripTimeMs = testConfiguration.SuccessThreshold.RoundTripTimeMs
+                RoundTripTimeMS = testConfiguration.SuccessThreshold.RoundTripTimeMs
             };
         }
 
@@ -801,7 +802,8 @@ namespace Microsoft.Azure.Commands.Network
 
             if (!string.Equals(endpoint.Type, "AzureVM", StringComparison.OrdinalIgnoreCase) && !string.Equals(endpoint.Type, "AzureVNet", StringComparison.OrdinalIgnoreCase)
                 && !string.Equals(endpoint.Type, "AzureSubnet", StringComparison.OrdinalIgnoreCase) && !string.Equals(endpoint.Type, "MMAWorkspaceMachine", StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(endpoint.Type, "MMAWorkspaceNetwork", StringComparison.OrdinalIgnoreCase) && !string.Equals(endpoint.Type, "ExternalAddress", StringComparison.OrdinalIgnoreCase))
+                && !string.Equals(endpoint.Type, "MMAWorkspaceNetwork", StringComparison.OrdinalIgnoreCase) && !string.Equals(endpoint.Type, "ExternalAddress", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(endpoint.Type, "AzureVMSS", StringComparison.OrdinalIgnoreCase) && !string.Equals(endpoint.Type, "AzureArcVM", StringComparison.OrdinalIgnoreCase))
             {
                 throw new PSArgumentException(Properties.Resources.InvalidEndpointType, endpoint.Name);
             }
@@ -825,7 +827,9 @@ namespace Microsoft.Azure.Commands.Network
             string resourceType = splittedName[7];
             if (string.IsNullOrEmpty(resourceType) || (!resourceType.Equals("virtualMachines", StringComparison.OrdinalIgnoreCase)
                 && !resourceType.Equals("workspaces", StringComparison.OrdinalIgnoreCase)
-                && !resourceType.Equals("virtualNetworks", StringComparison.OrdinalIgnoreCase)))
+                && !resourceType.Equals("virtualNetworks", StringComparison.OrdinalIgnoreCase)
+                && !resourceType.Equals("virtualMachineScaleSets", StringComparison.OrdinalIgnoreCase))
+                && !resourceType.Equals("machines", StringComparison.OrdinalIgnoreCase))
             {
                 throw new PSArgumentException(Properties.Resources.InvalidEndpointResourceType);
             }
@@ -846,16 +850,30 @@ namespace Microsoft.Azure.Commands.Network
             }
             else if (string.Equals(endpoint.Type, "AzureSubnet", StringComparison.OrdinalIgnoreCase))
             {
-                if (!resourceType.Equals("virtualNetworks", StringComparison.OrdinalIgnoreCase) || splittedName.Count() != 11 
+                if (!resourceType.Equals("virtualNetworks", StringComparison.OrdinalIgnoreCase) || splittedName.Count() != 11
                     || splittedName[9].Equals("subnet", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new PSArgumentException(Properties.Resources.InvalidEndpointResourceIdForSpecifiedType, endpoint.Type);
                 }
             }
-            else if ((string.Equals(endpoint.Type, "MMAWorkspaceMachine", StringComparison.OrdinalIgnoreCase) || string.Equals(endpoint.Type, "MMAWorkspaceNetwork", StringComparison.OrdinalIgnoreCase)) 
+            else if ((string.Equals(endpoint.Type, "MMAWorkspaceMachine", StringComparison.OrdinalIgnoreCase) || string.Equals(endpoint.Type, "MMAWorkspaceNetwork", StringComparison.OrdinalIgnoreCase))
                 && !resourceType.Equals("workspaces", StringComparison.OrdinalIgnoreCase))
             {
                 throw new PSArgumentException(Properties.Resources.InvalidEndpointResourceIdForSpecifiedType, endpoint.Type);
+            }
+            else if (string.Equals(endpoint.Type, "AzureVMSS", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!resourceType.Equals("virtualMachineScaleSets", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new PSArgumentException(Properties.Resources.InvalidEndpointResourceIdForSpecifiedType, endpoint.Type);
+                }
+            }
+            else if (string.Equals(endpoint.Type, "AzureArcVM", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!resourceType.Equals("machines", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new PSArgumentException(Properties.Resources.InvalidEndpointResourceIdForSpecifiedType, endpoint.Type);
+                }
             }
         }
 
@@ -866,7 +884,8 @@ namespace Microsoft.Azure.Commands.Network
                 return new PSNetworkWatcherConnectionMonitorTcpConfiguration()
                 {
                     Port = testConfiguration.TcpConfiguration.Port,
-                    DisableTraceRoute = testConfiguration.TcpConfiguration.DisableTraceRoute
+                    DisableTraceRoute = testConfiguration.TcpConfiguration.DisableTraceRoute,
+                    DestinationPortBehavior = testConfiguration.TcpConfiguration.DestinationPortBehavior
                 };
             }
 
@@ -877,7 +896,7 @@ namespace Microsoft.Azure.Commands.Network
                     Port = testConfiguration.HttpConfiguration.Port,
                     Method = testConfiguration.HttpConfiguration.Method,
                     Path = testConfiguration.HttpConfiguration.Path,
-                    PreferHTTPS = testConfiguration.HttpConfiguration.PreferHTTPS,
+                    PreferHTTPS = testConfiguration.HttpConfiguration.PreferHttps,
                     ValidStatusCodeRanges = testConfiguration.HttpConfiguration.ValidStatusCodeRanges?.ToList(),
                     RequestHeaders = this.GetPSRequestHeaders(testConfiguration.HttpConfiguration.RequestHeaders?.ToList())
                 };
@@ -894,7 +913,7 @@ namespace Microsoft.Azure.Commands.Network
             return null;
         }
 
-        private List<PSHTTPHeader> GetPSRequestHeaders(List<HTTPHeader> headers)
+        private List<PSHTTPHeader> GetPSRequestHeaders(List<HttpHeader> headers)
         {
             if (headers == null)
             {
@@ -902,7 +921,7 @@ namespace Microsoft.Azure.Commands.Network
             }
 
             List<PSHTTPHeader> psHeaders = new List<PSHTTPHeader>();
-            foreach (HTTPHeader header in headers)
+            foreach (HttpHeader header in headers)
             {
                 psHeaders.Add(
                     new PSHTTPHeader()
@@ -972,22 +991,22 @@ namespace Microsoft.Azure.Commands.Network
             }
         }
 
-        private List<HTTPHeader> GetRequestHeaders(PSNetworkWatcherConnectionMonitorHttpConfiguration httpConfiguration)
+        private List<HttpHeader> GetRequestHeaders(PSNetworkWatcherConnectionMonitorHttpConfiguration httpConfiguration)
         {
             if (httpConfiguration.RequestHeaders == null)
             {
                 return null;
             }
 
-            var requestHeaders = new List<HTTPHeader>();
+            var requestHeaders = new List<HttpHeader>();
             foreach (PSHTTPHeader header in httpConfiguration.RequestHeaders)
             {
                 requestHeaders.Add(
-                    new HTTPHeader()
-                        {
-                            Name = header.Name,
-                            Value = header.Value
-                        });
+                    new HttpHeader()
+                    {
+                        Name = header.Name,
+                        Value = header.Value
+                    });
             }
 
             return requestHeaders;

@@ -54,6 +54,8 @@ namespace Microsoft.Azure.Commands.Network
             subnet.Name = this.Name;
             subnet.AddressPrefix = this.AddressPrefix?.ToList();
             subnet.IpAllocations = new List<PSResourceId>();
+            subnet.DefaultOutboundAccess = this.DefaultOutboundAccess;
+
             if (this.IpAllocation != null)
             {
                 foreach (var allocation in this.IpAllocation)
@@ -101,7 +103,7 @@ namespace Microsoft.Azure.Commands.Network
                 subnet.Delegations = this.Delegation?.ToList();
             }
 
-            subnet.PrivateEndpointNetworkPolicies = this.PrivateEndpointNetworkPoliciesFlag ?? "Enabled";
+            subnet.PrivateEndpointNetworkPolicies = this.PrivateEndpointNetworkPoliciesFlag ?? "Disabled";
             subnet.PrivateLinkServiceNetworkPolicies = this.PrivateLinkServiceNetworkPoliciesFlag ?? "Enabled";
 
             WriteObject(subnet);

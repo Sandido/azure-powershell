@@ -18,6 +18,85 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+
+## Version 5.0.1
+* Removed redundant Microsoft Graph API calls for access policy in `Get-AzKeyVault`.
+
+## Version 5.0.0
+* Removed non-core types creation in PowerShell scripts to be compatible in constrained language mode.
+* Supported user assigned identity for Managed HSM in `New/Update-AzKeyVaultManagedHsm` 
+* [Breaking Change] Changed parameter `SoftDeleteRetentionInDays` in `New-AzKeyVaultManagedHsm` to mandatory.
+* Upgraded Azure.Core to 1.35.0.
+
+## Version 4.12.0
+* Supported splitting `Import-AzKeyVaultSecurityDomain` process into three steps to allow keys to be hidden offline.
+    - Added `DownloadExchangeKey`, `RestoreBlob` and `ImportRestoredBlob` in `Import-AzKeyVaultSecurityDomain`.
+
+## Version 4.11.0
+* Fixed certificate policy bugs if DnsName is null. [#22642]
+* Supported multi-regions for Managed Hsm: Added `Add/Get/Remove-AzAzKeyVaultManagedHsmRegion`.
+* Added `Test-AzKeyVaultNameAvailability` and `Test-AzKeyVaultManagedHsmNameAvailability`.
+* Formatted the table view of `*-AzKeyVault`, `*-AzKeyVaultKey` and `*-AzKeyVaultSecret`
+* Added `SecurityDomain` and `Regions` properties into the output of `New/Update/Get-AzKeyVaultManagedHsm` (`PSManagedHsm`).
+* Supported Setting for Managed HSM: Added `Get-AzKeyVaultSetting` and `Update-AzKeyVaultSetting`.
+* Updated Azure.Core to 1.34.0.
+
+## Version 4.10.2
+* Bug Fix: Removed duplicated IpRules from `NetworkRuleSet` and `MhsmNetworkRuleSet`. [#22472]
+
+## Version 4.10.1
+* Removed maximum number for `IpAddressRange` and `VirtualNetworkResourceId` in `*-AzKeyVaultNetworkRuleSet*` from client side. [#22137]
+* Updated Azure.Core to 1.33.0.
+
+## Version 4.10.0
+* Added breaking change announcement for parameter `SoftDeleteRetentionInDays` in `New-AzKeyVaultManagedHsm`. The parameter `SoftDeleteRetentionInDays` is becoming mandatory
+    - This change will take effect on version 5.0.0
+* Changed the encoding way from a string into byte array in `Invoke-AzKeyVaultKeyOperation` from ASCII to UTF8. UTF8 is backward-compatible with ASCII. [#21269]
+* Bug fix: Changed the decoding way from byte array into a string from system default encoding to UTF8 to match encoding way. [#21269]
+* Added parameter `PolicyPath` and `PolicyObject` in `Import-AzKeyVaultCertificate` to support custom policy [#20780]
+
+## Version 4.9.3
+* Added breaking change announcement for `Invoke-AzKeyVaultKeyOperation`. The encoded/decoded way between string and bytes in `Invoke-AzKeyVaultKeyOperation` will change to UTF8. 
+    - This change will take effect on 5/23/2023
+    - The change is expected to take effect from the version 5.0.0
+* Updated Azure.Core to 1.31.0.
+
+## Version 4.9.2
+* Updated Azure.Core to 1.28.0.
+
+## Version 4.9.1
+* Fixed certificate export parameter issue in `Add-AzKeyVaultKey` [#19623]
+* Fixed CertificateString decoding issue in `Import-AzKeyVaultCertificate`
+* Shifted the location of key CVM release policy to GitHub [#19984]
+* Added fallback logic (reading default CVM policy from a local copy) if fetching default CVM Policy from GitHub failed.
+
+## Version 4.9.0
+* Bumped API version to 2022-07-01
+* Added `Undo-AzKeyVaultManagedHsm` to recover deleted managed HSM
+
+## Version 4.8.0
+* Fixed the exception content swallowed issue when exception.Response is null [#19531]
+* Added the existing parameters `Exportable`, `Immutable`, `UseDefaultCVMPolicy`, and `ReleasePolicyPath`
+  to the parameter sets `InteractiveCreate`, `InputObjectCreate`, and `ResourceIdCreate`.
+
+## Version 4.7.0
+* Fixed parameter validation logic of `-UseDefaultCVMPolicy`
+* Added parameter `ContentType` in `Import-AzKeyVaultCertificate` to support importing pem via certificate string
+* Allowed `DnsName` in `New-AzKeyVaultCertificatePolicy` to accept an empty list [#18954]
+
+## Version 4.6.1
+* Removed the warning messages for MSGraph migration [#18856]
+
+## Version 4.6.0
+* Supported importing pem certificate by `Import-AzKeyVaultCertificate` [#18494]
+* Supported accepting rotation policy in a JSON file
+* [Breaking Change] Changed parameter `ExpiresIn` in `Set-AzKeyVaultKeyRotationPolicy` from TimeSpan? to string. It must be an ISO 8601 duration like "P30D" for 30 days.
+* [Breaking Change] Changed output properties `ExpiresIn`, `TimeAfterCreate` and `TimeBeforeExpiry` of `Set-AzKeyVaultKeyRotationPolicy` and `Get-AzKeyVaultKeyRotationPolicy` from TimeSpan? to string.
+* Supported creating/updating key with release policy in a Managed HSM
+* Removed default value for `EnabledForDeployment`, `EnabledForTemplateDeployment`, `EnabledForDiskEncryption` and `EnableRbacAuthorization` during the process of key vault creation
+* Changed default access policies for Key Vault secret, certificate and storage as `All`
+
+## Version 4.5.0
 * Added `Rotate` into the list of permissions to keys [#17970]
 
 ## Version 4.4.0
@@ -27,7 +106,7 @@
 
 ## Version 4.3.1
 * Fixed a bug to continue visiting `NextPageLink` when listing key vaults from ARM API
- 
+
 ## Version 4.3.0
 * `New-AzKeyVaultManagedHsm`: supported specifying how long a deleted managed hsm is retained by `SoftDeleteRetentionInDays` and enabling purge protection by `EnablePurgeProtection`
 * `Update-AzKeyVaultManagedHsm`: supported enabling purge protection by `EnablePurgeProtection`

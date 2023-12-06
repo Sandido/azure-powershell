@@ -1,43 +1,50 @@
 ---
-external help file: Microsoft.Azure.PowerShell.Cmdlets.Cdn.dll-Help.xml
+external help file:
 Module Name: Az.Cdn
-online version: https://docs.microsoft.com/powershell/module/az.cdn/new-azfrontdoorcdnruleset
+online version: https://learn.microsoft.com/powershell/module/az.cdn/new-azfrontdoorcdnruleset
 schema: 2.0.0
 ---
 
 # New-AzFrontDoorCdnRuleSet
 
 ## SYNOPSIS
-Creates the rule set.
+Creates a new rule set within the specified profile.
 
 ## SYNTAX
 
 ```
-New-AzFrontDoorCdnRuleSet -ProfileName <String> -ResourceGroupName <String> -RuleSetName <String>
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-AzFrontDoorCdnRuleSet -Name <String> -ProfileName <String> -ResourceGroupName <String>
+ [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates the rule set.
+Creates a new rule set within the specified profile.
 
 ## EXAMPLES
 
-### Example 1
+### Example 1: Create an AzureFrontDoor rule set under the AzureFrontDoor profile
 ```powershell
-New-AzFrontDoorCdnRuleSet -ProfileName $profileName -ResourceGroupName $resourceGroupName -RuleSetName $ruleSetName
+New-AzFrontDoorCdnRuleSet -ResourceGroupName testps-rg-da16jm -ProfileName fdp-v542q6 -RuleSetName ruleset001
 ```
 
-Creates the rule set.
+```output
+Name       ResourceGroupName
+----       -----------------
+ruleset001 testps-rg-da16jm
+```
+
+Create an AzureFrontDoor rule set under the AzureFrontDoor profile
 
 ## PARAMETERS
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
-Type: IAzureContextContainer
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
-Aliases: AzContext, AzureRmContext, AzureCredential
+Aliases: AzureRMContext, AzureCredential
 
 Required: False
 Position: Named
@@ -46,11 +53,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProfileName
-The Azure Front Door profile name.
+### -Name
+Name of the rule set under the profile which is unique globally
 
 ```yaml
-Type: String
+Type: System.String
+Parameter Sets: (All)
+Aliases: RuleSetName
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProfileName
+Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group.
+
+```yaml
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -62,10 +84,10 @@ Accept wildcard characters: False
 ```
 
 ### -ResourceGroupName
-The Azure resource group name.
+Name of the Resource group within the Azure subscription.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -76,17 +98,17 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RuleSetName
-The Azure Front Door rule set name.
+### -SubscriptionId
+Azure Subscription ID.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
-Default value: None
+Default value: (Get-AzContext).Subscription.Id
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -95,7 +117,7 @@ Accept wildcard characters: False
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
 
@@ -111,7 +133,7 @@ Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
 
@@ -127,12 +149,13 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
 
-### Microsoft.Azure.Commands.Cdn.AfdModels.PSAfdRuleSet
+### Microsoft.Azure.PowerShell.Cmdlets.Cdn.Models.Api20230501.IRuleSet
 
 ## NOTES
 
+ALIASES
+
 ## RELATED LINKS
+

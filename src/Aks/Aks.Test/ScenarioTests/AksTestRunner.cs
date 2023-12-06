@@ -60,13 +60,13 @@ namespace Commands.Aks.Test.ScenarioTests
                         {"Microsoft.Features", null},
                         {"Microsoft.Authorization", null}
                     }
-                ).WithMockContextAction(() =>
+                ).WithMockContextAction(mockContext =>
                 {
                     if (HttpMockServer.GetCurrentMode() == HttpRecorderMode.Playback)
                     {
                         AzureSession.Instance.DataStore = new MemoryDataStore();
                         var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        var dir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath);
+                        var dir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
                         var subscription = HttpMockServer.Variables["SubscriptionId"];
                         AzureSession.Instance.DataStore.WriteFile(Path.Combine(home, ".ssh", "id_rsa.pub"), File.ReadAllText(dir + "/Fixtures/id_rsa.pub"));
                         var jsonOutput = @"{""" + subscription + @""":{ ""service_principal"":""foo"",""client_secret"":""bar""}}";
@@ -76,9 +76,10 @@ namespace Commands.Aks.Test.ScenarioTests
                     {
                         AzureSession.Instance.DataStore = new MemoryDataStore();
                         var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        var dir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath);
-                        var subscription = HttpMockServer.Variables["SubscriptionId"];
+                        var dir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
+                        
                         var currentEnvironment = TestEnvironmentFactory.GetTestEnvironment();
+                        var subscription = currentEnvironment.ConnectionString.KeyValuePairs["SubscriptionId"];
                         string spn = null;
                         string spnSecret = null;
                         if (currentEnvironment.ConnectionString.KeyValuePairs.ContainsKey("ServicePrincipal"))

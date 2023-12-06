@@ -18,7 +18,7 @@ Test Volume CRUD operations
 #>
 function Test-VolumeCrud
 {
-    $currentSub = (Get-AzureRmContext).Subscription	
+    $currentSub = (Get-AzureRmContext).Subscription
     $subsid = $currentSub.SubscriptionId
 
     $resourceGroup = Get-ResourceGroupName
@@ -84,7 +84,7 @@ function Test-VolumeCrud
 			$rule1
 		)
 	}
-    
+
     $exportPolicyv4 = @{
 		Rules = (
 			$rule5
@@ -105,18 +105,18 @@ function Test-VolumeCrud
     {
         # create the resource group
         New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
-		
+
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
         $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
         Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
 
         # create account
-        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName 
-	    
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
         # create pool
         $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
-        
+
         # create first volume and check
         $newTagName = "tag1"
         $newTagValue = "tagValue1"
@@ -126,12 +126,10 @@ function Test-VolumeCrud
         Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
         Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
         Assert-NotNull $retrievedVolume.ExportPolicy
-        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients 
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
 
         Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
         Assert-NotNull $retrievedVolume.MountTargets
-        Assert-Null $retrievedVolume.VolumeType
-        Assert-Null $retrievedVolume.DataProtection
 
         # use the NFSv4.1
         $protocolTypesv4 = New-Object string[] 1
@@ -156,11 +154,11 @@ function Test-VolumeCrud
         # get and check a volume by name
         $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
         Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
-		
+
         # get and check the volume again using the resource id just obtained
         $retrievedVolumeById = Get-AzNetAppFilesVolume -ResourceId $retrievedVolume.Id
         Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolumeById.Name
-        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients 
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
         #Assert-AreEqual $retrievedVolume.ExportPolicy.Rules[1].AllowedClients '1.2.3.0/24'
 
         # update (patch) and check the volume
@@ -168,8 +166,8 @@ function Test-VolumeCrud
         Assert-AreEqual $doubleUsage $retrievedVolume.usageThreshold
         # unchanged, not part of the patch
         Assert-AreEqual "Premium" $retrievedVolume.ServiceLevel
-        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients 
-        #Assert-AreEqual $retrievedVolume.ExportPolicy.Rules[1].AllowedClients '1.2.3.0/24'        
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
+        #Assert-AreEqual $retrievedVolume.ExportPolicy.Rules[1].AllowedClients '1.2.3.0/24'
 
         $rule4 = @{
             RuleIndex = 3
@@ -207,7 +205,7 @@ function Test-VolumeCrud
         # test export policy update with non-default volume (and "Standard" Pool)
         # create pool
         $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName2 -PoolSize $poolSize -ServiceLevel "Standard"
-        
+
         # create the volume and check
         $newTagName = "tag1"
         $newTagValue = "tagValue1"
@@ -224,9 +222,9 @@ function Test-VolumeCrud
 
         # update (patch) export policy and check no change to rest of volume
         $retrievedVolume = Update-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName2 -VolumeName $volName4 -ExportPolicy $exportPolicyMod
-        
+
         $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName2 -VolumeName $volName4
-        #Due to service side bug that is to be fixed this is disabled temporaraly 
+        #Due to service side bug that is to be fixed this is disabled temporaraly
         #Assert-AreEqual '2.3.4.0/24' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
         # unchanged, not part of the patch
         Assert-AreEqual "Standard" $retrievedVolume.ServiceLevel
@@ -267,7 +265,7 @@ function Test-VolumeReplication
     $doubleUsage = 2 * $usageThreshold
     $srcResourceGroupLocation = "westus2"
     $destResourceGroupLocation = "eastus"
-    
+
     #$srcResourceGroupLocation = "eastus2euap"
     #$destResourceGroupLocation = "southcentralus"
     $srcResourceLocation = "westus2"
@@ -278,7 +276,7 @@ function Test-VolumeReplication
     #$srcResourceLocation = "eastus2euap"
     #$destResourceLocation = "southcentralusstage"
     #$destVnetLocation = "southcentralus"
-    
+
     $subnetName = "default"
     $poolSize = 4398046511104
     $serviceLevel = "Premium"
@@ -295,14 +293,14 @@ function Test-VolumeReplication
             $sourceVolume = Get-AzNetAppFilesVolume -ResourceGroupName $srcResourceGroup -AccountName $srcAccName -PoolName $srcPoolName -VolumeName $srcVolName
             $dpVolume = Get-AzNetAppFilesVolume -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName
 
-           Start-Sleep -Seconds 1.0
+           Start-TestSleep -Seconds 1
         }
         while (($sourceVolume.ProvisioningState -ne "Succeeded") -or ($dpVolume.ProvisioningState -ne "Succeeded"));
     }
 
     function WaitForRepliationStatus($targetState)
     {
-        $i = 0 
+        $i = 0
         do
         {
             try
@@ -311,30 +309,21 @@ function Test-VolumeReplication
             }
             catch [Microsoft.Rest.Azure.CloudException]
             {
-                $ErrorMessage = $_.Exception.Message                
+                $ErrorMessage = $_.Exception.Message
                 if ($ErrorMessage -notlike "*Cannot get replication status, the volume replication is*")
-                {                    
-                    throw 
-                }                
+                {
+                    throw
+                }
             }
-            Start-Sleep -Seconds 10.0
+            Start-TestSleep -Seconds 10
             $i++
         }
         until ($replicationStatus.MirrorState -eq $targetState -or $i -eq 40);
 
-        $replicationStatus = Get-AnfReplicationStatus -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName                
+        $replicationStatus = Get-AnfReplicationStatus -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName
         Assert-AreEqual $targetState $replicationStatus.MirrorState
-                
-        #while ($replicationStatus.MirrorState -ne $targetState)
-    }
 
-    function SleepDuringRecord
-    {
-        if ($env:AZURE_TEST_MODE -eq "Record")
-        {
-            Write-Output "Sleep in record mode"
-            Start-Sleep -Seconds 30.0
-        }
+        #while ($replicationStatus.MirrorState -ne $targetState)
     }
 
     try
@@ -365,7 +354,7 @@ function Test-VolumeReplication
         $srcRetrievedPool = New-AzNetAppFilesPool -ResourceGroupName $srcResourceGroup -Location $srcResourceLocation -AccountName $srcAccName -PoolName $srcPoolName -PoolSize $poolSize -ServiceLevel $serviceLevel
         $destRetrievedPool = New-AzNetAppFilesPool -ResourceGroupName $destResourceGroup -Location $destResourceLocation -AccountName $destAccName -PoolName $destPoolName -PoolSize $poolSize -ServiceLevel $serviceLevel
 
-        # create source volume      
+        # create source volume
         $sourceVolume = New-AzNetAppFilesVolume -ResourceGroupName $srcResourceGroup -Location $srcResourceLocation -AccountName $srcAccName -PoolName $srcPoolName -VolumeName $srcVolName -CreationToken $srcVolName -UsageThreshold $usageThreshold -ServiceLevel $serviceLevel -SubnetId $srcSubnetId
         #Assert-AreEqual "$srcAccName/$srcPoolName/$srcVolName" $sourceVolume.Name
 
@@ -385,8 +374,7 @@ function Test-VolumeReplication
         #Assert-AreEqual "$destAccName/$destPoolName/$destVolName" $destinationVolume.Name
         #Assert-NotNull $destinationVolume.DataProtection
         WaitForSucceeded
-        #Start-Sleep -Seconds 30.0
-        SleepDuringRecord
+        Start-TestSleep -Seconds 30
 
         # authorize the replication
         Approve-AnfReplication -ResourceGroupName $srcResourceGroup -AccountName $srcAccName -PoolName $srcPoolName -VolumeName $srcVolName -DataProtectionVolumeId $destinationVolume.Id
@@ -394,27 +382,28 @@ function Test-VolumeReplication
         WaitForSucceeded
         WaitForRepliationStatus "Mirrored"
 
+        # list Replications
+        $listedReplicaitons = Get-AzNetAppFilesVolumeReplication -ResourceGroupName $srcResourceGroup -AccountName $srcAccName -PoolName $srcPoolName -VolumeName $srcVolName
+        Assert-NotNull $listedReplicaitons
+
         # suspend the replication
         Suspend-AnfReplication -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName
 
         WaitForRepliationStatus "Broken"
-        SleepDuringRecord
-        #Start-Sleep -Seconds 30.0
+        Start-TestSleep -Seconds 30
         WaitForSucceeded
 
         # resync the replication
         Resume-AnfReplication -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName
 
         WaitForRepliationStatus "Mirrored"
-        SleepDuringRecord
-        #Start-Sleep -Seconds 30.0
+        Start-TestSleep -Seconds 30
 
         # break the replication again
         Suspend-AnfReplication -ResourceGroupName $destResourceGroup -AccountName $destAccName -PoolName $destPoolName -VolumeName $destVolName -ForceBreak
 
         WaitForRepliationStatus "Broken"
-        SleepDuringRecord
-        #Start-Sleep -Seconds 30.0
+        Start-TestSleep -Seconds 30
 
         # delete the data protection object
         #  - initiate delete replication on destination, this then releases on source, both resulting in object deletion
@@ -422,7 +411,7 @@ function Test-VolumeReplication
     }
     finally
     {
-        # Cleanup        
+        # Cleanup
         Clean-ResourceGroup $srcResourceGroup
         Clean-ResourceGroup $destResourceGroup
     }
@@ -434,7 +423,7 @@ Test Volume Set-AzNetAppFilesVolumePool operation
 #>
 function Test-SetVolumePool
 {
-    $currentSub = (Get-AzureRmContext).Subscription	
+    $currentSub = (Get-AzureRmContext).Subscription
     $subsid = $currentSub.SubscriptionId
 
     $resourceGroup = Get-ResourceGroupName
@@ -443,7 +432,7 @@ function Test-SetVolumePool
     $poolName2 = Get-ResourceName
     $volName1 = Get-ResourceName
     $gibibyte = 1024 * 1024 * 1024
-    $usageThreshold = 100 * $gibibyte    
+    $usageThreshold = 100 * $gibibyte
     #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
     $resourceLocation = "eastus"
     $subnetName = "default"
@@ -464,13 +453,13 @@ function Test-SetVolumePool
         AllowedClients = '0.0.0.0/0'
     }
 
-    
+
     $exportPolicy = @{
 		Rules = (
 			$rule1
 		)
 	}
-       
+
     # create the list of protocol types
     $protocolTypes = New-Object string[] 1
     $protocolTypes[0] = "NFSv3"
@@ -479,19 +468,19 @@ function Test-SetVolumePool
     {
         # create the resource group
         New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
-		
+
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
         $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
         Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
 
         # create account
-        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName 
-	    
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
         # create pools
         $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
         $retrievedPool2 = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName2 -PoolSize $poolSize -ServiceLevel $serviceLevelStandard
-        
+
         # create  volume and check
         $newTagName = "tag1"
         $newTagValue = "tagValue1"
@@ -501,25 +490,23 @@ function Test-SetVolumePool
         Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
         Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
         Assert-NotNull $retrievedVolume.ExportPolicy
-        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients 
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
 
         Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
         Assert-NotNull $retrievedVolume.MountTargets
-        Assert-Null $retrievedVolume.VolumeType
-        Assert-Null $retrievedVolume.DataProtection
 
         # get and check the volume by name
         $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
         Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
-        		
+
         # PoolChange and check the volume
         $poolChangeResult = Set-AzNetAppFilesVolumePool -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1 -NewPoolResourceId $retrievedPool2.Id
-        
+
         # check GET no change to rest of volume
         $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName2 -VolumeName $volName1
         Assert-AreEqual "$accName/$poolName2/$volName1" $retrievedVolume.Name
         Assert-AreEqual $serviceLevelStandard $retrievedVolume.ServiceLevel
-                        
+
         # unchanged, not part of the patch
         Assert-AreEqual $serviceLevelStandard $retrievedVolume.ServiceLevel
         Assert-AreEqual $usageThreshold $retrievedVolume.usageThreshold
@@ -534,31 +521,27 @@ function Test-SetVolumePool
     }
 }
 
-
 <#
 .SYNOPSIS
-Test Volume Update-AzNetAppFilesVolume to set snapshotPolicy
+Test Volume Unlock-AzNetAppFilesVolumeFileLock operation
 #>
-function Update-AzNetAppFilesVolumeSnapshotPolicy 
+function Test-UnlockVolumeFileLock
 {
-    $currentSub = (Get-AzureRmContext).Subscription	
+    $currentSub = (Get-AzureRmContext).Subscription
     $subsid = $currentSub.SubscriptionId
 
     $resourceGroup = Get-ResourceGroupName
     $accName = Get-ResourceName
-    $poolName = Get-ResourceName    
+    $poolName = Get-ResourceName
     $volName1 = Get-ResourceName
-    $snapshotPolicyName1 = Get-ResourceName
     $gibibyte = 1024 * 1024 * 1024
-    $usageThreshold = 100 * $gibibyte    
+    $usageThreshold = 100 * $gibibyte
     #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
     $resourceLocation = "eastus"
     $subnetName = "default"
     $poolSize = 4398046511104
     $serviceLevel = "Premium"
-    $serviceLevelStandard = "Premium"
     $vnetName = $resourceGroup + "-vnet"
-    
 
     $subnetId = "/subscriptions/$subsId/resourceGroups/$resourceGroup/providers/Microsoft.Network/virtualNetworks/$vnetName/subnets/$subnetName"
 
@@ -572,13 +555,12 @@ function Update-AzNetAppFilesVolumeSnapshotPolicy
         AllowedClients = '0.0.0.0/0'
     }
 
-    
     $exportPolicy = @{
 		Rules = (
 			$rule1
 		)
 	}
-       
+
     # create the list of protocol types
     $protocolTypes = New-Object string[] 1
     $protocolTypes[0] = "NFSv3"
@@ -587,18 +569,18 @@ function Update-AzNetAppFilesVolumeSnapshotPolicy
     {
         # create the resource group
         New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
-		
+
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
         $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
         Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
 
         # create account
-        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName 
-	    
-        # create pool
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
+        # create pools
         $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
-                
+
         # create  volume and check
         $newTagName = "tag1"
         $newTagValue = "tagValue1"
@@ -608,37 +590,221 @@ function Update-AzNetAppFilesVolumeSnapshotPolicy
         Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
         Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
         Assert-NotNull $retrievedVolume.ExportPolicy
-        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients 
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
 
         Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
         Assert-NotNull $retrievedVolume.MountTargets
-        Assert-Null $retrievedVolume.VolumeType
-        Assert-Null $retrievedVolume.DataProtection
 
         # get and check the volume by name
         $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
         Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
-        		
+
+        # BreakFileLocks and check the volume
+        $poolChangeResult = Unlock-AzNetAppFilesVolumeFileLock -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+
+        # check GET no change to rest of volume
+        $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+        Assert-AreEqual $serviceLevel $retrievedVolume.ServiceLevel
+
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $resourceGroup
+    }
+}
+
+<#
+.SYNOPSIS
+Test Volume Get-AzNetAppFilesVolumeGroupIdListForLDAPUser operation on non LDAP volume
+#>
+function Test-GetGroupIdListForLDAPUser
+{
+    $currentSub = (Get-AzureRmContext).Subscription
+    $subsid = $currentSub.SubscriptionId
+
+    $resourceGroup = Get-ResourceGroupName
+    $accName = Get-ResourceName
+    $poolName = Get-ResourceName
+    $volName1 = Get-ResourceName
+    $gibibyte = 1024 * 1024 * 1024
+    $usageThreshold = 100 * $gibibyte
+    #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
+    $resourceLocation = "eastus"
+    $subnetName = "default"
+    $poolSize = 4398046511104
+    $serviceLevel = "Premium"
+    $vnetName = $resourceGroup + "-vnet"
+    $userName = "testuser"
+
+    $subnetId = "/subscriptions/$subsId/resourceGroups/$resourceGroup/providers/Microsoft.Network/virtualNetworks/$vnetName/subnets/$subnetName"
+
+    $rule1 = @{
+        RuleIndex = 1
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $true
+        Nfsv41 = $false
+        AllowedClients = '0.0.0.0/0'
+    }
+
+    $exportPolicy = @{
+		Rules = (
+			$rule1
+		)
+	}
+
+    # create the list of protocol types
+    $protocolTypes = New-Object string[] 1
+    $protocolTypes[0] = "NFSv3"
+
+    try
+    {
+        # create the resource group
+        New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
+
+        # create virtual network
+        $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
+        $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
+        Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
+
+        # create account
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
+        # create pools
+        $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
+
+        # create  volume and check
+        $newTagName = "tag1"
+        $newTagValue = "tagValue1"
+        $retrievedVolume = New-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -VolumeName $volName1 -CreationToken $volName1 -UsageThreshold $usageThreshold -ServiceLevel $serviceLevel -SubnetId $subnetId -Tag @{$newTagName = $newTagValue} -ExportPolicy $exportPolicy -ProtocolType $protocolTypes
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+        Assert-AreEqual $serviceLevel $retrievedVolume.ServiceLevel
+        Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
+        Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
+        Assert-NotNull $retrievedVolume.ExportPolicy
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
+
+        Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
+
+        # get and check the volume by name
+        $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+
+        # Get GroupIdListForLDAPUser
+        Assert-ThrowsContains{ Get-AzNetAppFilesVolumeGroupIdListForLDAPUser -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1 -Username $userName} 'Group Id list can be fetched for LDAP enabled volumes only. Please check that the volume is LDAP enabled'
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $resourceGroup
+    }
+}
+
+<#
+.SYNOPSIS
+Test Volume Update-AzNetAppFilesVolume to set snapshotPolicy
+#>
+function Update-AzNetAppFilesVolumeSnapshotPolicy
+{
+    $currentSub = (Get-AzureRmContext).Subscription
+    $subsid = $currentSub.SubscriptionId
+
+    $resourceGroup = Get-ResourceGroupName
+    $accName = Get-ResourceName
+    $poolName = Get-ResourceName
+    $volName1 = Get-ResourceName
+    $snapshotPolicyName1 = Get-ResourceName
+    $gibibyte = 1024 * 1024 * 1024
+    $usageThreshold = 100 * $gibibyte
+    #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
+    $resourceLocation = "eastus"
+    $subnetName = "default"
+    $poolSize = 4398046511104
+    $serviceLevel = "Premium"
+    $serviceLevelStandard = "Premium"
+    $vnetName = $resourceGroup + "-vnet"
+
+
+    $subnetId = "/subscriptions/$subsId/resourceGroups/$resourceGroup/providers/Microsoft.Network/virtualNetworks/$vnetName/subnets/$subnetName"
+
+    $rule1 = @{
+        RuleIndex = 1
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $true
+        Nfsv41 = $false
+        AllowedClients = '0.0.0.0/0'
+    }
+
+
+    $exportPolicy = @{
+		Rules = (
+			$rule1
+		)
+	}
+
+    # create the list of protocol types
+    $protocolTypes = New-Object string[] 1
+    $protocolTypes[0] = "NFSv3"
+
+    try
+    {
+        # create the resource group
+        New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
+
+        # create virtual network
+        $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
+        $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
+        Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
+
+        # create account
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
+        # create pool
+        $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
+
+        # create  volume and check
+        $newTagName = "tag1"
+        $newTagValue = "tagValue1"
+        $retrievedVolume = New-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -VolumeName $volName1 -CreationToken $volName1 -UsageThreshold $usageThreshold -ServiceLevel $serviceLevel -SubnetId $subnetId -Tag @{$newTagName = $newTagValue} -ExportPolicy $exportPolicy -ProtocolType $protocolTypes
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+        Assert-AreEqual $serviceLevel $retrievedVolume.ServiceLevel
+        Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
+        Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
+        Assert-NotNull $retrievedVolume.ExportPolicy
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
+
+        Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
+        Assert-NotNull $retrievedVolume.MountTargets
+
+        # get and check the volume by name
+        $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+
         # create and check SnapshotPolicy
-        $retrievedSnapshotPolicy = New-AzNetAppFilesSnapshotPolicy -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName1 -Name $snapshotPolicyName1 -Enabled -HourlySchedule $hourlySchedule -DailySchedule $dailySchedule -WeeklySchedule $weeklySchedule -MonthlySchedule $monthlySchedule        
+        $retrievedSnapshotPolicy = New-AzNetAppFilesSnapshotPolicy -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName1 -Name $snapshotPolicyName1 -Enabled -HourlySchedule $hourlySchedule -DailySchedule $dailySchedule -WeeklySchedule $weeklySchedule -MonthlySchedule $monthlySchedule
         Assert-AreEqual "$accName1/$snapshotPolicyName1" $retrievedSnapshotPolicy.Name
         Assert-NotNull $retrievedSnapshotPolicy.Id
-        
-        
+
+
         # get and check a SnapshotPolicy by name and check again
         $getRetrievedSnapshotPolicy = Get-AzNetAppFilesSnapshotPolicy -ResourceGroupName $resourceGroup -AccountName $accName1 -Name $snapshotPolicyName1
         Assert-AreEqual "$accName1/$snapshotPolicyName1" $retrievedSnapshotPolicy.Name
-        
+
         # Assign snapshotpolicy to volume
         $updateRetrievedVolume = Update-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -VolumeName $volName1 -SnapshotPolicyId $retrievedSnapshotPolicy.Id
         Assert-AreEqual $retrievedSnapshotPolicy.Id $updateRetrievedVolume.SnapshotPolicyId
-        
-        # check GET 
+
+        # check GET
         $getRetrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName2 -VolumeName $volName1
         Assert-AreEqual "$accName/$poolName2/$volName1" $getRetrievedVolume.Name
-        Assert-AreEqual $serviceLevelStandard $getRetrievedVolume.ServiceLevel        
+        Assert-AreEqual $serviceLevelStandard $getRetrievedVolume.ServiceLevel
         Assert-AreEqual $retrievedSnapshotPolicy.Id $getRetrievedVolume.SnapshotPolicyId
-        
+
     }
     finally
     {
@@ -654,7 +820,7 @@ Test Volume Pipeline operations (using command aliases)
 #>
 function Test-VolumePipelines
 {
-    $currentSub = (Get-AzureRmContext).Subscription	
+    $currentSub = (Get-AzureRmContext).Subscription
     $subsid = $currentSub.SubscriptionId
 
     $resourceGroup = Get-ResourceGroupName
@@ -679,24 +845,24 @@ function Test-VolumePipelines
     {
         # create the resource group
         New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
-		
+
         # create virtual network
         $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
         $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
         Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
 
         # create account
-        $retrievedAcc = New-AnfAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName 
+        $retrievedAcc = New-AnfAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
 
         # create pool
-        New-AnfPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -Name $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel 
+        New-AnfPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -Name $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
 
         # create volume by piping from a pool
         # account name, pool name and service level are all acquired
         $retrievedVolume = Get-AnfPool -ResourceGroupName $resourceGroup -AccountName $accName -Name $poolName | New-AnfVolume -Name $volName1 -CreationToken $volName1 -UsageThreshold $usageThreshold -SubnetId $subnetId -ServiceLevel $serviceLevel
         Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
         Assert-AreEqual "Premium" $retrievedVolume.ServiceLevel
-        
+
         # check now with ServiceLevel specified
         # unfortuantely changing to Standard causes FileSystemAllocation error
         # but this can be captured to demonstrate this does use the field parameter
@@ -725,8 +891,141 @@ function Test-VolumePipelines
         Get-AnfVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -Name $volName1 | Remove-AnfVolume
 
         # and check the volume list by piping from get
-        $retrievedVolume = Get-AnfPool -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName | Get-AnfVolume 
+        $retrievedVolume = Get-AnfPool -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName | Get-AnfVolume
         Assert-AreEqual ($numVolumes-1) $retrievedVolume.Length
+    }
+    finally
+    {
+        # Cleanup
+        Clean-ResourceGroup $resourceGroup
+    }
+}
+
+<#
+.SYNOPSIS
+Test Volume CRUD operations
+#>
+function Test-ResetCifsOnNfsVolume
+{
+    $currentSub = (Get-AzureRmContext).Subscription
+    $subsid = $currentSub.SubscriptionId
+
+    $resourceGroup = Get-ResourceGroupName
+    $accName = Get-ResourceName
+    $poolName = Get-ResourceName
+    $volName1 = Get-ResourceName
+    $gibibyte = 1024 * 1024 * 1024
+    $usageThreshold = 100 * $gibibyte
+    $doubleUsage = 2 * $usageThreshold
+    #$resourceLocation = Get-ProviderLocation "Microsoft.NetApp" "eastus" -UseCanonical
+    #$resourceLocation = "eastus2euap"
+    $resourceLocation = "eastus"
+
+    $subnetName = "default"
+    $poolSize = 4398046511104
+    $serviceLevel = "Premium"
+    $vnetName = $resourceGroup + "-vnet"
+
+    $subnetId = "/subscriptions/$subsId/resourceGroups/$resourceGroup/providers/Microsoft.Network/virtualNetworks/$vnetName/subnets/$subnetName"
+
+    $rule1 = @{
+        RuleIndex = 1
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $true
+        Nfsv41 = $false
+        AllowedClients = '0.0.0.0/0'
+    }
+    $rule2 = @{
+        RuleIndex = 2
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $true
+        Nfsv41 = $false
+        AllowedClients = '1.2.3.0/24'
+    }
+    $rule3 = @{
+        RuleIndex = 2
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $true
+        Nfsv41 = $false
+        AllowedClients = '2.3.4.0/24'
+    }
+    $rule5 = @{
+        RuleIndex = 1
+        UnixReadOnly = $false
+        UnixReadWrite = $true
+        Cifs = $false
+        Nfsv3 = $false
+        Nfsv41 = $true
+        AllowedClients = '1.2.3.0/24'
+    }
+    $exportPolicy = @{
+		Rules = (
+			$rule1
+		)
+	}
+
+    $exportPolicyv4 = @{
+		Rules = (
+			$rule5
+		)
+	}
+
+    $exportPolicyMod = @{
+		Rules = (
+			$rule3
+		)
+	}
+
+    # create the list of protocol types
+    $protocolTypes = New-Object string[] 1
+    $protocolTypes[0] = "NFSv3"
+
+    try
+    {
+        # create the resource group
+        New-AzResourceGroup -Name $resourceGroup -Location $resourceLocation -Tags @{Owner = 'b-aubald'}
+
+        # create virtual network
+        $virtualNetwork = New-AzVirtualNetwork -ResourceGroupName $resourceGroup -Location $resourceLocation -Name $vnetName -AddressPrefix 10.0.0.0/16
+        $delegation = New-AzDelegation -Name "netAppVolumes" -ServiceName "Microsoft.Netapp/volumes"
+        Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.1.0/24" -Delegation $delegation | Set-AzVirtualNetwork
+
+        # create account
+        $retrievedAcc = New-AzNetAppFilesAccount -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName
+
+        # create pool
+        $retrievedPool = New-AzNetAppFilesPool -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -PoolSize $poolSize -ServiceLevel $serviceLevel
+
+        # create first volume and check
+        $newTagName = "tag1"
+        $newTagValue = "tagValue1"
+        $retrievedVolume = New-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -Location $resourceLocation -AccountName $accName -PoolName $poolName -VolumeName $volName1 -CreationToken $volName1 -UsageThreshold $usageThreshold -ServiceLevel $serviceLevel -SubnetId $subnetId -Tag @{$newTagName = $newTagValue} -ExportPolicy $exportPolicy -ProtocolType $protocolTypes
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+        Assert-AreEqual $serviceLevel $retrievedVolume.ServiceLevel
+        Assert-AreEqual True $retrievedVolume.Tags.ContainsKey($newTagName)
+        Assert-AreEqual "tagValue1" $retrievedVolume.Tags[$newTagName].ToString()
+        Assert-NotNull $retrievedVolume.ExportPolicy
+        Assert-AreEqual '0.0.0.0/0' $retrievedVolume.ExportPolicy.Rules[0].AllowedClients
+
+        Assert-AreEqual $retrievedVolume.ProtocolTypes[0] 'NFSv3'
+        Assert-NotNull $retrievedVolume.MountTargets
+
+        # get and check a volume by name
+        $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+        Assert-AreEqual "$accName/$poolName/$volName1" $retrievedVolume.Name
+
+        #Assert-ThrowsContains{ Reset-AzNetAppFilesVolumeCifsPassword -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1} 'Cannot reset account for volume with NFS protocol, only volumes with CIFS protocol can be reset'
+        Assert-ThrowsContains{ Reset-AzNetAppFilesVolumeCifsPassword -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1} 'Resetting CIFS password on account for volume is not permitted'
+
+        Remove-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName -VolumeName $volName1
+        $retrievedVolume = Get-AzNetAppFilesVolume -ResourceGroupName $resourceGroup -AccountName $accName -PoolName $poolName
+        Assert-AreEqual 0 $retrievedVolume.Length
     }
     finally
     {

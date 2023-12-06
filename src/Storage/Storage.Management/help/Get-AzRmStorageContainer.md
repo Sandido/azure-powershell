@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Storage.Management.dll-Help.xml
 Module Name: Az.Storage
-online version: https://docs.microsoft.com/powershell/module/az.storage/get-azrmstoragecontainer
+online version: https://learn.microsoft.com/powershell/module/az.storage/get-azrmstoragecontainer
 schema: 2.0.0
 ---
 
@@ -30,32 +30,34 @@ The **Get-AzRmStorageContainer** cmdlet gets or lists  Storage blob containers
 ## EXAMPLES
 
 ### Example 1: Get a Storage blob container with Storage account name and container name
-```
-PS C:\>Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount" -ContainerName "myContainer"
+```powershell
+Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount" -ContainerName "myContainer"
 ```
 
 This command gets a Storage blob container with Storage account name and container name.
 
 ### Example 2: List  all Storage blob containers of a Storage account
-```
-PS C:\>Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount"
+```powershell
+Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount"
 ```
 
 This command lists all Storage blob containers of a Storage account with Storage account name.
 
 ### Example 3: Get a Storage blob container with Storage account object and container name.
-```
-PS C:\>$accountObject = Get-AzStorageAccount -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount"
-PS C:\>Get-AzRmStorageContainer -StorageAccount $accountObject -ContainerName "myContainer"
+```powershell
+$accountObject = Get-AzStorageAccount -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount"
+Get-AzRmStorageContainer -StorageAccount $accountObject -ContainerName "myContainer"
 ```
 
 This command gets a Storage blob container with Storage account object and container name.
 
 ### Example 4: List Storage blob container of a Storage account, include deleted containers.
+```powershell
+Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount" -IncludeDeleted
 ```
-PS C:\>Get-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "myStorageAccount" -IncludeDeleted
 
-   ResourceGroupName: myResourceGroup, StorageAccountName: myStorageAccount
+```output
+ResourceGroupName: myResourceGroup, StorageAccountName: myStorageAccount
 
 Name         PublicAccess LastModified         HasLegalHold HasImmutabilityPolicy Deleted VersionId  
 ----         ------------ ------------         ------------ --------------------- ------- ---------  
@@ -174,7 +176,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

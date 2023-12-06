@@ -19,6 +19,11 @@
 -->
 ## Upcoming Release
 
+## Version 0.2.0
+* Updated Apiversion 2021-03-01-preview
+* Added `Get\New\Remove\Update-AzMixedRealityObjectAnchorsAccount` cmdlets
+* Added `Get\New-AzMixedRealityObjectAnchorsAccountKey` cmdlets
+
 ## Version 0.1.4
 * Added Azure Remote Rendering Management Cmdlets
 

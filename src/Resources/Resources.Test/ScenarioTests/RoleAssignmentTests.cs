@@ -21,28 +21,25 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
 {
-    public class RoleAssignmentTests : ResourceTestRunner
+    public class RoleAssignmentTests : ResourcesTestRunner
     {
-        public XunitTracingInterceptor _logger;
-
         public RoleAssignmentTests(ITestOutputHelper output) : base(output)
         {
-            _logger = new XunitTracingInterceptor(output);
-            XunitTracingInterceptor.AddToContext(_logger);
+
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaClassicAdmins()
         {
             TestRunner.RunTestScript("Test-RaClassicAdmins");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaClassicAdminsWithScope()
         {
-            ResourcesController.NewInstance.RunPsTest(_logger, "Test-RaClassicAdminsWithScope");
+            TestRunner.RunTestScript("Test-RaClassicAdminsWithScope");
         }
 
         [Fact]
@@ -53,42 +50,42 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaPropertiesValidation()
         {
             TestRunner.RunTestScript("Test-RaPropertiesValidation");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaNegativeScenarios()
         {
             TestRunner.RunTestScript("Test-RaNegativeScenarios");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaByScope()
         {
             TestRunner.RunTestScript("Test-RaByScope");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaDeleteByPSRoleAssignment()
         {
             TestRunner.RunTestScript("Test-RaDeleteByPSRoleAssignment");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaByResourceGroup()
         {
             TestRunner.RunTestScript("Test-RaByResourceGroup");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaByResource()
         {
             TestRunner.RunTestScript("Test-RaByResource");
@@ -111,14 +108,14 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaById()
         {
             TestRunner.RunTestScript("Test-RaById");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaDeletionByScope()
         {
             TestRunner.RunTestScript("Test-RaDeletionByScope");
@@ -132,7 +129,7 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaDelegation()
         {
             TestRunner.RunTestScript("Test-RaDelegation");
@@ -146,7 +143,7 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaGetByScope()
         {
             TestRunner.RunTestScript("Test-RaGetByScope");
@@ -181,14 +178,14 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaWithV2Conditions()
         {
             TestRunner.RunTestScript("Test-RaWithV2Conditions");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void RaWithV2ConditionsOnly()
         {
             TestRunner.RunTestScript("Test-RaWithV2ConditionsOnly");
@@ -209,42 +206,43 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        // [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAForGroup()
         {
             TestRunner.RunTestScript("Test-CreateRAForGroup");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAForGuest()
         {
             TestRunner.RunTestScript("Test-CreateRAForGuest");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAForMember()
         {
             TestRunner.RunTestScript("Test-CreateRAForMember");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAForServicePrincipal()
         {
             TestRunner.RunTestScript("Test-CreateRAForServicePrincipal");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAWhenIdNotExist()
         {
             TestRunner.RunTestScript("Test-CreateRAWhenIdNotExist");
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void CreateRAWithObjectType()
         {
             TestRunner.RunTestScript("Test-CreateRAWithObjectType");

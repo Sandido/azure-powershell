@@ -45,9 +45,9 @@ namespace Microsoft.WindowsAzure.Build.Tasks
         public string PullRequestNumber { get; set; }
 
         /// <summary>
-        /// Gets or set the TargetModule, e.g. Storage
+        /// Gets or set the OutputFile, store FilesChanged.txt in 'artifacts' folder
         /// </summary>
-        public string TargetModule { get; set; }
+        public string OutputFile { get; set; }
 
         /// <summary>
         /// Gets or sets the files changed produced by the task.
@@ -95,14 +95,22 @@ namespace Microsoft.WindowsAzure.Build.Tasks
                 try
                 {
                     //The variable is set in pipeline: "azure-powershell - powershell-core"
-                    var token = Environment.GetEnvironmentVariable("NOSCOPEPAT_ADXSDKPS");
                     var client = new GitHubClient(new ProductHeaderValue("Azure"));
-                    if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !string.IsNullOrEmpty(token))
+                    client.Credentials = new Credentials(Environment.GetEnvironmentVariable("OCTOKITPAT"));
+                    IReadOnlyList<PullRequestFile> files;
+                    try
                     {
-                        client.Credentials = new Credentials(token);
+                        files = client.PullRequest.Files(RepositoryOwner, RepositoryName, int.Parse(PullRequestNumber))
+                                        .ConfigureAwait(false).GetAwaiter().GetResult();
                     }
-                    var files = client.PullRequest.Files(RepositoryOwner, RepositoryName, int.Parse(PullRequestNumber))
-                                    .ConfigureAwait(false).GetAwaiter().GetResult();
+                    catch (AuthorizationException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        client = new GitHubClient(new ProductHeaderValue("Azure"));
+                        files = client.PullRequest.Files(RepositoryOwner, RepositoryName, int.Parse(PullRequestNumber))
+                                        .ConfigureAwait(false).GetAwaiter().GetResult();
+                    }
+
                     if (files == null)
                     {
                         return false;
@@ -148,10 +156,10 @@ namespace Microsoft.WindowsAzure.Build.Tasks
             return true;
         }
 
-        // This method will record the changed files into FilesChanged.txt under root folder for other task to consum.
+        // This method will record the changed files into a text file at `OutputFile` for other task to consum.
         private void SerializeChangedFilesToFile(string[] FilesChanged)
         {
-            File.WriteAllLines("FilesChanged.txt", FilesChanged);
+            File.WriteAllLines(OutputFile, FilesChanged);
         }
     }
 }

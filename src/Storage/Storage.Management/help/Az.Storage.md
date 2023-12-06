@@ -1,7 +1,7 @@
 ---
 Module Name: Az.Storage
 Module Guid: da67eaa7-4cb1-4bfa-a194-8bf3faae8ac5
-Download Help Link: https://docs.microsoft.com/powershell/module/az.storage
+Download Help Link: https://learn.microsoft.com/powershell/module/az.storage
 Help Version: 4.2.3.0
 Locale: en-US
 ---
@@ -63,7 +63,10 @@ Enable delete retention policy  for the Azure Storage Blob service.
 Enable static website for the Azure Storage account.
 
 ### [Get-AzDataLakeGen2ChildItem](Get-AzDataLakeGen2ChildItem.md)
-Lists sub directorys and files from a directory or filesystem root.
+Lists sub directories and files from a directory or filesystem root.
+
+### [Get-AzDataLakeGen2DeletedItem](Get-AzDataLakeGen2DeletedItem.md)
+List all deleted files or directories from a directory or filesystem root.
 
 ### [Get-AzDataLakeGen2Item](Get-AzDataLakeGen2Item.md)
 Gets the details of a file or directory in a filesystem.
@@ -88,6 +91,9 @@ Gets the access keys for an Azure Storage account.
 
 ### [Get-AzStorageAccountManagementPolicy](Get-AzStorageAccountManagementPolicy.md)
 Gets the management policy of an Azure Storage account.
+
+### [Get-AzStorageAccountMigration](Get-AzStorageAccountMigration.md)
+Gets the status of the ongoing migration for the specified storage account.
 
 ### [Get-AzStorageAccountNameAvailability](Get-AzStorageAccountNameAvailability.md)
 Checks the availability of a Storage account name.
@@ -146,6 +152,12 @@ Lists file handles of a file share, a file directory or a file.
 ### [Get-AzStorageFileServiceProperty](Get-AzStorageFileServiceProperty.md)
 Gets service properties for Azure Storage File services.
 
+### [Get-AzStorageLocalUser](Get-AzStorageLocalUser.md)
+Gets a specified local user or lists all local users in a storage account.
+
+### [Get-AzStorageLocalUserKey](Get-AzStorageLocalUserKey.md)
+Lists SSH authorized keys and shared key of a specified local user.
+
 ### [Get-AzStorageObjectReplicationPolicy](Get-AzStorageObjectReplicationPolicy.md)
 Gets or lists object replication policy of a Storage account.
 
@@ -197,6 +209,9 @@ Move a file or directory to another a file or directory in same Storage account.
 ### [New-AzDataLakeGen2Item](New-AzDataLakeGen2Item.md)
 Create a file or directory in a filesystem.
 
+### [New-AzDataLakeGen2SasToken](New-AzDataLakeGen2SasToken.md)
+Generates a SAS token for Azure DatalakeGen2 item.
+
 ### [New-AzRmStorageContainer](New-AzRmStorageContainer.md)
 Creates a Storage blob container
 
@@ -208,6 +223,9 @@ Creates a Storage account.
 
 ### [New-AzStorageAccountKey](New-AzStorageAccountKey.md)
 Regenerates a storage key for an Azure Storage account.
+
+### [New-AzStorageAccountManagementPolicyBlobIndexMatchObject](New-AzStorageAccountManagementPolicyBlobIndexMatchObject.md)
+Creates a ManagementPolicy BlobIndexMatch object, which can be used in New-AzStorageAccountManagementPolicyFilter.
 
 ### [New-AzStorageAccountManagementPolicyFilter](New-AzStorageAccountManagementPolicyFilter.md)
 Creates a ManagementPolicy rule filter object, which can be used in New-AzStorageAccountManagementPolicyRule.
@@ -250,6 +268,15 @@ Creates an encryption scope for a Storage account.
 
 ### [New-AzStorageFileSASToken](New-AzStorageFileSASToken.md)
 Generates a shared access signature token for a Storage file.
+
+### [New-AzStorageLocalUserPermissionScope](New-AzStorageLocalUserPermissionScope.md)
+Creates a permission scope object, which can be used in Set-AzStorageLocalUser.
+
+### [New-AzStorageLocalUserSshPassword](New-AzStorageLocalUserSshPassword.md)
+Regenerate SSH password of a specified local user in a storage account.
+
+### [New-AzStorageLocalUserSshPublicKey](New-AzStorageLocalUserSshPublicKey.md)
+Creates a SSH public key object, which can be used in Set-AzStorageLocalUser.
 
 ### [New-AzStorageObjectReplicationPolicyRule](New-AzStorageObjectReplicationPolicyRule.md)
 Creates an object replication policy rule.
@@ -332,6 +359,9 @@ Deletes a directory.
 ### [Remove-AzStorageFile](Remove-AzStorageFile.md)
 Deletes a file.
 
+### [Remove-AzStorageLocalUser](Remove-AzStorageLocalUser.md)
+Removes a specified local user in a storage account.
+
 ### [Remove-AzStorageObjectReplicationPolicy](Remove-AzStorageObjectReplicationPolicy.md)
 Removes the specified object replication policy from a Storage account.
 
@@ -352,6 +382,15 @@ Removes a storage table.
 
 ### [Remove-AzStorageTableStoredAccessPolicy](Remove-AzStorageTableStoredAccessPolicy.md)
 Removes a stored access policy from an Azure storage table.
+
+### [Rename-AzStorageDirectory](Rename-AzStorageDirectory.md)
+Renames a directory.
+
+### [Rename-AzStorageFile](Rename-AzStorageFile.md)
+Renames a file.
+
+### [Restore-AzDataLakeGen2DeletedItem](Restore-AzDataLakeGen2DeletedItem.md)
+Restores a deleted file or directory in a filesystem.
 
 ### [Restore-AzRmStorageShare](Restore-AzRmStorageShare.md)
 Restores a deleted file share.
@@ -410,6 +449,9 @@ Sets the CORS rules for a type of Storage service.
 ### [Set-AzStorageFileContent](Set-AzStorageFileContent.md)
 Uploads the contents of a file.
 
+### [Set-AzStorageLocalUser](Set-AzStorageLocalUser.md)
+Creates or updates a specified local user in a storage account.
+
 ### [Set-AzStorageObjectReplicationPolicy](Set-AzStorageObjectReplicationPolicy.md)
 Creates or updates the specified object replication policy in a Storage account.
 
@@ -430,6 +472,11 @@ Updates a stored access policy on a Storage share.
 
 ### [Set-AzStorageTableStoredAccessPolicy](Set-AzStorageTableStoredAccessPolicy.md)
 Sets the stored access policy for an Azure storage table.
+
+### [Start-AzStorageAccountMigration](Start-AzStorageAccountMigration.md)
+Account Migration request can be triggered for a storage account to change its redundancy level.
+The migration updates the non-zonal redundant storage account to a zonal redundant account or vice-versa in order to have better reliability and availability.
+Zone-redundant storage (ZRS) replicates your storage account synchronously across three Azure availability zones in the primary region.
 
 ### [Start-AzStorageBlobCopy](Start-AzStorageBlobCopy.md)
 Starts to copy a blob.

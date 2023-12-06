@@ -1,7 +1,7 @@
 ---
 external help file:
 Module Name: Az.Websites
-online version: https://docs.microsoft.com/powershell/module/az.websites/get-azwebappslottriggeredwebjob
+online version: https://learn.microsoft.com/powershell/module/az.websites/get-azwebappslottriggeredwebjob
 schema: 2.0.0
 ---
 
@@ -37,8 +37,10 @@ Get or list triggered web for a deployment slot.
 
 ### Example 1: List triggered webs for a deployment slot
 ```powershell
-PS C:\> Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01
+Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01
+```
 
+```output
 Name                                         Kind WebJobType ResourceGroupName
 ----                                         ---- ---------- -----------------
 appService-test01/slot01/slottriggeredjob-03                 webjob-rg-test
@@ -49,8 +51,10 @@ This command lists triggered webs for a deployment slot.
 
 ### Example 2: Get triggered web for a deployment slot
 ```powershell
-PS C:\> Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
+Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
+```
 
+```output
 Name                                         Kind WebJobType ResourceGroupName
 ----                                         ---- ---------- -----------------
 appService-test01/slot01/slottriggeredjob-03                 webjob-rg-test
@@ -60,10 +64,12 @@ This command gets triggered web for a deployment slot.
 
 ### Example 3: Get triggered web for a deployment slot by pipeline
 ```powershell
-PS C:\> $webjob = Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
-PS C:\> Start-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
-PS C:\> $webjob.Id | Get-AzWebAppSlotTriggeredWebJob
+$webjob = Get-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
+Start-AzWebAppSlotTriggeredWebJob -ResourceGroupName webjob-rg-test -AppName appService-test01 -SlotName slot01 -Name slottriggeredjob-03
+$webjob.Id | Get-AzWebAppSlotTriggeredWebJob
+```
 
+```output
 Name                                         Kind WebJobType ResourceGroupName
 ----                                         ---- ---------- -----------------
 appService-test01/slot01/slottriggeredjob-03                 webjob-rg-test
@@ -89,7 +95,8 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -209,29 +216,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### Microsoft.Azure.PowerShell.Cmdlets.Websites.Models.Api20210201.ITriggeredWebJob
 
 ## NOTES
-
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-INPUTOBJECT <IWebsitesIdentity>: Identity Parameter
-  - `[Authprovider <String>]`: The auth provider for the users.
-  - `[DomainName <String>]`: The custom domain name.
-  - `[EnvironmentName <String>]`: The stage site identifier.
-  - `[FunctionAppName <String>]`: Name of the function app registered with the static site build.
-  - `[Id <String>]`: Resource identity path
-  - `[JobHistoryId <String>]`: History ID.
-  - `[Location <String>]`: Location where you plan to create the static site.
-  - `[Name <String>]`: Name of the static site.
-  - `[PrivateEndpointConnectionName <String>]`: Name of the private endpoint connection.
-  - `[ResourceGroupName <String>]`: Name of the resource group to which the resource belongs.
-  - `[Slot <String>]`: Name of the deployment slot. If a slot is not specified, the API deletes a deployment for the production slot.
-  - `[SubscriptionId <String>]`: Your Azure subscription ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).
-  - `[Userid <String>]`: The user id of the user.
-  - `[WebJobName <String>]`: Name of Web Job.
 
 ## RELATED LINKS
 

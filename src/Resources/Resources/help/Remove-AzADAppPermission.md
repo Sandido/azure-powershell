@@ -1,7 +1,7 @@
 ---
 external help file: Az.Resources-help.xml
 Module Name: Az.Resources
-online version: https://docs.microsoft.com/powershell/module/az.resources/remove-azadapppermission
+online version: https://learn.microsoft.com/powershell/module/az.resources/remove-azadapppermission
 schema: 2.0.0
 ---
 
@@ -39,7 +39,7 @@ Remove delegated permission "Group.Read.All" of Microsoft Graph API from AD Appl
 ## PARAMETERS
 
 ### -ApplicationId
-The unique identifier for the application that is assigned by Azure AD.
+The unique identifier for the application that is assigned by Microsoft Entra ID.
 
 ```yaml
 Type: System.Guid
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 ```
 
 ### -ObjectId
-The unique identifier in Azure AD.
+The unique identifier in Microsoft Entra ID.
 
 ```yaml
 Type: System.Guid

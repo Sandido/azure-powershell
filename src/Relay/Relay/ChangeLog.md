@@ -19,6 +19,14 @@
 -->
 ## Upcoming Release
 
+## Version 2.0.0
+* Updated API version to 2021-11-01
+
+## Version 1.0.4
+* Added breaking change message for cmdlets.
+    * `Set-AzRelayNamespace`
+    * `Get-AzRelayOperation`
+
 ## Version 1.0.3
 * Update references in .psd1 to use relative path
 

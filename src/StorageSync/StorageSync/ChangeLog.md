@@ -19,6 +19,13 @@
 -->
 ## Upcoming Release
 
+## Version 2.1.0
+* Fixed minor issues.
+* Updated supported character sets in `Invoke-AzStorageSyncCompatibilityCheck`.
+
+## Version 2.0.0
+* Deprecated "RegisteredServer" alias for InputObject parameter for Set-AzStorageSyncServerEndpoint
+
 ## Version 1.7.0
 * Migrated Azure AD features in Az.StorageSync to MSGraph APIs. The cmdlets will call MSGraph API according to input parameters: New-AzStorageSyncCloudEndpoint
 * Changed default parameter set of Invoke-AzStorageSyncChangeDetection to use full share detection

@@ -37,14 +37,16 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 BackupOperators = psActiveDirectory.BackupOperators,
                 KdcIP = psActiveDirectory.KdcIP,
                 AdName = psActiveDirectory.AdName,
-                ServerRootCACertificate = psActiveDirectory.ServerRootCACertificate,
+                ServerRootCaCertificate = psActiveDirectory.ServerRootCACertificate,
                 AesEncryption = psActiveDirectory.AesEncryption,
                 LdapSigning = psActiveDirectory.LdapSigning,
                 SecurityOperators = psActiveDirectory.SecurityOperators,
-                LdapOverTLS = psActiveDirectory.LdapOverTLS,
+                LdapOverTls = psActiveDirectory.LdapOverTLS,
                 AllowLocalNfsUsersWithLdap = psActiveDirectory.AllowLocalNfsUsersWithLdap,
                 Administrators = psActiveDirectory.Administrators,
-                EncryptDCConnections = psActiveDirectory.EncryptDCConnections
+                EncryptDcConnections = psActiveDirectory.EncryptDCConnections,
+                PreferredServersForLdapClient = psActiveDirectory.PreferredServersForLdapClient is null ? null:  string.Join(",", psActiveDirectory.PreferredServersForLdapClient),
+                LdapSearchScope = psActiveDirectory.LdapSearchScope?.ConvertFromPs()                
             }).ToList();
         }
 
@@ -72,14 +74,16 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 BackupOperators = activeDirectory.BackupOperators,
                 KdcIP = activeDirectory.KdcIP,
                 AdName = activeDirectory.AdName,
-                ServerRootCACertificate = activeDirectory.ServerRootCACertificate,
+                ServerRootCACertificate = activeDirectory.ServerRootCaCertificate,
                 AesEncryption = activeDirectory.AesEncryption,
                 LdapSigning = activeDirectory.LdapSigning,
                 SecurityOperators = activeDirectory.SecurityOperators,
-                LdapOverTLS = activeDirectory.LdapOverTLS,
+                LdapOverTLS = activeDirectory.LdapOverTls,
                 AllowLocalNfsUsersWithLdap = activeDirectory.AllowLocalNfsUsersWithLdap,
                 Administrators = activeDirectory.Administrators,
-                EncryptDCConnections = activeDirectory.EncryptDCConnections
+                EncryptDCConnections = activeDirectory.EncryptDcConnections,
+                LdapSearchScope = activeDirectory.LdapSearchScope.ConvertToPs(),
+                PreferredServersForLdapClient = activeDirectory.PreferredServersForLdapClient?.Split(',').ToList<string>()
             };
             return psActiveDirectory;
         }
@@ -98,6 +102,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 Etag = netAppAccount.Etag,
                 ActiveDirectories = (netAppAccount.ActiveDirectories != null) ? netAppAccount.ActiveDirectories.ConvertToPs(resourceGroupName, netAppAccount.Name) : null,
                 ProvisioningState = netAppAccount.ProvisioningState,
+                Identity = netAppAccount.Identity.ConvertToPs(),
                 SystemData =  netAppAccount.SystemData?.ToPsSystemData()
             };
         }
@@ -141,10 +146,10 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                     Nfsv41 = rule.Nfsv41,
                     AllowedClients = rule.AllowedClients,
                     HasRootAccess = rule.HasRootAccess,
-                    Kerberos5iReadOnly = rule.Kerberos5iReadOnly,
-                    Kerberos5iReadWrite = rule.Kerberos5iReadWrite,
-                    Kerberos5pReadOnly = rule.Kerberos5pReadOnly,
-                    Kerberos5pReadWrite = rule.Kerberos5pReadWrite,
+                    Kerberos5IReadOnly = rule.Kerberos5iReadOnly,
+                    Kerberos5IReadWrite = rule.Kerberos5iReadWrite,
+                    Kerberos5PReadOnly = rule.Kerberos5pReadOnly,
+                    Kerberos5PReadWrite = rule.Kerberos5pReadWrite,
                     Kerberos5ReadOnly = rule.Kerberos5ReadOnly,
                     Kerberos5ReadWrite = rule.Kerberos5ReadWrite,                                        
                 };
@@ -171,10 +176,10 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                     Nfsv41 = rule.Nfsv41,
                     AllowedClients = rule.AllowedClients,
                     HasRootAccess = rule.HasRootAccess,
-                    Kerberos5iReadOnly = rule.Kerberos5iReadOnly,
-                    Kerberos5iReadWrite = rule.Kerberos5iReadWrite,
-                    Kerberos5pReadOnly = rule.Kerberos5pReadOnly,
-                    Kerberos5pReadWrite = rule.Kerberos5pReadWrite,
+                    Kerberos5IReadOnly = rule.Kerberos5iReadOnly,
+                    Kerberos5IReadWrite = rule.Kerberos5iReadWrite,
+                    Kerberos5PReadOnly = rule.Kerberos5pReadOnly,
+                    Kerberos5PReadWrite = rule.Kerberos5pReadWrite,
                     Kerberos5ReadOnly = rule.Kerberos5ReadOnly,
                     Kerberos5ReadWrite = rule.Kerberos5ReadWrite,                    
                 };
@@ -202,10 +207,10 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                     Nfsv41 = Rule.Nfsv41,
                     AllowedClients = Rule.AllowedClients,
                     HasRootAccess = Rule.HasRootAccess,
-                    Kerberos5iReadOnly = Rule.Kerberos5iReadOnly,
-                    Kerberos5iReadWrite = Rule.Kerberos5iReadWrite,
-                    Kerberos5pReadOnly = Rule.Kerberos5pReadOnly,
-                    Kerberos5pReadWrite = Rule.Kerberos5pReadWrite,
+                    Kerberos5iReadOnly = Rule.Kerberos5IReadOnly,
+                    Kerberos5iReadWrite = Rule.Kerberos5IReadWrite,
+                    Kerberos5pReadOnly = Rule.Kerberos5PReadOnly,
+                    Kerberos5pReadWrite = Rule.Kerberos5PReadWrite,
                     Kerberos5ReadOnly = Rule.Kerberos5ReadOnly,
                     Kerberos5ReadWrite = Rule.Kerberos5ReadWrite
                 };
@@ -240,13 +245,16 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 {
                     BackupEnabled = DataProtection.Backup.BackupEnabled,
                     BackupPolicyId = DataProtection.Backup.BackupPolicyId,
-                    PolicyEnforced = DataProtection.Backup.PolicyEnforced,
-                    VaultId = DataProtection.Backup.VaultId
+                    PolicyEnforced = DataProtection.Backup.PolicyEnforced                    
                 };
                 psDataProtection.Backup = psBackupProps;
             }
-
-            return psDataProtection;
+            if (DataProtection.VolumeRelocation != null)
+            {
+                var volumeRelocation = DataProtection.VolumeRelocation.ConvertToPs();
+                psDataProtection.VolumeRelocation = volumeRelocation;
+            }
+           return psDataProtection;
         }
 
         public static VolumePropertiesDataProtection ConvertDataProtectionFromPs(PSNetAppFilesVolumeDataProtection psDataProtection)
@@ -297,12 +305,18 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 backup.BackupEnabled = psDataProtection.Backup.BackupEnabled;
                 backup.BackupPolicyId = psDataProtection.Backup.BackupPolicyId;
                 backup.PolicyEnforced = psDataProtection.Backup.PolicyEnforced;
-                backup.VaultId = psDataProtection.Backup.VaultId;
                 dataProtection.Backup = backup;
             }
             return dataProtection;
         }
 
+        public static PSNetAppFilesVolumeRelocationProperties ConvertToPs(this VolumeRelocationProperties volumeRelocation)
+        {
+            var psVolumeRelocation = new PSNetAppFilesVolumeRelocationProperties();
+            psVolumeRelocation.RelocationRequested = volumeRelocation.RelocationRequested;
+            psVolumeRelocation.ReadyToBeFinalized = volumeRelocation.ReadyToBeFinalized;
+            return psVolumeRelocation;
+        }
 
         public static PSNetAppFilesVolume ToPsNetAppFilesVolume(this Management.NetApp.Models.Volume volume)
         {
@@ -356,6 +370,20 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 SystemData = volume.SystemData?.ToPsSystemData(),
                 MaximumNumberOfFiles = volume.MaximumNumberOfFiles,
                 EnableSubvolumes = volume.EnableSubvolumes,
+                Encrypted = volume.Encrypted,
+                Zones = volume.Zones,
+                KeyVaultPrivateEndpointResourceId = volume.KeyVaultPrivateEndpointResourceId,
+                DeleteBaseSnapshot = volume.DeleteBaseSnapshot,
+                SmbAccessBasedEnumeration = volume.SmbAccessBasedEnumeration,
+                SmbNonBrowsable = volume.SmbNonBrowsable,
+                EncryptionKeySource = volume.EncryptionKeySource,
+                VolumeSpecName = volume.VolumeSpecName,
+                FileAccessLogs = volume.FileAccessLogs,
+                DataStoreResourceId = volume.DataStoreResourceId,
+                ProvisionedAvailabilityZone = volume.ProvisionedAvailabilityZone,
+                IsLargeVolume = volume.IsLargeVolume,
+                ActualThroughputMibps = volume.ActualThroughputMibps,
+                OriginatingResourceId = volume.OriginatingResourceId
             };
         }
 

@@ -29,9 +29,11 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets.ServiceClient
         /// Restores the disk based on the recovery point and other input parameters
         /// </summary>
         /// <param name="rp">Recovery point to restore the disk to</param>
-        /// <param name="storageAccountId">ID of the storage account where to restore the disk</param>
         /// <param name="storageAccountLocation">Location of the storage account where to restore the disk</param>
-        /// <param name="storageAccountType">Type of the storage account where to restore the disk</param>
+        /// <param name="triggerRestoreRequest"></param>
+        /// <param name="vaultName"></param>
+        /// <param name="resourceGroupName"></param>
+        /// <param name="vaultLocation"></param>
         /// <returns>Job created by this operation</returns>
         public RestAzureNS.AzureOperationResponse RestoreDisk(
             AzureRecoveryPoint rp,
@@ -48,7 +50,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets.ServiceClient
             //validtion block
             if (!triggerRestoreRequest.Properties.GetType().IsSubclassOf(typeof(AzureWorkloadRestoreRequest)))
             {
-                if (storageAccountLocation != vaultLocation)
+                if (storageAccountLocation != vaultLocation && rp.BackupManagementType != Models.BackupManagementType.AzureStorage)
                 {
                     throw new Exception(Resources.TriggerRestoreIncorrectRegion);
                 }
@@ -74,6 +76,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets.ServiceClient
         /// <param name="secondaryRegion">secondary region where to trigger the restore</param>
         /// <param name="vaultName">Name of recovery services vault</param>
         /// <param name="resourceGroupName">Name of the vault resource group</param>
+        /// <param name="backupManagementType"></param>
         /// <returns>CRR access token</returns>
         public CrrModel.CrrAccessToken GetCRRAccessToken(
             AzureRecoveryPoint rp,
@@ -111,13 +114,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets.ServiceClient
             //validation block
             if (!triggerCRRRestoreRequest.RestoreRequest.GetType().IsSubclassOf(typeof(CrrModel.AzureWorkloadRestoreRequest)))
             {
-                if (storageAccountLocation != secondaryRegion)
+                if (storageAccountLocation != secondaryRegion && rp.BackupManagementType != Models.BackupManagementType.AzureStorage)
                 {
                     throw new Exception(Resources.TriggerRestoreIncorrectRegion);
                 }
             }
             
-            var response = CrrAdapter.Client.CrossRegionRestore.TriggerWithHttpMessagesAsync(secondaryRegion, triggerCRRRestoreRequest).Result;
+            var response = CrrAdapter.Client.CrossRegionRestore.TriggerWithHttpMessagesAsync(secondaryRegion, triggerCRRRestoreRequest.CrossRegionRestoreAccessDetails , triggerCRRRestoreRequest.RestoreRequest).Result;
             return response;
         }
     }

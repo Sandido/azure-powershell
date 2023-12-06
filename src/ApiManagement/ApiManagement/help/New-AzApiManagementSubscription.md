@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.ApiManagement.ServiceManagement.dll-Help.xml
 Module Name: Az.ApiManagement
 ms.assetid: B85BF332-503D-41CB-A3B7-221B85B9BE30
-online version: https://docs.microsoft.com/powershell/module/az.apimanagement/new-azapimanagementsubscription
+online version: https://learn.microsoft.com/powershell/module/az.apimanagement/new-azapimanagementsubscription
 schema: 2.0.0
 ---
 
@@ -117,7 +117,7 @@ Accept wildcard characters: False
 ### -PrimaryKey
 Specifies the subscription primary key.
 If this parameter is not specified the key is generated automatically.
-This parameter must be 1 to 300 characters long.
+This parameter must be 1 to 256 characters long.
 
 ```yaml
 Type: System.String
@@ -164,7 +164,7 @@ Accept wildcard characters: False
 ### -SecondaryKey
 Specifies the subscription secondary key.
 This parameter is generated automatically if it is not specified.
-This parameter must be 1 to 300 characters long.
+This parameter must be 1 to 256 characters long.
 
 ```yaml
 Type: System.String

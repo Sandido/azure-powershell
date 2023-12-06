@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Websites.dll-Help.xml
 Module Name: Az.Websites
 ms.assetid: 8F36244D-A4D7-40BB-AC4C-E9AD445549F8
-online version: https://docs.microsoft.com/powershell/module/az.websites/new-azappserviceplan
+online version: https://learn.microsoft.com/powershell/module/az.websites/new-azappserviceplan
 schema: 2.0.0
 ---
 
@@ -276,7 +276,7 @@ Size of web worker
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Small, Medium, Large, ExtraLarge
+Accepted values: ExtraSmall, Small, Medium, Large, ExtraLarge, ExtraExtraLarge
 
 Required: False
 Position: 5

@@ -13,6 +13,7 @@
 // ----------------------------------------------------------------------------------
 
 using Microsoft.Azure.Batch;
+using Microsoft.Azure.Batch.Common;
 using Microsoft.Azure.Commands.Batch.Properties;
 using System;
 using System.Collections;
@@ -67,22 +68,6 @@ namespace Microsoft.Azure.Commands.Batch.Models
                 return PSPagedEnumerable<PSCloudPool, CloudPool>.CreateWithMaxCount(
                     pools, mappingFunction, options.MaxCount, () => WriteMaxCount(options.MaxCount));
             }
-        }
-
-        /// <summary>
-        /// Gets all pools lifetime summary statistics
-        /// </summary>
-        /// <param name="context">The account to use.</param>
-        /// <param name="additionBehaviors">Additional client behaviors to perform.</param>
-        public PSPoolStatistics GetAllPoolsLifetimeStatistics(BatchAccountContext context, IEnumerable<BatchClientBehavior> additionBehaviors = null)
-        {
-            PoolOperations poolOperations = context.BatchOMClient.PoolOperations;
-
-            WriteVerbose(string.Format(Resources.GetAllPoolsLifetimeStatistics));
-
-            PoolStatistics poolStatistics = poolOperations.GetAllLifetimeStatistics(additionBehaviors);
-            PSPoolStatistics psPoolStatistics = new PSPoolStatistics(poolStatistics);
-            return psPoolStatistics;
         }
 
         /// <summary>
@@ -186,6 +171,8 @@ namespace Microsoft.Azure.Commands.Batch.Models
             {
                 pool.ApplicationLicenses = parameters.ApplicationLicenses;
             }
+
+            pool.TargetNodeCommunicationMode = (NodeCommunicationMode)parameters.TargetCommunicationMode;
 
             WriteVerbose(string.Format(Resources.CreatingPool, parameters.PoolId));
             pool.Commit(parameters.AdditionalBehaviors);

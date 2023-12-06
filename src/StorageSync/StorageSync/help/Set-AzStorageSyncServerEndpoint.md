@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.StorageSync.dll-Help.xml
 Module Name: Az.StorageSync
-online version: https://docs.microsoft.com/powershell/module/Az.storagesync/set-Azstoragesyncserverendpoint
+online version: https://learn.microsoft.com/powershell/module/Az.storagesync/set-Azstoragesyncserverendpoint
 schema: 2.0.0
 ---
 
@@ -100,7 +100,7 @@ SyncGroup Object, normally passed through the parameter.
 ```yaml
 Type: Microsoft.Azure.Commands.StorageSync.Models.PSServerEndpoint
 Parameter Sets: ObjectParameterSet
-Aliases: RegisteredServer, ServerEndpoint
+Aliases: ServerEndpoint
 
 Required: True
 Position: 0

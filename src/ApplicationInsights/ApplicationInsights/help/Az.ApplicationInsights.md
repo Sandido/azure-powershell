@@ -1,69 +1,58 @@
 ---
 Module Name: Az.ApplicationInsights
-Module Guid: da67eaa7-4cb1-4bfa-a194-8bf3faae8ac6
-Download Help Link: https://docs.microsoft.com/powershell/module/az.applicationinsights
-Help Version: 0.1.2.0
+Module Guid: 031a685e-5904-433f-b2f8-4fcef3cd15d8
+Download Help Link: https://learn.microsoft.com/powershell/module/az.applicationinsights
+Help Version: 1.0.0.0
 Locale: en-US
 ---
 
 # Az.ApplicationInsights Module
 ## Description
-Creates and manages application insights in Azure Resource Manager.
+Microsoft Azure PowerShell: ApplicationInsights cmdlets
 
 ## Az.ApplicationInsights Cmdlets
 ### [Get-AzApplicationInsights](Get-AzApplicationInsights.md)
-Get application insights resources
+Returns an Application Insights component.
 
 ### [Get-AzApplicationInsightsApiKey](Get-AzApplicationInsightsApiKey.md)
-Get application insights api keys for an application insights resource
+Get the API Key for this key id.
 
 ### [Get-AzApplicationInsightsContinuousExport](Get-AzApplicationInsightsContinuousExport.md)
-Get application insights continuous export configuration for an application insights resource
+Get the Continuous Export configuration for this export id.
 
 ### [Get-AzApplicationInsightsLinkedStorageAccount](Get-AzApplicationInsightsLinkedStorageAccount.md)
-Get application insights linked storage account
+Returns the current linked storage settings for an Application Insights component.
 
-### [New-AzApplicationInsights](New-AzApplicationInsights.md)
-Create a new application insights resource
-
-### [New-AzApplicationInsightsApiKey](New-AzApplicationInsightsApiKey.md)
-Create an application insights api key for an application insights resource
-
-### [New-AzApplicationInsightsContinuousExport](New-AzApplicationInsightsContinuousExport.md)
-Create a new application insights continuous export configuration for an application insights resource
-
-### [New-AzApplicationInsightsLinkedStorageAccount](New-AzApplicationInsightsLinkedStorageAccount.md)
-Create an application insights linked storage account
-
-### [Remove-AzApplicationInsights](Remove-AzApplicationInsights.md)
-Remove an application insights resource
-
-### [Remove-AzApplicationInsightsApiKey](Remove-AzApplicationInsightsApiKey.md)
-Remove an application insights api key for an application insights resource
-
-### [Remove-AzApplicationInsightsContinuousExport](Remove-AzApplicationInsightsContinuousExport.md)
-Remove a continuous export configuration in an application insights resource
-
-### [Remove-AzApplicationInsightsLinkedStorageAccount](Remove-AzApplicationInsightsLinkedStorageAccount.md)
-Delete application insights linked storage account
-
-### [Set-AzApplicationInsightsContinuousExport](Set-AzApplicationInsightsContinuousExport.md)
-Update a continuous export configuration in an application insights resource
-
-### [Set-AzApplicationInsightsDailyCap](Set-AzApplicationInsightsDailyCap.md)
-Set daily data volume cap for an application insights resource
-
-### [Set-AzApplicationInsightsPricingPlan](Set-AzApplicationInsightsPricingPlan.md)
-Set pricing plan and daily data volume information for an application insights resource
-
-### [Update-AzApplicationInsights](Update-AzApplicationInsights.md)
-update an existing application insights resource
-
-### [Update-AzApplicationInsightsLinkedStorageAccount](Update-AzApplicationInsightsLinkedStorageAccount.md)
-Update application insights linked storage account
+### [Get-AzApplicationInsightsMyWorkbook](Get-AzApplicationInsightsMyWorkbook.md)
+Get a single private workbook by its resourceName.
 
 ### [Get-AzApplicationInsightsWebTest](Get-AzApplicationInsightsWebTest.md)
 Get a specific Application Insights web test definition.
+
+### [Get-AzApplicationInsightsWorkbook](Get-AzApplicationInsightsWorkbook.md)
+Get a single workbook by its resourceName.
+
+### [Get-AzApplicationInsightsWorkbookRevision](Get-AzApplicationInsightsWorkbookRevision.md)
+Get a single workbook revision defined by its revisionId.
+
+### [Get-AzApplicationInsightsWorkbookTemplate](Get-AzApplicationInsightsWorkbookTemplate.md)
+Get a single workbook template by its resourceName.
+
+### [New-AzApplicationInsights](New-AzApplicationInsights.md)
+Creates (or updates) an Application Insights component.
+Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
+
+### [New-AzApplicationInsightsApiKey](New-AzApplicationInsightsApiKey.md)
+Create an API Key of an Application Insights component.
+
+### [New-AzApplicationInsightsContinuousExport](New-AzApplicationInsightsContinuousExport.md)
+Create a Continuous Export configuration of an Application Insights component.
+
+### [New-AzApplicationInsightsLinkedStorageAccount](New-AzApplicationInsightsLinkedStorageAccount.md)
+Replace current linked storage account for an Application Insights component.
+
+### [New-AzApplicationInsightsMyWorkbook](New-AzApplicationInsightsMyWorkbook.md)
+Create a new private workbook.
 
 ### [New-AzApplicationInsightsWebTest](New-AzApplicationInsightsWebTest.md)
 Creates or updates an Application Insights web test definition.
@@ -74,9 +63,64 @@ Create an in-memory object for WebTestGeolocation.
 ### [New-AzApplicationInsightsWebTestHeaderFieldObject](New-AzApplicationInsightsWebTestHeaderFieldObject.md)
 Create a in-memory object for HeaderField
 
+### [New-AzApplicationInsightsWorkbook](New-AzApplicationInsightsWorkbook.md)
+Create a new workbook.
+
+### [New-AzApplicationInsightsWorkbookTemplate](New-AzApplicationInsightsWorkbookTemplate.md)
+Create a new workbook template.
+
+### [New-AzApplicationInsightsWorkbookTemplateGalleryObject](New-AzApplicationInsightsWorkbookTemplateGalleryObject.md)
+Create an in-memory object for WorkbookTemplateGallery.
+
+### [Remove-AzApplicationInsights](Remove-AzApplicationInsights.md)
+Deletes an Application Insights component.
+
+### [Remove-AzApplicationInsightsApiKey](Remove-AzApplicationInsightsApiKey.md)
+Delete an API Key of an Application Insights component.
+
+### [Remove-AzApplicationInsightsContinuousExport](Remove-AzApplicationInsightsContinuousExport.md)
+Delete a Continuous Export configuration of an Application Insights component.
+
+### [Remove-AzApplicationInsightsLinkedStorageAccount](Remove-AzApplicationInsightsLinkedStorageAccount.md)
+Delete linked storage accounts for an Application Insights component.
+
+### [Remove-AzApplicationInsightsMyWorkbook](Remove-AzApplicationInsightsMyWorkbook.md)
+Delete a private workbook.
+
 ### [Remove-AzApplicationInsightsWebTest](Remove-AzApplicationInsightsWebTest.md)
 Deletes an Application Insights web test.
 
+### [Remove-AzApplicationInsightsWorkbook](Remove-AzApplicationInsightsWorkbook.md)
+Delete a workbook.
+
+### [Remove-AzApplicationInsightsWorkbookTemplate](Remove-AzApplicationInsightsWorkbookTemplate.md)
+Delete a workbook template.
+
+### [Set-AzApplicationInsightsContinuousExport](Set-AzApplicationInsightsContinuousExport.md)
+Create a Continuous Export configuration of an Application Insights component.
+
+### [Set-AzApplicationInsightsDailyCap](Set-AzApplicationInsightsDailyCap.md)
+Update current billing features for an Application Insights component.
+
+### [Set-AzApplicationInsightsPricingPlan](Set-AzApplicationInsightsPricingPlan.md)
+Update current billing features for an Application Insights component.
+
+### [Update-AzApplicationInsights](Update-AzApplicationInsights.md)
+Creates (or updates) an Application Insights component.
+Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
+
+### [Update-AzApplicationInsightsLinkedStorageAccount](Update-AzApplicationInsightsLinkedStorageAccount.md)
+Update linked storage accounts for an Application Insights component.
+
+### [Update-AzApplicationInsightsMyWorkbook](Update-AzApplicationInsightsMyWorkbook.md)
+Updates a private workbook that has already been added.
+
 ### [Update-AzApplicationInsightsWebTestTag](Update-AzApplicationInsightsWebTestTag.md)
-Creates or updates an Application Insights web test definition.
+Updates the tags associated with an Application Insights web test.
+
+### [Update-AzApplicationInsightsWorkbook](Update-AzApplicationInsightsWorkbook.md)
+Updates a workbook that has already been added.
+
+### [Update-AzApplicationInsightsWorkbookTemplate](Update-AzApplicationInsightsWorkbookTemplate.md)
+Updates a workbook template that has already been added.
 

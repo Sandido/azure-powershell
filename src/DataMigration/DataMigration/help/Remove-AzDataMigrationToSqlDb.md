@@ -1,7 +1,7 @@
 ---
 external help file: Az.DataMigration-help.xml
 Module Name: Az.DataMigration
-online version: https://docs.microsoft.com/powershell/module/az.datamigration/remove-azdatamigrationtosqldb
+online version: https://learn.microsoft.com/powershell/module/az.datamigration/remove-azdatamigrationtosqldb
 schema: 2.0.0
 ---
 
@@ -32,14 +32,14 @@ Remove the specified database migration for a given SQL Db.
 
 ### Example 1: Delete the SQL DB Database Migration resource.
 ```powershell
-Remove-AzDataMigrationToSqlDb -ResourceGroupName tsum38RG -SqlDbInstanceName dmstestsqldb -TargetDbName at_sqldbtrgtps1
+Remove-AzDataMigrationToSqlDb -ResourceGroupName myRG -SqlDbInstanceName sqldb -TargetDbName myDB
 ```
 
 Delete the SQL DB Database Migration resource.
 
 ### Example 2: Delete the SQL DB Database Migration resource even if it is in progress
 ```powershell
-Remove-AzDataMigrationToSqlDb -ResourceGroupName tsum38RG -SqlDbInstanceName dmstestsqldb -TargetDbName at_sqldbtrgtps1 -Force
+Remove-AzDataMigrationToSqlDb -ResourceGroupName myRG -SqlDbInstanceName sqldb -TargetDbName myDB -Force
 ```
 
 Forcibly deletes an ongoing Migration to SQL DB by adding the optional "Force" parameter
@@ -62,7 +62,8 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -242,22 +243,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### System.Boolean
 
 ## NOTES
-
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-INPUTOBJECT <IDataMigrationIdentity>: Identity Parameter
-  - `[Id <String>]`: Resource identity path
-  - `[ManagedInstanceName <String>]`: 
-  - `[ResourceGroupName <String>]`: Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.
-  - `[SqlDbInstanceName <String>]`: 
-  - `[SqlMigrationServiceName <String>]`: Name of the SQL Migration Service.
-  - `[SqlVirtualMachineName <String>]`: 
-  - `[SubscriptionId <String>]`: Subscription ID that identifies an Azure subscription.
-  - `[TargetDbName <String>]`: The name of the target database.
 
 ## RELATED LINKS

@@ -1,29 +1,12 @@
-<!--
-    Please leave this section at the top of the breaking change documentation.
+# Upcoming breaking changes in Azure PowerShell
 
-    New breaking changes should go under the section titled "Upcoming Breaking Changes", and should adhere to the following format:
+## Az.Storage
 
-    # Upcoming Breaking Changes
+### `New-AzStorageAccount`
 
-    ## Release X.0.0 - January 2017
-
-    The following cmdlets were affected this release:
-
-    **Cmdlet 1**
-    - Description of what has changed
-
-    ```powershell
-    # Old
-    # Sample of how the cmdlet was previously called
-
-    # New
-    # Sample of how the cmdlet should now be called
-    ```
-
-    Note: the above section follows the template found in the link below: 
-
-    https://github.com/Azure/azure-powershell/blob/dev/documentation/breaking-changes/breaking-change-template.md
--->
-
-# Upcoming Breaking Changes
+- Cmdlet breaking-change will happen to all parameter sets
+  - Default value of AllowBlobPublicAccess and AllowCrossTenantReplication settings on storage account will be changed to False in the future release. 
+  When AllowBlobPublicAccess is False on a storage account, container ACLs cannot be configured to allow anonymous access to blobs within the storage account. 
+  When AllowCrossTenantReplication is False on a storage account, cross AAD tenant object replication is not allowed when setting up Object Replication policies. Target version is for reference only, it might be changed by service plan.
+  - This change is expected to take effect from Az.Storage version: 6.2.0 and Az version: 11.2.0
 

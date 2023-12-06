@@ -20,8 +20,7 @@ Update entity in groups
 .Description
 Update entity in groups
 .Example
-PS C:\> Update-AzADGroup -ObjectId $objectid -Description $description
-
+Update-AzADGroup -ObjectId $objectid -Description $description
 
 .Outputs
 System.Boolean
@@ -54,7 +53,7 @@ PERMISSIONGRANT <IMicrosoftGraphResourceSpecificPermissionGrant[]>: The permissi
   [PermissionType <String>]: The type of permission. Possible values are: Application, Delegated. Read-only.
   [ResourceAppId <String>]: ID of the Azure AD app that is hosting the resource. Read-only.
 .Link
-https://docs.microsoft.com/powershell/module/az.resources/update-azadgroup
+https://learn.microsoft.com/powershell/module/az.resources/update-azadgroup
 #>
 function Update-AzADGroup {
 [OutputType([System.Boolean])]
@@ -316,7 +315,7 @@ begin {
         $parameterSet = $PSCmdlet.ParameterSetName
 
         if ($null -eq [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PowerShellVersion) {
-            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PowerShellVersion = $Host.Runspace.Version.ToString()
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PowerShellVersion = $Host.Version.ToString()
         }         
         $preTelemetryId = [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId
         if ($preTelemetryId -eq '') {

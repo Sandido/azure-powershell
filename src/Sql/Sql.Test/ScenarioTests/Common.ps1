@@ -45,14 +45,13 @@ function Get-SqlBlobAuditingTestEnvironmentParameters ($testSuffix)
 
 <#
 .SYNOPSIS
-Gets the values of the parameters used at the threat detection tests
+Gets the values of the parameters used for the Advanced Threat Protection tests
 #>
-function Get-SqlThreatDetectionTestEnvironmentParameters ($testSuffix)
+function Get-SqlAdvancedThreatProtectionTestEnvironmentParameters ($testSuffix)
 {
-	return @{ rgname = "sql-td-cmdlet-test-rg" +$testSuffix;
-			  serverName = "sql-td-cmdlet-server" +$testSuffix;
+	return @{ rgname = "sql-td-cmdlet-test-rg" + $testSuffix;
+			  serverName = "sql-td-cmdlet-server" + $testSuffix;
 			  databaseName = "sql-td-cmdlet-db" + $testSuffix;
-			  storageAccount = "tdcmdlets" +$testSuffix
 			  }
 }
 
@@ -111,22 +110,12 @@ function Create-BlobAuditingClassicTestEnvironment ($testSuffix, $location = "We
 
 <#
 .SYNOPSIS
-Creates the test environment needed to perform the Sql threat detecion tests
+Creates the test environment needed to perform the Sql Advanced Threat Protection tests
 #>
-function Create-ThreatDetectionTestEnvironment ($testSuffix, $location = "West Central US", $serverVersion = "12.0")
+function Create-AdvancedThreatProtectionTestEnvironment ($testSuffix, $location = "West Europe", $serverVersion = "12.0")
 {
-	$params = Get-SqlThreatDetectionTestEnvironmentParameters $testSuffix
-	Create-TestEnvironmentWithParams $params $location $serverVersion
-}
-
-<#
-.SYNOPSIS
-Creates the test environment needed to perform the Sql threat detecion tests with classic storage
-#>
-function Create-ThreatDetectionClassicTestEnvironment ($testSuffix, $location = "West Central US", $serverVersion = "12.0")
-{
-	$params = Get-SqlThreatDetectionTestEnvironmentParameters $testSuffix
-	Create-ClassicTestEnvironmentWithParams $params $location $serverVersion
+	$params = Get-SqlAdvancedThreatProtectionTestEnvironmentParameters $testSuffix
+	Create-BasicTestEnvironmentWithParams $params $location $serverVersion
 }
 
 <#
@@ -223,6 +212,35 @@ function Remove-LedgerTestEnvironment ($testSuffix)
 {
 	$params = Get-LedgerTestEnvironmentParameters $testSuffix
 	Remove-AzResourceGroup -Name $params.rgname -Force
+}
+
+<#
+.SYNOPSIS
+Creates the basic test environment used for the ledger tests - creates resource group, server, and database
+#>
+function Create-ManagedInstanceLedgerTestEnvironment ()
+{
+	$dbSuffix = getAssetName
+	$collation = "SQL_Latin1_General_CP1_CI_AS"
+	$dbName = "ledger-cmdlet-mi-db" + $dbSuffix
+	$rg = Create-ResourceGroupForTest
+	$managedInstance = Create-ManagedInstanceForTest $rg
+	$db = New-AzSqlInstanceDatabase -ResourceGroupName $managedInstance.ResourceGroupName -InstanceName $managedInstance.ManagedInstanceName -Name $dbName -Collation $collation
+
+	return @{
+		serverName = $managedInstance.ManagedInstanceName;
+		databaseName = $dbName;
+		rgName = $managedInstance.ResourceGroupName
+	}
+}
+
+<#
+.SYNOPSIS
+Removes the test environment that was needed to perform the ledger digest upload tests
+#>
+function Remove-LedgerTestEnvironmentForMi ($rg)
+{
+	Remove-AzResourceGroup -Name $rg -Force
 }
 
 <#
@@ -510,6 +528,15 @@ function Get-JobStepName
 
 <#
 .SYNOPSIS
+Gets valid job private endpoint name
+#>
+function Get-JobPrivateEndpointName
+{
+	return getAssetName
+}
+
+<#
+.SYNOPSIS
 Gets valid schema name
 #>
 function Get-SchemaName
@@ -790,11 +817,11 @@ function Create-JobStepForTest ($j, $tg, $c, $ct)
 
 <#
 .SYNOPSIS
-Removes the test environment that was needed to perform the Sql threat detection tests
+Removes the test environment that was needed to perform the Sql Advanced Threat Protection tests
 #>
-function Remove-ThreatDetectionTestEnvironment ($testSuffix)
+function Remove-AdvancedThreatProtectionTestEnvironment ($testSuffix)
 {
-	$params = Get-SqlThreatDetectionTestEnvironmentParameters $testSuffix
+	$params = Get-SqlAdvancedThreatProtectionTestEnvironmentParameters $testSuffix
 	Remove-AzResourceGroup -Name $params.rgname -Force
 }
 
@@ -942,7 +969,7 @@ function Get-DNSNameBasedOnEnvironment ()
 {
      $connectingString = [System.Environment]::GetEnvironmentVariable("TEST_CSM_ORGID_AUTHENTICATION")
      $parsedString = [Microsoft.Rest.ClientRuntime.Azure.TestFramework.TestUtilities]::ParseConnectionString($connectingString)
-     $environment = $parsedString[[Microsoft.Rest.ClientRuntime.Azure.TestFramework.ConnectionStringKeys]::EnvironmentKey]
+     $environment = $parsedString[[Microsoft.Azure.Commands.TestFx.ConnectionStringKeys]::EnvironmentKey]
      if ($environment -eq "Dogfood"){
          return ".sqltest-eg1.mscds.com"
      }
@@ -966,11 +993,27 @@ function Get-DefaultManagedInstanceParameters()
 	}
 }
 
+function Get-DefaultManagedInstanceParametersV2()
+{
+	return @{
+		rg = "CustomerExperienceTeam_RG";
+		location = "westcentralus";
+		subnet = "/subscriptions/8313371e-0879-428e-b1da-6353575a9192/resourceGroups/CustomerExperienceTeam_RG/providers/Microsoft.Network/virtualNetworks/vnet-managed-instance-v2/subnets/ManagedInstance";
+		subscriptionId = "8313371e-0879-428e-b1da-6353575a9192";
+		defaultMI = "autobot-managed-instance";
+		defaultMIDB = "autobot-managed-database";
+		sku = "GP_Gen5";
+		vCore = 4;
+		storageSizeInGb = 64;
+		timezone = "Central Europe Standard Time";
+	}
+}
+
 <#
 	.SYNOPSIS
 	Creates the test environment needed to perform the Sql managed instance CRUD tests
 #>
-function Create-ManagedInstanceForTest ($resourceGroup, $vCore, $subnetId)
+function Create-ManagedInstanceForTest ($resourceGroup, $vCore, $subnetId, $isV2)
 {
 	if($vCore -eq $null)
 	{
@@ -984,7 +1027,12 @@ function Create-ManagedInstanceForTest ($resourceGroup, $vCore, $subnetId)
 
 	$managedInstanceName = Get-ManagedInstanceName
 	$credentials = Get-ServerCredential
-	$params = Get-DefaultManagedInstanceParameters
+	if($isV2) {
+		$params = Get-DefaultManagedInstanceParametersV2
+	}
+	else {
+		$params = Get-DefaultManagedInstanceParameters
+	}
  	$skuName = "GP_Gen5"
 	 
 	if($resourceGroup -eq $null)
@@ -1006,9 +1054,7 @@ function Create-ManagedInstanceForTest ($resourceGroup, $vCore, $subnetId)
 
 	# The previous command keeps polling until managed instance becomes ready. However, it can happen that the managed instance
 	# becomes ready but the create operation is still in progress. Because of that, we should wait until the operation is completed.
-	if([Microsoft.Azure.Test.HttpRecorder.HttpMockServer]::Mode -eq "Record"){
-		Start-Sleep -s 30
-	}
+	Start-TestSleep -Seconds 30
 
 	return $managedInstance
 }

@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.KeyVault.dll-Help.xml
 Module Name: Az.KeyVault
 ms.assetid: 636FAD5B-8C39-4E5C-8978-6845C6B89BC0
-online version: https://docs.microsoft.com/powershell/module/az.keyvault/set-azkeyvaultaccesspolicy
+online version: https://learn.microsoft.com/powershell/module/az.keyvault/set-azkeyvaultaccesspolicy
 schema: 2.0.0
 ---
 
@@ -164,6 +164,9 @@ The cmdlet may call below Microsoft Graph API according to input parameters:
 ## EXAMPLES
 
 ### Example 1: Grant permissions to a user for a key vault and modify the permissions
+<!-- Skip: Output cannot be splitted from code -->
+
+
 ```powershell
 Set-AzKeyVaultAccessPolicy -VaultName 'Contoso03Vault' -UserPrincipalName 'PattiFuller@contoso.com' -PermissionsToKeys create,import,delete,list -PermissionsToSecrets set,delete -PassThru
 
@@ -244,7 +247,7 @@ Access Policies                  :
 Tags                             :
 ```
 
-The first command grants permissions for a user in your Azure Active Directory, PattiFuller@contoso.com, to perform operations on keys and secrets with a key vault named Contoso03Vault. The *PassThru* parameter results in the updated object being returned by the cmdlet.
+The first command grants permissions for a user in your Microsoft Entra ID, PattiFuller@contoso.com, to perform operations on keys and secrets with a key vault named Contoso03Vault. The *PassThru* parameter results in the updated object being returned by the cmdlet.
 The second command modifies the permissions that were granted to PattiFuller@contoso.com in the first command, to now allow getting secrets in addition to setting and deleting them. The permissions to key operations remain unchanged after this command.
 The final command further modifies the existing permissions for PattiFuller@contoso.com to remove all permissions to key operations. The permissions to secret operations remain unchanged after this command.
 
@@ -254,7 +257,7 @@ Set-AzKeyVaultAccessPolicy -VaultName 'Contoso03Vault' -ServicePrincipalName 'ht
 ```
 
 This command grants permissions for an application for a key vault named Contoso03Vault.
-The *ServicePrincipalName* parameter specifies the application. The application must be registered in your Azure Active Directory. The value of the *ServicePrincipalName* parameter must be either the service principal name of the application or the application ID GUID.
+The *ServicePrincipalName* parameter specifies the application. The application must be registered in your Microsoft Entra ID. The value of the *ServicePrincipalName* parameter must be either the service principal name of the application or the application ID GUID.
 This example specifies the service principal name `http://payroll.contoso.com`, and the command grants the application permissions to read and write secrets.
 
 ### Example 3: Grant permissions for an application using its object ID
@@ -292,11 +295,11 @@ This example picks the first one, indicated by index \[0\] in the returned list.
 
 ### Example 7: Grant Azure Information Protection access to the customer-managed tenant key (BYOK)
 ```powershell
-Set-AzKeyVaultAccessPolicy -VaultName 'Contoso04Vault' -ServicePrincipalName 00000012-0000-0000-c000-000000000000 -PermissionsToKeys decrypt,sign,get
+Set-AzKeyVaultAccessPolicy -VaultName 'Contoso04Vault' -ServicePrincipalName 'MyServicePrincipal' -PermissionsToKeys decrypt,sign,get
 ```
 
 This command authorizes Azure Information Protection to use a customer-managed key (the bring your own key, or "BYOK" scenario) as the Azure Information Protection tenant key.
-When you run this command, specify your own key vault name but you must specify the *ServicePrincipalName* parameter with the GUID **00000012-0000-0000-c000-000000000000** and specify the permissions in the example.
+When you run this command, specify your own key vault name but you must specify the *ServicePrincipalName* parameter and specify the permissions in the example.
 
 ## PARAMETERS
 
@@ -316,7 +319,7 @@ Accept wildcard characters: False
 ```
 
 ### -BypassObjectIdValidation
-Enables you to specify an object ID without validating that the object exists in Azure Active Directory.
+Enables you to specify an object ID without validating that the object exists in Microsoft Entra ID.
 Use this parameter only if you want to grant access to your key vault to an object ID that refers to a delegated security group from another Azure tenant.
 
 ```yaml
@@ -423,7 +426,7 @@ Accept wildcard characters: False
 ```
 
 ### -ObjectId
-Specifies the object ID of the user or service principal in Azure Active Directory for which to grant permissions.
+Specifies the object ID of the user or service principal in Microsoft Entra ID for which to grant permissions. Its value is in the format of GUID.
 
 ```yaml
 Type: System.String
@@ -612,7 +615,7 @@ Accept wildcard characters: False
 
 ### -ServicePrincipalName
 Specifies the service principal name of the application to which to grant permissions.
-Specify the application ID, also known as client ID, registered for the application in AzureActive Directory. The application with the service principal name that this parameter specifies must be registered in the Azure directory that contains your current subscription.
+Specify the application ID, also known as client ID, registered for the application in Microsoft Entra ID. The application with the service principal name that this parameter specifies must be registered in the Azure directory that contains your current subscription.
 
 ```yaml
 Type: System.String
@@ -725,4 +728,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Get-AzKeyVault](./Get-AzKeyVault.md)
 
 [Remove-AzKeyVaultAccessPolicy](./Remove-AzKeyVaultAccessPolicy.md)
-

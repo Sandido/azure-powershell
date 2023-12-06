@@ -1,4 +1,4 @@
-﻿//  
+//  
 // Copyright (c) Microsoft.  All rights reserved.
 // 
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
     using System.Text.RegularExpressions;
     using Microsoft.Azure.Commands.ApiManagement.Properties;
     using Microsoft.Azure.Management.ApiManagement.Models;
+    using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
 
     public class PsApiManagement
     {
@@ -43,7 +44,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
             Id = apiServiceResource.Id;
             Name = apiServiceResource.Name;
             Location = apiServiceResource.Location;
-            Sku = ApiManagementClient.Mapper.Map<string, PsApiManagementSku>(apiServiceResource.Sku.Name);
+            Sku = ApiManagementClient.Mapper.Map<string, string>(apiServiceResource.Sku.Name);
             Capacity = apiServiceResource.Sku.Capacity;
             CreatedTimeUtc = apiServiceResource.CreatedAtUtc;
             PublisherEmail = apiServiceResource.PublisherEmail;
@@ -160,7 +161,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
 
         public string Location { get; private set; }
 
-        public PsApiManagementSku Sku { get; set; }
+        public string Sku { get; set; }
 
         public int Capacity { get; set; }
 
@@ -256,7 +257,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
 
         public PsApiManagementRegion AddRegion(
             string location,
-            PsApiManagementSku sku = PsApiManagementSku.Developer,
+            string sku = SkuType.Developer,
             int capacity = 1,
             PsApiManagementVirtualNetwork virtualNetwork = null,
             string[] zone = null,
@@ -310,7 +311,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
 
         public void UpdateRegion(
             string location, 
-            PsApiManagementSku sku,
+            string sku,
             int capacity, 
             PsApiManagementVirtualNetwork virtualNetwork,
             string[] zone,
@@ -325,7 +326,7 @@ namespace Microsoft.Azure.Commands.ApiManagement.Models
             var regionToUpdate = AdditionalRegions.FirstOrDefault(r => location.Trim().Equals(r.Location, StringComparison.OrdinalIgnoreCase));
             if (regionToUpdate != null)
             {
-                // if this is additional region
+                // if this is additional region 
                 regionToUpdate.Sku = sku;
                 regionToUpdate.Capacity = capacity;
                 regionToUpdate.VirtualNetwork = virtualNetwork;

@@ -16,14 +16,13 @@ namespace Microsoft.Azure.Commands.HDInsight
     internal static class Constants
     {
         public const string Hadoop = "Hadoop";
-
+     
         public static class CommandNames
         {
             public const string AzureHDInsightCluster = "AzureRmHDInsightCluster";
             public const string AzureHDInsightClusterConfig = "AzureRmHDInsightClusterConfig";
             public const string AzureHDInsightClusterSize = "AzureRmHDInsightClusterSize";
             public const string AzureHDInsightHttpServicesAccess = "AzureRmHDInsightHttpServicesAccess";
-            public const string AzureHDInsightRdpServicesAccess = "AzureRmHDInsightRdpServicesAccess";
             public const string AzureHDInsightConfigValues = "AzureRmHDInsightConfigValues";
             public const string AzureHDInsightMetastore = "AzureRmHDInsightMetastore";
             public const string AzureHDInsightScriptAction = "AzureRmHDInsightScriptAction";

@@ -63,13 +63,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices
                 resouceGroupName, vaultName, vault, GetRequestHeaders()).Result.Body;
         }
 
-        /// <summary>  
+        /// <summary>
         /// Method to create or update Recovery Services Vault.
-        /// </summary>  
-        /// <param name="resouceGroupName">Name of the resouce group</param>  
-        /// <param name="vaultName">Name of the vault</param>  
+        /// </summary>
+        /// <param name="resouceGroupName">Name of the resouce group</param>
+        /// <param name="vaultName">Name of the vault</param>
         /// <param name="vault">patch vault object to patch the recovery services Vault</param>
-        /// <returns>Azure Recovery Services Vault.</returns> 
+        /// <returns>Azure Recovery Services Vault.</returns>
         public Vault UpdateRSVault(string resouceGroupName, string vaultName, PatchVault vault)
         {
             var response = GetRecoveryServicesClient.Vaults.UpdateWithHttpMessagesAsync(resouceGroupName, vaultName, vault).Result;
@@ -105,43 +105,43 @@ namespace Microsoft.Azure.Commands.RecoveryServices
         }
 
 
-        /// <summary>  
-        /// Method to Update Azure Recovery Services Vault Backup Properties  
-        /// </summary>  
-        /// <param name="resouceGroupName">Name of the resouce group</param>  
-        /// <param name="vaultName">Name of the vault</param>  
-        /// <param name="vaultStorageUpdateRequest">Backup Properties Update</param>  
-        /// <returns>Azure Operation response object.</returns>  
+        /// <summary>
+        /// Method to Update Azure Recovery Services Vault Backup Properties
+        /// </summary>
+        /// <param name="resouceGroupName">Name of the resouce group</param>
+        /// <param name="vaultName">Name of the vault</param>
+        /// <param name="backupStorageConfig">Backup Properties Update</param>
+        /// <returns>Azure Operation response object.</returns>
         public void UpdateVaultStorageType(string resouceGroupName, string vaultName,
             BackupResourceConfigResource backupStorageConfig)
         {
-            GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCRR.UpdateWithHttpMessagesAsync(
+            GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCrr.UpdateWithHttpMessagesAsync(
                 vaultName, resouceGroupName, backupStorageConfig, GetRequestHeaders());
         }
 
-        /// <summary>  
-        /// Method to Patch Azure Recovery Services Vault Backup Properties  
-        /// </summary>  
-        /// <param name="resouceGroupName">Name of the resouce group</param>  
-        /// <param name="vaultName">Name of the vault</param>  
-        /// <param name="vaultStorageUpdateRequest">Backup Properties Update</param>  
-        /// <returns>Azure Operation response object.</returns>  
+        /// <summary>
+        /// Method to Patch Azure Recovery Services Vault Backup Properties
+        /// </summary>
+        /// <param name="resouceGroupName">Name of the resouce group</param>
+        /// <param name="vaultName">Name of the vault</param>
+        /// <param name="backupStorageConfig">Backup Properties Update</param>
+        /// <returns>Azure Operation response object.</returns>
         public void PatchVaultStorageConfigProperties(string resouceGroupName, string vaultName,
             BackupResourceConfigResource backupStorageConfig)
         {
-            GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCRR.PatchWithHttpMessagesAsync(
+            GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCrr.PatchWithHttpMessagesAsync(
                 vaultName, resouceGroupName, backupStorageConfig, GetRequestHeaders());
         }
 
-        /// <summary>  
-        /// Method to Get Azure Recovery Services Vault Backup Properties  
-        /// </summary>  
-        /// <param name="resouceGroupName">Name of the resouce group</param>  
-        /// <param name="vaultName">Name of the vault</param>  
-        /// <returns>Azure Resource Storage response object.</returns>  
+        /// <summary>
+        /// Method to Get Azure Recovery Services Vault Backup Properties
+        /// </summary>
+        /// <param name="resouceGroupName">Name of the resouce group</param>
+        /// <param name="vaultName">Name of the vault</param>
+        /// <returns>Azure Resource Storage response object.</returns>
         public BackupResourceConfigResource GetVaultStorageConfig(string resouceGroupName, string vaultName)
         {
-            return GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCRR.GetWithHttpMessagesAsync(
+            return GetRecoveryServicesBackupClient.BackupResourceStorageConfigsNonCrr.GetWithHttpMessagesAsync(
                 vaultName, resouceGroupName, GetRequestHeaders()).Result.Body;
         }
     }

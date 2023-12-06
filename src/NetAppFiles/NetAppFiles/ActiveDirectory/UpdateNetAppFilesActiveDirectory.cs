@@ -97,7 +97,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.ActiveDirectory
 
         [Parameter(
             Mandatory = false,
-            HelpMessage = "Username of Active Directory domain administrator")]
+            HelpMessage = "A domain user account with permission to create machine accounts")]
         [ValidateNotNullOrEmpty]
         public string Username { get; set; }
 
@@ -181,6 +181,18 @@ namespace Microsoft.Azure.Commands.NetAppFiles.ActiveDirectory
         public SwitchParameter EncryptDCConnection { get; set; }
 
         [Parameter(
+            Mandatory = false,
+            HelpMessage = "LDAP Search scope options.")]
+        [ValidateNotNullOrEmpty]
+        public PSNetAppFilesLdapSearchScopeOpt LdapSearchScope { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Comma separated list of IPv4 addresses of preferred servers for LDAP client. At most two comma separated IPv4 addresses can be passed.")]
+        [ValidateNotNullOrEmpty]
+        public string[] PreferredServersForLdapClient { get; set; }
+
+        [Parameter(
             ParameterSetName = ParentObjectParameterSet,
             Mandatory = true,
             ValueFromPipeline = true,
@@ -247,7 +259,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.ActiveDirectory
                 anfADConfig.OrganizationalUnit = OrganizationalUnit ?? anfADConfig.Site;
                 anfADConfig.BackupOperators = BackupOperator ?? anfADConfig.BackupOperators;
                 anfADConfig.KdcIP = KdcIP ?? anfADConfig.KdcIP;
-                anfADConfig.ServerRootCACertificate = ServerRootCACertificate ?? anfADConfig.ServerRootCACertificate;
+                anfADConfig.ServerRootCaCertificate = ServerRootCACertificate ?? anfADConfig.ServerRootCaCertificate;
                 anfADConfig.SecurityOperators = SecurityOperator ?? anfADConfig.SecurityOperators;
                 if (AesEncryption)
                 {
@@ -259,7 +271,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.ActiveDirectory
                 }
                 if (LdapOverTLS)
                 {
-                    anfADConfig.LdapOverTLS = LdapOverTLS;
+                    anfADConfig.LdapOverTls = LdapOverTLS;
                 }
                 if (AllowLocalNfsUsersWithLdap)
                 {
@@ -268,15 +280,16 @@ namespace Microsoft.Azure.Commands.NetAppFiles.ActiveDirectory
                 anfADConfig.Administrators = Administrator ?? anfADConfig.Administrators;
                 if (EncryptDCConnection)
                 {
-                    anfADConfig.EncryptDCConnections = EncryptDCConnection;
+                    anfADConfig.EncryptDcConnections = EncryptDCConnection;
                 }
+                anfADConfig.LdapSearchScope = LdapSearchScope?.ConvertFromPs();
+                anfADConfig.PreferredServersForLdapClient = PreferredServersForLdapClient is null ? null : string.Join(",", PreferredServersForLdapClient);
 
                 var netAppAccountBody = new NetAppAccountPatch()
                 {
                     ActiveDirectories = anfAccount.ActiveDirectories                    
                 };
-
-                var updatedAnfAccount = AzureNetAppFilesManagementClient.Accounts.Update(netAppAccountBody, ResourceGroupName, AccountName);
+                var updatedAnfAccount = AzureNetAppFilesManagementClient.Accounts.Update(ResourceGroupName, AccountName, netAppAccountBody);
                 var updatedActiveDirectory = updatedAnfAccount.ActiveDirectories.FirstOrDefault<Management.NetApp.Models.ActiveDirectory>(e => e.ActiveDirectoryId == ActiveDirectoryId);
                 WriteObject(updatedActiveDirectory.ConvertToPs(ResourceGroupName, AccountName));
             }

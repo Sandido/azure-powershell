@@ -66,6 +66,14 @@ namespace Commands.Network.Test.ScenarioTests
         }
 
         [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.netanalyticsdev)]
+        public void TestPacketCaptureVMSS()
+        {
+            TestRunner.RunTestScript("Test-PacketCaptureV2");
+        }
+
+        [Fact]
         [Trait(Category.AcceptanceType, Category.LiveOnly)]
         [Trait(Category.Owner, NrpTeamAlias.netanalyticsdev)]
         public void TestTroubleshoot()
@@ -90,7 +98,7 @@ namespace Commands.Network.Test.ScenarioTests
             TestRunner.RunTestScript("Test-ConnectivityCheck");
         }
 
-        [Fact]
+        [Fact(Skip = "API is deprecated, no longer available to customers")]
         [Trait(Category.AcceptanceType, Category.CheckIn)]
         [Trait(Category.Owner, NrpTeamAlias.netanalyticsdev)]
         public void TestReachabilityReport()
@@ -112,6 +120,14 @@ namespace Commands.Network.Test.ScenarioTests
         public void TestConnectionMonitor()
         {
             TestRunner.RunTestScript("Test-ConnectionMonitor");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        [Trait(Category.Owner, NrpTeamAlias.netanalyticsdev)]
+        public void TestConnectionMonitorWithVMSSAsSource()
+        {
+            TestRunner.RunTestScript("Test-ConnectionMonitorWithVMSSAsSource");
         }
 
         [Fact(Skip = "Server returns empty array")]

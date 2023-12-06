@@ -31,12 +31,13 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 Name = backup.Name,
                 BackupId = backup.BackupId,
                 Type = backup.Type,
-                BackupType = backup.Type,
+                BackupType = backup.BackupType,
                 Label = backup.Label,
                 ProvisioningState = backup.ProvisioningState,
                 Size = backup.Size,
                 VolumeName = backup.VolumeName,
-                UseExistingSnapshot = backup.UseExistingSnapshot
+                UseExistingSnapshot = backup.UseExistingSnapshot,
+                CreationDate = backup.CreationDate
             };
             return psBackup;
         }

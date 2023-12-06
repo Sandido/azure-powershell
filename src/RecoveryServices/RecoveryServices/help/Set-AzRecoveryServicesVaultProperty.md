@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.RecoveryServices.Backup.dll-Help.xml
 Module Name: Az.RecoveryServices
 ms.assetid: C2A7F37B-5713-4430-B83F-C6745692396D
-online version: https://docs.microsoft.com/powershell/module/az.recoveryservices/set-azrecoveryservicesvaultproperty
+online version: https://learn.microsoft.com/powershell/module/az.recoveryservices/set-azrecoveryservicesvaultproperty
 schema: 2.0.0
 ---
 
@@ -17,7 +17,7 @@ Updates properties of a Vault.
 ```
 Set-AzRecoveryServicesVaultProperty [-SoftDeleteFeatureState <String>]
  [-DisableHybridBackupSecurityFeature <Boolean>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Token <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AzureRSVaultCMKParameterSet
@@ -29,7 +29,7 @@ Set-AzRecoveryServicesVaultProperty [-VaultId <String>] [-DefaultProfile <IAzure
 ```
 
 ## DESCRIPTION
-The **Set-AzRecoveryServicesVaultProperty** cmdlet updates properties of a Recovery services vault. This cmdlet can be used to enable/disable soft delete or set CMK encryption for a vault with two different parameter sets. 
+The **Set-AzRecoveryServicesVaultProperty** cmdlet updates properties of a Recovery services vault. This cmdlet can be used to Enable/Disable/AlwaysON soft delete or set CMK encryption for a vault with two different parameter sets. 
 **SoftDeleteFeatureState** property of a vault can be disabled only if there are no registered containers in the vault. InfrastructurEncryption can only be set the first time a user updates the CMK vault.
 
 ## EXAMPLES
@@ -41,7 +41,7 @@ $props = Set-AzRecoveryServicesVaultProperty -VaultId $vault.Id -SoftDeleteFeatu
 ```
 
 The first command gets a Vault object and then stores it in the $vault variable.
-The second command Updates the SoftDeleteFeatureState property of the vault to "Enabled" state.
+The second command Updates the SoftDeleteFeatureState property of the vault to "Enabled" state. Allowed values for SoftDeleteFeatureState are Disable, Enable, AlwaysON.
 
 ### Example 2: Update CMK encryption of a vault to use SystemAssigned MSIdentity
 
@@ -155,13 +155,28 @@ Accept wildcard characters: False
 ```
 
 ### -SoftDeleteFeatureState
-SoftDeleteFeatureState of the Recovery Services Vault.
+SoftDeleteFeatureState of the Recovery Services Vault. Allowed values are Disable, Enable, AlwaysON.
 
 ```yaml
 Type: System.String
 Parameter Sets: AzureRSVaultSoftDelteParameterSet
 Aliases:
 Accepted values: Enable, Disable
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Token
+Auxiliary access token for authenticating critical operation to resource guard subscription
+
+```yaml
+Type: System.String
+Parameter Sets: AzureRSVaultSoftDelteParameterSet
+Aliases:
 
 Required: False
 Position: Named

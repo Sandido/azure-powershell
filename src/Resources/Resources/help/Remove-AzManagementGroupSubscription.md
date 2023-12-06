@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Resources.dll-Help.xml
 Module Name: Az.Resources
-online version: https://docs.microsoft.com/powershell/module/az.resources/remove-azmanagementgroupsubscription/
+online version: https://learn.microsoft.com/powershell/module/az.resources/remove-azmanagementgroupsubscription/
 schema: 2.0.0
 ---
 
@@ -12,7 +12,6 @@ Removes a Subscription from a Management Group.
 
 ## SYNTAX
 
-### DeleteOperation
 ```
 Remove-AzManagementGroupSubscription [-GroupName] <String> [-SubscriptionId] <Guid> [-PassThru]
  [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]

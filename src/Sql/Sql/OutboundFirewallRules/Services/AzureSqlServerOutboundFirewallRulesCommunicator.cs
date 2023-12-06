@@ -43,8 +43,7 @@ namespace Microsoft.Azure.Commands.Sql.OutboundFirewallRules.Services
         /// <summary>
         /// Creates a communicator for Azure Sql Databases OutboundFirewallRules
         /// </summary>
-        /// <param name="profile"></param>
-        /// <param name="subscription"></param>
+        /// <param name="context">The current azure context</param>
         public AzureSqlServerOutboundFirewallRulesCommunicator(IAzureContext context)
         {
             Context = context;
@@ -73,7 +72,7 @@ namespace Microsoft.Azure.Commands.Sql.OutboundFirewallRules.Services
 
         public Management.Sql.Models.OutboundFirewallRule CreateOrUpdate(string resourceGroupName, string serverName, string outboundFirewallRuleFQDN)
         {
-            return GetCurrentSqlClient().OutboundFirewallRules.CreateOrUpdate(resourceGroupName, serverName, outboundFirewallRuleFQDN);
+            return GetCurrentSqlClient().OutboundFirewallRules.CreateOrUpdate(resourceGroupName, serverName, outboundFirewallRuleFQDN, new Management.Sql.Models.OutboundFirewallRule());
         }
 
         /// <summary>

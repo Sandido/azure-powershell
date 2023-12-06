@@ -25,6 +25,7 @@ using Microsoft.Azure.Commands.Common.Authentication.ResourceManager;
 using Microsoft.Azure.Commands.Common.Authentication.ResourceManager.Properties;
 using Microsoft.Azure.Commands.ResourceManager.Common;
 using Microsoft.Azure.Commands.ResourceManager.Common.Serialization;
+using Microsoft.WindowsAzure.Commands.Common;
 
 using Newtonsoft.Json;
 
@@ -205,19 +206,83 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
                     EnvironmentTable[environment.Key] = environment.Value;
                 }
 
+                AzKeyStore keystore = null;
+                AzureSession.Instance.TryGetComponent(AzKeyStore.Name, out keystore);
+
                 foreach (var context in profile.Contexts)
                 {
-                    this.Contexts.Add(context.Key, context.Value);
+                    this.Contexts.Add(context.Key, MigrateSecretToKeyStore(context.Value, keystore));
                 }
 
                 DefaultContextKey = profile.DefaultContextKey ?? (profile.Contexts.Any() ? null : "Default");
             }
         }
 
+        private IAzureContext MigrateSecretToKeyStore(IAzureContext context, AzKeyStore keystore)
+        {
+            if (keystore != null)
+            {
+                var account = context.Account;
+                if (account != null && account.IsPropertySet(AzureAccount.Property.ServicePrincipalSecret))
+                {
+                    keystore?.SaveSecureString(new ServicePrincipalKey(AzureAccount.Property.ServicePrincipalSecret, account.Id, account.GetTenants().First())
+                        , account.ExtendedProperties.GetProperty(AzureAccount.Property.ServicePrincipalSecret).ConvertToSecureString());
+                    account.ExtendedProperties.Remove(AzureAccount.Property.ServicePrincipalSecret);
+                }
+                if (account != null && account.IsPropertySet(AzureAccount.Property.CertificatePassword))
+                {
+                    keystore?.SaveSecureString(new ServicePrincipalKey(AzureAccount.Property.CertificatePassword, account.Id, account.GetTenants().First())
+    , account.ExtendedProperties.GetProperty(AzureAccount.Property.CertificatePassword).ConvertToSecureString());
+                    account.ExtendedProperties.Remove(AzureAccount.Property.CertificatePassword);
+                }
+            }
+            return context;
+        }
+
         private void LoadImpl(string contents)
         {
         }
 
+        /// <summary>
+        /// Refill the credentials from AzKeyStore to profile. Used for profile export.
+        /// </summary>
+        public AzureRmProfile RefillCredentialsFromKeyStore()
+        {
+            AzKeyStore keystore = null;
+            AzureSession.Instance.TryGetComponent(AzKeyStore.Name, out keystore);
+            AzureRmProfile ret = this.DeepCopy();
+            if (keystore != null)
+            {
+                foreach (var context in ret.Contexts)
+                {
+                    var account = context.Value.Account;
+                    if (account?.Type == AzureAccount.AccountType.ServicePrincipal && !account.IsPropertySet(AzureAccount.Property.ServicePrincipalSecret))
+                    {
+                        try
+                        {
+                            var secret = keystore.GetSecureString(new ServicePrincipalKey(AzureAccount.Property.ServicePrincipalSecret, account.Id, account.GetTenants().First())).ConvertToString();
+                            account.ExtendedProperties.SetProperty(AzureAccount.Property.ServicePrincipalSecret, secret);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    if (account?.Type == AzureAccount.AccountType.ServicePrincipal && !account.IsPropertySet(AzureAccount.Property.CertificatePassword))
+                    {
+                        try
+                        {
+                            var secret = keystore.GetSecureString(new ServicePrincipalKey(AzureAccount.Property.CertificatePassword, account.Id, account.GetTenants().First())).ConvertToString();
+                            account.ExtendedProperties.SetProperty(AzureAccount.Property.CertificatePassword, secret);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+
+            }
+            return ret;
+        }
 
         /// <summary>
         /// Creates new instance of AzureRMProfile.
@@ -233,10 +298,23 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
             }
         }
 
+
+        /// <summary>
+        /// Creates new instance of AzureRMProfile with other EnvironmentTable..
+        /// </summary>
+        public AzureRmProfile(IDictionary<string, IAzureEnvironment> otherEnvironmentTable)
+        {
+            foreach (var environment in otherEnvironmentTable)
+            {
+                EnvironmentTable.Add(environment.Key, environment.Value.DeepCopy());
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of AzureRMProfile and loads its content from specified path.
         /// </summary>
         /// <param name="path">The location of profile file on disk.</param>
+        /// <param name="shouldRefreshContextsFromCache"></param>
         public AzureRmProfile(string path, bool shouldRefreshContextsFromCache = true) : this()
         {
             this.ShouldRefreshContextsFromCache = shouldRefreshContextsFromCache;
@@ -267,6 +345,7 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
         /// Writes profile to a specified path.
         /// </summary>
         /// <param name="path">File path on disk to save profile to</param>
+        /// <param name="serializeCache">true if the TokenCache should be serialized, false otherwise</param>
         public void Save(string path, bool serializeCache = true)
         {
             if (string.IsNullOrEmpty(path))
@@ -284,6 +363,7 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
         /// Writes the profile using the specified file provider
         /// </summary>
         /// <param name="provider">The file provider used to save the profile</param>
+        /// <param name="serializeCache">true if the TokenCache should be serialized, false otherwise</param>
         public void Save(IFileProvider provider, bool serializeCache = true)
         {
             foreach (string env in AzureEnvironment.PublicEnvironments.Keys)
@@ -509,7 +589,6 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
                 Contexts[name] = context;
                 result = true;
             }
-
             return result;
         }
 
@@ -659,6 +738,29 @@ namespace Microsoft.Azure.Commands.Common.Authentication.Models
 
             this.CopyPropertiesFrom(other);
             return true;
+        }
+
+        /// <summary>
+        /// Deep clone the instance of AzureRMProfile.
+        /// </summary>
+        public AzureRmProfile DeepCopy()
+        {
+            var profile = new AzureRmProfile(this.EnvironmentTable);
+
+            foreach (var context in this.Contexts)
+            {
+                profile.Contexts.Add(context.Key, context.Value.DeepCopy());
+            }
+
+            if (this.DefaultContext != null)
+            {
+                profile.DefaultContext = this.DefaultContext.DeepCopy();
+            }
+            profile.DefaultContextKey = this.DefaultContextKey;
+            profile.ProfilePath = this.ProfilePath;
+            profile.ShouldRefreshContextsFromCache = this.ShouldRefreshContextsFromCache;
+            profile.CopyPropertiesFrom(this);
+            return profile;
         }
 
         public AzureRmProfile ToProfile()

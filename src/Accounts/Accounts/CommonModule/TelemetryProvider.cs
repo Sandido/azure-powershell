@@ -134,6 +134,7 @@ namespace Microsoft.Azure.Commands.Common
         /// <param name="invocationInfo"></param>
         /// <param name="parameterSetName"></param>
         /// <param name="correlationId"></param>
+        /// <param name="processRecordId"></param>
         /// <returns></returns>
         public virtual AzurePSQoSEvent CreateQosEvent(InvocationInfo invocationInfo, string parameterSetName, string correlationId, string processRecordId)
         {
@@ -142,12 +143,15 @@ namespace Microsoft.Azure.Commands.Common
                 CommandName = invocationInfo?.MyCommand?.Name,
                 ModuleVersion = TrimModuleVersion(invocationInfo?.MyCommand?.Module?.Version),
                 ModuleName = TrimModuleName(invocationInfo?.MyCommand?.ModuleName),
+                SourceScript = invocationInfo?.ScriptName,
+                ScriptLineNumber = invocationInfo?.ScriptLineNumber ?? 0,
                 SessionId = MetricHelper.SessionId,
                 ParameterSetName = parameterSetName,
                 InvocationName = invocationInfo?.InvocationName,
                 InputFromPipeline = invocationInfo?.PipelineLength > 0,
                 UserAgent = AzurePSCmdlet.UserAgent,
                 AzVersion = AzurePSCmdlet.AzVersion,
+                AzAccountsVersion = AzurePSCmdlet.AzAccountsVersion,
                 PSVersion = AzurePSCmdlet.PowerShellVersion,
                 HostVersion = AzurePSCmdlet.PSHostVersion,
                 PSHostName = AzurePSCmdlet.PSHostName,
@@ -222,7 +226,7 @@ namespace Microsoft.Azure.Commands.Common
             }
 
             warningLogger(Resources.DataCollectionEnabledWarning);
-            return new AzurePSDataCollectionProfile(true);
+            return new AzurePSDataCollectionProfile();
         }
 
         public void Dispose()

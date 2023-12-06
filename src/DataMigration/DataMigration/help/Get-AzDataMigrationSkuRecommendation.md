@@ -1,7 +1,7 @@
 ---
 external help file: Az.DataMigration-help.xml
 Module Name: Az.DataMigration
-online version: https://docs.microsoft.com/powershell/module/az.datamigration/get-azdatamigrationskurecommendation
+online version: https://learn.microsoft.com/powershell/module/az.datamigration/get-azdatamigrationskurecommendation
 schema: 2.0.0
 ---
 
@@ -32,8 +32,10 @@ Gives SKU recommendations for Azure SQL offerings
 
 ### Example 1: Run SKU Recommendation on given SQL Server using connection string
 ```powershell
-PS C:\> Get-AzDataMigrationSkuRecommendation -DisplayResult
+Get-AzDataMigrationSkuRecommendation -DisplayResult
+```
 
+```output
 Starting SKU recommendation...
 
 Performing aggregation for instance AALAB03-2K8...
@@ -59,8 +61,10 @@ This command runs Run SKU Recommendation on given SQL Server using the connectio
 
 ### Example 2: Run Run SKU Recommendation on given SQL Server using assessment config file
 ```powershell
-PS C:\> Get-AzDataMigrationSkuRecommendation -ConfigFilePath "C:\Users\user\document\config.json"
+Get-AzDataMigrationSkuRecommendation -ConfigFilePath "C:\Users\user\document\config.json"
+```
 
+```output
 Starting SKU recommendation...
 
 Performing aggregation for instance AALAB03-2K8...
@@ -332,7 +336,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### System.Boolean
 
 ## NOTES
-
-ALIASES
 
 ## RELATED LINKS

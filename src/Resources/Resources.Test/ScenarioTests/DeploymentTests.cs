@@ -19,7 +19,7 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
 {
-    public class DeploymentTests : ResourceTestRunner
+    public class DeploymentTests : ResourcesTestRunner
     {
         public DeploymentTests(ITestOutputHelper output) : base(output)
         {
@@ -182,7 +182,7 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         }
 
         [Fact]
-        [Trait(Category.AcceptanceType, Category.LiveOnly)]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
         public void TestNewDeploymentFromBicepFile()
         {
             TestRunner.RunTestScript("Test-NewDeploymentFromBicepFile");
@@ -193,6 +193,41 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         public void TestTestDeploymentFromBicepFile()
         {
             TestRunner.RunTestScript("Test-TestDeploymentFromBicepFile");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewDeploymentFromBicepFileAndBicepparamFile()
+        {
+            TestRunner.RunTestScript("Test-NewDeploymentFromBicepFileAndBicepparamFile");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewDeploymentFromBicepparamFileOnly()
+        {
+            TestRunner.RunTestScript("Test-NewDeploymentFromBicepparamFileOnly");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewDeploymentFromBicepparamFileWithOverrides()
+        {
+            TestRunner.RunTestScript("Test-NewDeploymentFromBicepparamFileWithOverrides");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewDeploymentWithCustomTypes()
+        {
+            TestRunner.RunTestScript("Test-NewDeploymentWithCustomTypes");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestNewDeploymentWithCustomTypesAndInlineOverrides()
+        {
+            TestRunner.RunTestScript("Test-NewDeploymentWithCustomTypesAndInlineOverrides");
         }
 
         //Please make sure to re-record this test if any changes are made to WhatIf, QueryString or ResourceGroupDeployments
@@ -229,6 +264,20 @@ namespace Microsoft.Azure.Commands.Resources.Test.ScenarioTests
         public void TestNewDeploymentFromTemplateAndParameterFileContainingTagsOutput()
         {
             TestRunner.RunTestScript("Test-NewDeploymentFromTemplateAndParameterFileContainingTagsOutput");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestSymbolicNameDeployment()
+        {
+            TestRunner.RunTestScript("Test-SymbolicNameDeployment");
+        }
+
+        [Fact]
+        [Trait(Category.AcceptanceType, Category.CheckIn)]
+        public void TestExtensibleResourceDeployment()
+        {
+            TestRunner.RunTestScript("Test-ExtensibleResourceDeployment");
         }
     }
 }

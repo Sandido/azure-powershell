@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.KeyVault.dll-Help.xml
 Module Name: Az.KeyVault
 ms.assetid: AE7B103B-23ED-4A66-A0DC-14FB0DF38FA8
-online version: https://docs.microsoft.com/powershell/module/az.keyvault/remove-azkeyvaultaccesspolicy
+online version: https://learn.microsoft.com/powershell/module/az.keyvault/remove-azkeyvaultaccesspolicy
 schema: 2.0.0
 ---
 
@@ -182,7 +182,7 @@ Remove-AzKeyVaultAccessPolicy -VaultName 'Contoso03Vault' -ServicePrincipalName 
 ```
 
 This command removes all the permissions that an application has on the key vault named Contoso03Vault.
-This example identifies the application by using the service principal name registered in Azure Active Directory, `http://payroll.contoso.com`.
+This example identifies the application by using the service principal name registered in Microsoft Entra ID, `http://payroll.contoso.com`.
 
 ### Example 3: Remove permissions for an application by using its object ID
 ```powershell
@@ -307,7 +307,7 @@ Accept wildcard characters: False
 ```
 
 ### -ObjectId
-Specifies the object ID of the user or service principal in Azure Active Directory for which to remove permissions.
+Specifies the object ID of the user or service principal in Microsoft Entra ID for which to remove permissions.
 
 ```yaml
 Type: System.String
@@ -370,7 +370,7 @@ Accept wildcard characters: False
 
 ### -ServicePrincipalName
 Specifies the service principal name of the application whose permissions you want to remove.
-Specify the application ID, also known as client ID, registered for the application in Azure Active Directory.
+Specify the application ID, also known as client ID, registered for the application in Microsoft Entra ID.
 
 ```yaml
 Type: System.String
@@ -481,4 +481,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Set-AzKeyVaultAccessPolicy](./Set-AzKeyVaultAccessPolicy.md)
-

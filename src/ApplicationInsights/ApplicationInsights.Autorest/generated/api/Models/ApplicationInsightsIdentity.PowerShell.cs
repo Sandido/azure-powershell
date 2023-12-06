@@ -30,7 +30,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models
         /// <summary>
         /// <c>BeforeDeserializeDictionary</c> will be called before the deserialization has commenced, allowing complete customization
         /// of the object before it is deserialized.
-        /// If you wish to disable the default deserialization entirely, return <c>true</c> in the <see "returnNow" /> output parameter.
+        /// If you wish to disable the default deserialization entirely, return <c>true</c> in the <paramref name="returnNow" /> output
+        /// parameter.
         /// Implement this method in a partial class to enable this behavior.
         /// </summary>
         /// <param name="content">The global::System.Collections.IDictionary content that should be used.</param>
@@ -42,7 +43,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models
         /// <summary>
         /// <c>BeforeDeserializePSObject</c> will be called before the deserialization has commenced, allowing complete customization
         /// of the object before it is deserialized.
-        /// If you wish to disable the default deserialization entirely, return <c>true</c> in the <see "returnNow" /> output parameter.
+        /// If you wish to disable the default deserialization entirely, return <c>true</c> in the <paramref name="returnNow" /> output
+        /// parameter.
         /// Implement this method in a partial class to enable this behavior.
         /// </summary>
         /// <param name="content">The global::System.Management.Automation.PSObject content that should be used.</param>
@@ -89,6 +91,34 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models
             {
                 ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ComponentName = (string) content.GetValueForProperty("ComponentName",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ComponentName, global::System.Convert.ToString);
             }
+            if (content.Contains("ResourceName"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ResourceName = (string) content.GetValueForProperty("ResourceName",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ResourceName, global::System.Convert.ToString);
+            }
+            if (content.Contains("PurgeId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).PurgeId = (string) content.GetValueForProperty("PurgeId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).PurgeId, global::System.Convert.ToString);
+            }
+            if (content.Contains("KeyId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).KeyId = (string) content.GetValueForProperty("KeyId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).KeyId, global::System.Convert.ToString);
+            }
+            if (content.Contains("AnnotationId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).AnnotationId = (string) content.GetValueForProperty("AnnotationId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).AnnotationId, global::System.Convert.ToString);
+            }
+            if (content.Contains("ExportId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ExportId = (string) content.GetValueForProperty("ExportId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ExportId, global::System.Convert.ToString);
+            }
+            if (content.Contains("StorageType"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).StorageType = (Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.StorageType?) content.GetValueForProperty("StorageType",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).StorageType, Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.StorageType.CreateFrom);
+            }
+            if (content.Contains("RevisionId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).RevisionId = (string) content.GetValueForProperty("RevisionId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).RevisionId, global::System.Convert.ToString);
+            }
             if (content.Contains("Id"))
             {
                 ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).Id = (string) content.GetValueForProperty("Id",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).Id, global::System.Convert.ToString);
@@ -125,6 +155,34 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models
             if (content.Contains("ComponentName"))
             {
                 ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ComponentName = (string) content.GetValueForProperty("ComponentName",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ComponentName, global::System.Convert.ToString);
+            }
+            if (content.Contains("ResourceName"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ResourceName = (string) content.GetValueForProperty("ResourceName",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ResourceName, global::System.Convert.ToString);
+            }
+            if (content.Contains("PurgeId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).PurgeId = (string) content.GetValueForProperty("PurgeId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).PurgeId, global::System.Convert.ToString);
+            }
+            if (content.Contains("KeyId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).KeyId = (string) content.GetValueForProperty("KeyId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).KeyId, global::System.Convert.ToString);
+            }
+            if (content.Contains("AnnotationId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).AnnotationId = (string) content.GetValueForProperty("AnnotationId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).AnnotationId, global::System.Convert.ToString);
+            }
+            if (content.Contains("ExportId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ExportId = (string) content.GetValueForProperty("ExportId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).ExportId, global::System.Convert.ToString);
+            }
+            if (content.Contains("StorageType"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).StorageType = (Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.StorageType?) content.GetValueForProperty("StorageType",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).StorageType, Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.StorageType.CreateFrom);
+            }
+            if (content.Contains("RevisionId"))
+            {
+                ((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).RevisionId = (string) content.GetValueForProperty("RevisionId",((Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentityInternal)this).RevisionId, global::System.Convert.ToString);
             }
             if (content.Contains("Id"))
             {
@@ -165,7 +223,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models
         /// Creates a new instance of <see cref="ApplicationInsightsIdentity" />, deserializing the content from a json string.
         /// </summary>
         /// <param name="jsonText">a string containing a JSON serialized instance of this model.</param>
-        /// <returns>an instance of the <see cref="className" /> model class.</returns>
+        /// <returns>an instance of the <see cref="ApplicationInsightsIdentity" /> model class.</returns>
         public static Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.IApplicationInsightsIdentity FromJsonString(string jsonText) => FromJson(Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Runtime.Json.JsonNode.Parse(jsonText));
 
         /// <summary>Serializes this instance to a json string.</summary>

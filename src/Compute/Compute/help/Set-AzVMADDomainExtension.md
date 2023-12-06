@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Compute.dll-Help.xml
 Module Name: Az.Compute
 ms.assetid: 65BF37D3-4FCE-48A3-BC5D-01AA20FEB6CA
-online version: https://docs.microsoft.com/powershell/module/az.compute/set-azvmaddomainextension
+online version: https://learn.microsoft.com/powershell/module/az.compute/set-azvmaddomainextension
 schema: 2.0.0
 ---
 
@@ -21,7 +21,7 @@ Set-AzVMADDomainExtension -DomainName <String> [-OUPath <String>] [-JoinOption <
 ```
 
 ## DESCRIPTION
-The **Set-AzVMADDomainExtension** cmdlet adds an Azure Active Directory (AD) domain virtual machine extension to a virtual machine.
+The **Set-AzVMADDomainExtension** cmdlet adds a Microsoft Entra ID virtual machine extension to a virtual machine.
 This extension lets your virtual machine join a domain.
 
 ## EXAMPLES
@@ -124,7 +124,7 @@ Accept wildcard characters: False
 ```
 
 ### -JoinOption
-Specifies the join option. For join options see [JoinOptions](https://docs.microsoft.com/windows/desktop/api/lmjoin/nf-lmjoin-netjoindomain)
+Specifies the join option. For join options see [JoinOptions](https://learn.microsoft.com/windows/desktop/api/lmjoin/nf-lmjoin-netjoindomain)
 
 ```yaml
 Type: System.Nullable`1[System.UInt32]

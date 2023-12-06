@@ -91,9 +91,11 @@ namespace Microsoft.Azure.Commands.Sql.Auditing.Services
             bool? isSecondary,
             Guid? storageAccountSubscriptionId,
             bool? isAzureMonitorTargetEnabled,
-            int? retentionDays)
+            int? retentionDays,
+            bool? isManagedIdentityInUse)
         {
             model.IsAzureMonitorTargetEnabled = isAzureMonitorTargetEnabled;
+            model.IsManagedIdentityInUse = isManagedIdentityInUse;
 
             ModelizeStorageInfo(model, storageEndpoint, isSecondary, storageAccountSubscriptionId, IsAuditEnabled(state), retentionDays);
             DetermineTargetsState(model, state);
@@ -347,10 +349,13 @@ namespace Microsoft.Azure.Commands.Sql.Auditing.Services
             dynamicPolicy.StorageEndpoint = GetStorageAccountEndpoint(storageAccountName);
             dynamicPolicy.StorageAccountSubscriptionId = storageAccountSubscriptionId;
 
-            if (AzureCommunicator.IsStorageAccountInVNet(model.StorageAccountResourceId))
+            if (AzureCommunicator.IsStorageAccountInVNet(model.StorageAccountResourceId) || model.UseIdentity == BoolType.True)
             {
                 Guid? principalId = Communicator.AssignServerIdentityIfNotAssigned(model.ResourceGroupName, model.ServerName);
-                AzureCommunicator.AssignRoleForServerIdentityOnStorageIfNotAssigned(model.StorageAccountResourceId, principalId.Value, RoleAssignmentId);
+                if (principalId != null)
+                {
+                    AzureCommunicator.AssignRoleForServerIdentityOnStorageIfNotAssigned(model.StorageAccountResourceId, principalId.Value, RoleAssignmentId);
+                }
             }
             else
             {
@@ -707,7 +712,7 @@ namespace Microsoft.Azure.Commands.Sql.Auditing.Services
             ModelizeAuditPolicy(model,
                 dynamicPolicy.State, dynamicPolicy.StorageEndpoint, dynamicPolicy.IsStorageSecondaryKeyInUse,
                 dynamicPolicy.StorageAccountSubscriptionId, dynamicPolicy.IsAzureMonitorTargetEnabled,
-                dynamicPolicy.RetentionDays);
+                dynamicPolicy.RetentionDays, dynamicPolicy.IsManagedIdentityInUse);
 
             model.PredicateExpression = dynamicPolicy.PredicateExpression;
             model.AuditActionGroup = ExtractAuditActionGroups(dynamicPolicy.AuditActionsAndGroups);            
@@ -968,8 +973,8 @@ namespace Microsoft.Azure.Commands.Sql.Auditing.Services
         protected override void ModelizeAuditPolicy(ServerDevOpsAuditModel model, ServerDevOpsAuditingSettings policy)
         {
             ModelizeAuditPolicy(model,
-                policy.State, policy.StorageEndpoint, null, policy.StorageAccountSubscriptionId,
-                policy.IsAzureMonitorTargetEnabled, null);
+                policy.State.Value, policy.StorageEndpoint, null, policy.StorageAccountSubscriptionId,
+                policy.IsAzureMonitorTargetEnabled, null, policy.IsManagedIdentityInUse);
         }
 
         protected override StorageKeyKind GetStorageKeyKind(ServerDevOpsAuditModel model)

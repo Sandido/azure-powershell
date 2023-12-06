@@ -17,11 +17,16 @@ using Microsoft.Azure.Commands.Common.Authentication.Abstractions;
 using Microsoft.Azure.Commands.ContainerRegistry.Models;
 using Microsoft.Azure.Commands.ContainerRegistry.DataPlaneOperations;
 using Microsoft.Azure.ContainerRegistry;
-using Microsoft.Azure.Management.ContainerRegistry;
 using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Commands.Common.Exceptions;
+using Track2 = Azure.Containers.ContainerRegistry;
+using Azure.Containers.ContainerRegistry;
+using Microsoft.Azure.Commands.Common.Strategies;
+using Microsoft.Azure.Commands.ContainerRegistry.Track2Models;
+using Azure;
+using Azure.Core.Serialization;
 
 namespace Microsoft.Azure.Commands.ContainerRegistry
 {
@@ -33,6 +38,8 @@ namespace Microsoft.Azure.Commands.ContainerRegistry
         private const string _refreshTokenKey = "AcrRefreshToken";
 
         private AzureContainerRegistryClient _client;
+        private Track2.ContainerRegistryClient _track2Client;
+        private Track2TokenCredential _credential;
         private string _accessToken = default(string);
         private string _endPoint;
         private readonly string _suffix;
@@ -100,6 +107,12 @@ namespace Microsoft.Azure.Commands.ContainerRegistry
         {
             _endPoint = RegistryName.ToLower() + '.' + _suffix;
             _client.LoginUri = _https + _endPoint;
+            _credential = new Track2TokenCredential(new DataServiceCredential(AzureSession.Instance.AuthenticationFactory,
+                        _context, AzureEnvironment.ExtendedEndpoint.ContainerRegistryEndpointResourceId));
+            _track2Client = new Track2.ContainerRegistryClient(new Uri(_https + _endPoint), _credential, new Track2.ContainerRegistryClientOptions()
+            {
+                Audience = _context.Environment.ExtendedProperties[AzureEnvironment.ExtendedEndpoint.ContainerRegistryEndpointResourceId]
+            });
         }
 
         public string GetEndPoint()
@@ -156,9 +169,35 @@ namespace Microsoft.Azure.Commands.ContainerRegistry
             return GetRepository(repository);
         }
 
-        public PSAcrManifest ListManifest(string repository)
+        public PSAcrManifest ListManifest(string repositoryName)
         {
-            return new ContainerRegistryManifestListOperation(this, repository).ProcessRequest();
+            ContainerRepository repository = _track2Client.GetRepository(repositoryName);
+            Pageable<ArtifactManifestProperties> properties = repository.GetAllManifestProperties();
+            PSAcrManifest result = new PSAcrManifest();
+            IEnumerable<Page<ArtifactManifestProperties>> pages = properties.AsPages();
+            result.ManifestsAttributes = new List<PSManifestAttributeBase>();
+            foreach (Page<ArtifactManifestProperties> page in pages)
+            {
+                Response httpPageResponse = page.GetRawResponse();
+                dynamic pageContent = httpPageResponse.Content.ToDynamicFromJson(JsonPropertyNames.CamelCase);
+                result.ImageName = pageContent.ImageName;
+                result.Registry = pageContent.registry;
+                // Iterate over items in Manifests collection
+                foreach (dynamic property in pageContent.Manifests)
+                {
+                    List<string> tagList = new List<string>();
+                    if (property.Tags != null)
+                    {
+                        tagList.AddRange((List<string>)property.Tags);
+                    }
+                    result.ManifestsAttributes.Add(new PSManifestAttributeBase(property.Digest, property.ImageSize, property.CreatedTime, property.LastUpdateTime, 
+                    property.Architecture, property.Os,property.MediaType, property.ConfigMediaType, tagList, 
+                    new PSChangeableAttribute(property.ChangeableAttributes.DeleteEnabled, property.ChangeableAttributes.WriteEnabled, property.ChangeableAttributes.ListEnabled, property.ChangeableAttributes.ReadEnabled)));
+                }
+            }
+
+            
+            return result;
         }
 
         public PSManifestAttribute GetManifest(string repository, string manifest)
@@ -196,7 +235,11 @@ namespace Microsoft.Azure.Commands.ContainerRegistry
 
         public PSTagList ListTag(string repository)
         {
-            return new ContainerRegistryTagListOperation(this, repository).ProcessRequest();
+            ContainerRepository image = _track2Client.GetRepository(repository);
+
+            Pageable<ArtifactManifestProperties> properties = image.GetAllManifestProperties();
+
+            return new PSTagList(properties);
         }
 
         public bool RemoveTag(string repository, string tag)

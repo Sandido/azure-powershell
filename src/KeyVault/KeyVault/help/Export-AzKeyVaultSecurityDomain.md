@@ -1,7 +1,7 @@
 ---
 external help file: Microsoft.Azure.PowerShell.Cmdlets.KeyVault.dll-Help.xml
 Module Name: Az.KeyVault
-online version: https://docs.microsoft.com/powershell/module/az.keyvault/export-azkeyvaultsecuritydomain
+online version: https://learn.microsoft.com/powershell/module/az.keyvault/export-azkeyvaultsecuritydomain
 schema: 2.0.0
 ---
 
@@ -14,15 +14,15 @@ Exports the security domain data of a managed HSM.
 
 ### ByName (Default)
 ```
-Export-AzKeyVaultSecurityDomain -Certificates <String[]> -OutputPath <String> [-Force] [-PassThru]
- -Quorum <Int32> -Name <String> [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+Export-AzKeyVaultSecurityDomain -Name <String> -Certificates <String[]> -OutputPath <String> [-Force]
+ [-PassThru] -Quorum <Int32> [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
  [-SubscriptionId <String>] [<CommonParameters>]
 ```
 
 ### ByInputObject
 ```
-Export-AzKeyVaultSecurityDomain -Certificates <String[]> -OutputPath <String> [-Force] [-PassThru]
- -Quorum <Int32> -InputObject <PSKeyVaultIdentityItem> [-DefaultProfile <IAzureContextContainer>] [-WhatIf]
+Export-AzKeyVaultSecurityDomain -InputObject <PSKeyVaultIdentityItem> -Certificates <String[]>
+ -OutputPath <String> [-Force] [-PassThru] -Quorum <Int32> [-DefaultProfile <IAzureContextContainer>] [-WhatIf]
  [-Confirm] [-SubscriptionId <String>] [<CommonParameters>]
 ```
 

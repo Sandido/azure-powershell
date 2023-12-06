@@ -14,6 +14,9 @@ using KeyProperties = Azure.Security.KeyVault.Keys.KeyProperties;
 using KeyVaultProperties = Microsoft.Azure.Commands.KeyVault.Properties;
 using Azure.Security.KeyVault.Keys.Cryptography;
 using Microsoft.WindowsAzure.Commands.Utilities.Common;
+using System.Xml;
+using Microsoft.Azure.Management.WebSites.Version2016_09_01.Models;
+using Microsoft.Azure.Commands.Common.Exceptions;
 
 namespace Microsoft.Azure.Commands.KeyVault.Track2Models
 {
@@ -26,6 +29,7 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
         private KeyVaultBackupClient CreateBackupClient(string hsmName) => new KeyVaultBackupClient(_uriHelper.CreateVaultUri(hsmName), _credential);
         private KeyVaultAccessControlClient CreateRbacClient(string hsmName) => new KeyVaultAccessControlClient(_uriHelper.CreateVaultUri(hsmName), _credential);
         private CryptographyClient CreateCryptographyClient(string keyId) => new CryptographyClient(new Uri(keyId), _credential);
+        private KeyVaultSettingsClient CreateKeyVaultSettingsClient(string hsmName) => new KeyVaultSettingsClient(_uriHelper.CreateVaultUri(hsmName), _credential);
 
         public Track2HsmClient(IAuthenticationFactory authFactory, IAzureContext context)
         {
@@ -103,9 +107,14 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
             {
                 options = new CreateKeyOptions();
             }
+
+            // Common key attributes
             options.NotBefore = keyAttributes.NotBefore;
             options.ExpiresOn = keyAttributes.Expires;
             options.Enabled = keyAttributes.Enabled;
+            options.Exportable = keyAttributes.Exportable;
+            options.ReleasePolicy = keyAttributes.ReleasePolicy?.ToKeyReleasePolicy();
+
             if (keyAttributes.KeyOps != null)
             {
                 foreach (var keyOp in keyAttributes.KeyOps)
@@ -113,6 +122,7 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
                     options.KeyOperations.Add(new KeyOperation(keyOp));
                 }
             }
+
             if (keyAttributes.Tags != null)
             {
                 foreach (DictionaryEntry entry in keyAttributes.Tags)
@@ -292,12 +302,17 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
 
         private PSKeyVaultKey UpdateKey(KeyClient client, string keyName, string keyVersion, PSKeyVaultKeyAttributes keyAttributes)
         {
-            KeyVaultKey keyBundle = client.GetKeyAsync(keyName, keyVersion).GetAwaiter().GetResult();
-            KeyProperties keyProperties = keyBundle.Properties;
-            keyProperties.Enabled = keyAttributes.Enabled;
-            keyProperties.ExpiresOn = keyAttributes.Expires;
-            keyProperties.NotBefore = keyAttributes.NotBefore;
+            KeyVaultKey keyBundle = null;
 
+            // Update updatable properties
+            KeyProperties keyProperties = new KeyProperties(_uriHelper.CreateaMagedHsmKeyUri(client.VaultUri, keyName, keyVersion))
+            {
+                Enabled = keyAttributes.Enabled,
+                ExpiresOn = keyAttributes.Expires,
+                NotBefore = keyAttributes.NotBefore,
+                ReleasePolicy = keyAttributes.ReleasePolicy?.ToKeyReleasePolicy()
+            };
+            
             if (keyAttributes.Tags != null)
             {
                 keyProperties.Tags.Clear();
@@ -537,9 +552,8 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
 
             psKeyRotationPolicy.LifetimeActions?.ForEach(
                 psKeyRotationLifetimeAction => policy.LifetimeActions.Add(
-                    new KeyRotationLifetimeAction()
+                    new KeyRotationLifetimeAction(new KeyRotationPolicyAction(psKeyRotationLifetimeAction.Action))
                     {
-                        Action = psKeyRotationLifetimeAction.Action,
                         TimeAfterCreate = psKeyRotationLifetimeAction.TimeAfterCreate,
                         TimeBeforeExpiry = psKeyRotationLifetimeAction.TimeBeforeExpiry
                     }
@@ -656,6 +670,76 @@ namespace Microsoft.Azure.Commands.KeyVault.Track2Models
         {
             var client = CreateRbacClient(hsmName);
             client.DeleteRoleDefinitionAsync(new KeyVaultRoleScope(scope), Guid.Parse(roleDefinitionName)).ConfigureAwait(false).GetAwaiter().GetResult();
+        }
+        #endregion
+
+        #region Setting
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="managedHsmName"></param>
+        /// <param name="settingName">The name of the account setting</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal PSKeyVaultSetting GetSetting(string managedHsmName, string settingName)
+        {
+            if (string.IsNullOrEmpty(managedHsmName))
+                throw new ArgumentNullException("managedHsmName");
+            if (string.IsNullOrEmpty(settingName))
+                throw new ArgumentNullException("settingName");
+
+            var client = CreateKeyVaultSettingsClient(managedHsmName);
+            try
+            {
+                return new PSKeyVaultSetting(client.GetSetting(settingName), managedHsmName);
+            }
+            catch (Exception ex)
+            {
+                throw GetInnerException(ex);
+            }
+        }
+
+        internal IEnumerable<PSKeyVaultSetting> GetSettings(string managedHsmName)
+        {
+            if (string.IsNullOrEmpty(managedHsmName))
+                throw new ArgumentNullException("managedHsmName");
+            var client = CreateKeyVaultSettingsClient(managedHsmName);
+            try
+            {
+                GetSettingsResult result = client.GetSettings();
+                return null == result ? new List<PSKeyVaultSetting>() : 
+                    result.Settings?.Select(s => new PSKeyVaultSetting(s, managedHsmName));
+            }
+            catch (Exception ex)
+            {
+                throw GetInnerException(ex);
+            }
+        }
+
+        internal PSKeyVaultSetting UpdateSetting(PSKeyVaultSetting psSettingParams)
+        {
+            if (string.IsNullOrEmpty(psSettingParams?.HsmName))
+                throw new ArgumentNullException("managedHsmName");
+            if (null == psSettingParams?.Value)
+                throw new ArgumentNullException("settingValue");
+
+            var client = CreateKeyVaultSettingsClient(psSettingParams.HsmName);
+            try
+            {
+                if (bool.TryParse(psSettingParams.Value, out var result))
+                {
+                    return new PSKeyVaultSetting(client.UpdateSetting(new KeyVaultSetting(psSettingParams.Name, result)), psSettingParams.HsmName);
+                }
+                else
+                {
+                    throw new AzPSArgumentException("Only supports updating KeyVaultSetting.Value as boolean", "KeyVaultSettingValue");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw GetInnerException(ex);
+            }
         }
         #endregion
     }

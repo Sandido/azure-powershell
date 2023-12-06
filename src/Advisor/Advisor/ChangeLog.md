@@ -1,4 +1,3 @@
-
 <!--
     Please leave this section at the top of the change log.
 
@@ -19,6 +18,9 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+
+## Version 2.0.0
+* Bumped API version to 2020-01-01
 
 ## Version 1.1.2
 * Fixed the issue that `Az.Advisor.psd1` was not signed [#16226]
@@ -46,3 +48,4 @@
 * Added new cmdlets for Advisor Configuration
     - Get-AzAdvisorConfiguration
     - Set-AzAdvisorConfiguration
+

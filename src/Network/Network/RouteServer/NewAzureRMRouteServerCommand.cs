@@ -77,6 +77,22 @@ namespace Microsoft.Azure.Commands.Network
         [Parameter(Mandatory = false, HelpMessage = "Run cmdlet in the background")]
         public SwitchParameter AsJob { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Routing Preference to route traffic")]
+        [ValidateSet(
+            MNM.HubRoutingPreference.ExpressRoute,
+            MNM.HubRoutingPreference.VpnGateway,
+            MNM.HubRoutingPreference.ASPath,
+            IgnoreCase = true)]
+        public string HubRoutingPreference { get; set; }
+
+        [Parameter(
+            Mandatory = false,
+            HelpMessage = "Flag to allow branch to branch traffic for route server.")]
+        [PSDefaultValue(Value=false)]
+        public SwitchParameter AllowBranchToBranchTraffic { get; set; }
+
         public override void Execute()
         {
             base.Execute();
@@ -120,6 +136,17 @@ namespace Microsoft.Azure.Commands.Network
                         Location = this.Location
                     };
 
+                    if (string.IsNullOrWhiteSpace(this.HubRoutingPreference))
+                    {
+                        virtualHub.HubRoutingPreference = "ExpressRoute";
+                    }
+                    else
+                    {
+                        virtualHub.HubRoutingPreference = this.HubRoutingPreference;
+                    }
+
+                    virtualHub.AllowBranchToBranchTraffic = this.AllowBranchToBranchTraffic.IsPresent;
+                    
                     var publicIpAddressModel = NetworkResourceManagerProfile.Mapper.Map<PublicIPAddress>(this.PublicIpAddress);
                     virtualHub.RouteTables = new List<PSVirtualHubRouteTable>();
                     string ipConfigName = "ipconfig1";
@@ -134,7 +161,7 @@ namespace Microsoft.Azure.Commands.Network
                     virtualHubModel.Sku = "Standard";
 
                     this.NetworkClient.NetworkManagementClient.VirtualHubs.CreateOrUpdate(this.ResourceGroupName, this.RouteServerName, virtualHubModel);
-                    this.NetworkClient.NetworkManagementClient.VirtualHubIpConfiguration.CreateOrUpdate(this.ResourceGroupName, this.RouteServerName, ipConfigName, ipconfig);
+                    this.NetworkClient.NetworkManagementClient.VirtualHubIPConfiguration.CreateOrUpdate(this.ResourceGroupName, this.RouteServerName, ipConfigName, ipconfig);
                     virtualHubModel = this.NetworkClient.NetworkManagementClient.VirtualHubs.Get(this.ResourceGroupName, this.RouteServerName);
 
                     virtualHub = NetworkResourceManagerProfile.Mapper.Map<PSVirtualHub>(virtualHubModel);

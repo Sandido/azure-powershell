@@ -2,7 +2,7 @@
 external help file: Microsoft.Azure.PowerShell.Cmdlets.Websites.dll-Help.xml
 Module Name: Az.Websites
 ms.assetid: 9057185C-6F22-4C4A-8480-BE542B5D6BAF
-online version: https://docs.microsoft.com/powershell/module/az.websites/remove-azwebapp
+online version: https://learn.microsoft.com/powershell/module/az.websites/remove-azwebapp
 schema: 2.0.0
 ---
 
@@ -86,7 +86,7 @@ Accept wildcard characters: False
 ```
 
 ### -Force
-Forcefully Remove Option
+Forces the command to run without asking for user confirmation.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter

@@ -65,6 +65,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
                 " policy, then this command will expect a policyID.";
             public const string SchedulePolicySubType = "Type of schedule policy to be fetched: Standard, Enhanced";
             public const string PolicySubType = "Type of policy to be fetched: Standard, Enhanced";
+            public const string MoveToArchiveTier = "Specifies whether recovery points should be moved to archive storage by the policy or not. Allowed values are $true, $false";
+            public const string IsSmartTieringEnabled = "Parameter to list policies for which smart tiering is Enabled/Disabled. Allowed values are $true, $false.";
+            public const string TieringMode = "Specifies whether to move recommended or all eligible recovery points to archive";
+            public const string TierAfterDuration = "Specifies the duration after which recovery points should start moving to the archive tier, value can be in days or months. Applicable only when TieringMode is TierAllEligible";
+            public const string TierAfterDurationType = "Specifies whether the TierAfterDuration is in Days or Months";
+            public const string AzureBackupResourceGroup = "Custom resource group name to store the instant recovery points of managed virtual machines. This is optional";
+            public const string AzureBackupResourceGroupSuffix = "Custom resource group name suffix to store the instant recovery points of managed virtual machines. This is optional";
         }
 
         internal static class Job
@@ -87,15 +94,17 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
             public const string AzureVMServiceName = "Cloud Service Name for Azure Classic Compute VM.";
             public const string AzureVMResourceGroupName = "Resource Group Name for Azure Compute VM .";
             public const string ProtectedItem = "Specifies the item to be protected with the given policy.";
+            public const string SuspendItem = "Specifies the item for which the backup needs to be suspended.";
             public const string ProtectableItem = "Specifies the protectable item to be protected using Azure Backup.";
             public const string ProtectionStatus = "Protection status of Item";
             public const string Status = "Status of the data source";
             public const string DeleteState = "Delete state of the item";
             public const string Container = "Container where the item resides";
-            public const string RemoveProtectionOption = "If this option is used, all the recovery points for this item will " +
-                "also be deleted and restoring will not be possible.";
+            public const string RemoveProtectionOption = "If this option is used, all the recovery points for this item will also be deleted and restoring will not be possible.";
+            public const string SuspendBackupOption = "If this option is used, all the recovery points for this item will expire as per the retention policy.";
             public const string ExpiryDate = "Retention period for the recovery points created by this backup operaiton";
             public const string ForceOption = "Force disables backup protection (prevents confirmation dialog). This parameter is optional.";
+            public const string ForceSuspend = "Force suspends backup.";
             public const string ExpiryDateTimeUTC = "Specifies an expiry time for the Recovery point as a DateTime object, " + 
                 "if nothing is given it takes the default value of  30 days. Applicable to VM, SQL (for only Copy-only-full backup type), AFS backup items.";
             public const string ProtectionPolicy = "The id of the backup policy which is used to protect the backup items";
@@ -117,8 +126,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
         {
             public const string ItemType = "Specifies the type of protectable item. Applicable values: (SQLDataBase, SQLInstance, SQLAvailabilityGroup).";
             public const string ItemId = "Specifies the parent entity under which the protectable items (DBs) are to be retrieved. IDs of protectable item types SQLInstance, SQLAvailabilityGroup are applicable.";
-            public const string ItemObject = "Specifies the protectable item object that can be passed as an input." +
-                " The current supported value is a protectableItem object of type 'SQLInstance'." ;
+            public const string ItemObject = "Specifies the protectable item object that can be passed as an input. The current supported value is a protectableItem object of type 'SQLInstance'." ;
             public const string Name = "Specifies the name of the Database, Instance or AvailabilityGroup.";
             public const string ServerName = "Specifies the name of the server to which the item belongs.";
             public const string ItemContainer = "Returns the container where the discovery is being triggered.";
@@ -142,10 +150,8 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
             public const string ArchivableRP = "Recovery Point to move to archive";
             public const string SourceTier = "Source Tier for Recovery Point move. Currently the only acceptable value is 'VaultStandard' ";
             public const string DestinationTier = "Destination Tier for Recovery Point move. Currently the only acceptable value is 'VaultArchive' ";
-            public const string RehydratePriority = "Rehydration priority for an archived recovery point while triggering the restore. Acceptable values are " +
-                "Standard, High.";
-            public const string RehydrateDuration = "Duration in days for which to keep the archived recovery point rehydrated. Value can range from" +
-                " 10 to 30 days, default value is 15 days.";
+            public const string RehydratePriority = "Rehydration priority for an archived recovery point while triggering the restore. Acceptable values are Standard, High.";
+            public const string RehydrateDuration = "Duration in days for which to keep the archived recovery point rehydrated. Value can range from 10 to 30 days, default value is 15 days.";
         }
 
         internal static class RestoreDisk
@@ -172,6 +178,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
             public const string TargetVNetName = "Name of the VNet in which the target VM should be created, in the case of Alternate Location restore to a new VM";
             public const string TargetVNetResourceGroup = "Name of the resource group which contains the target VNet, in the case of Alternate Location restore to a new VM";
             public const string TargetSubnetName = "Name of the subnet in which the target VM should be created, in the case of Alternate Location restore to a new VM";
+            public const string TargetSubscriptionId = "ID of the target subscription to which the resource should be restored. Use this parameter for Cross subscription restore";
         }
 
         internal static class RestoreFS
@@ -228,6 +235,13 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
                 " used to encrypt newly created disks.";
             public const string UseSystemAssignedIdentity = "Boolean flag to indicate if SystemAssigned Identity will be used for CMK encryption";
             public const string UserAssignedIdentity = "ARM Id of UserAssigned Identity to be used for CMK encryption. Provide this parameter if UseSystemAssignedIdentity is $false";
+        }
+
+        internal static class ResourceGuard
+        {
+            public const string ResourceGuardMappingName = "Resource guard mapping Name to be fetched";
+            public const string AuxiliaryAccessToken = "Auxiliary access token for authenticating critical operation to resource guard subscription";
+            public const string ResourceGuardId = "ResourceGuardId of the ResourceGuard to be mapped with RecoveryServicesVault";
         }
     }
 }

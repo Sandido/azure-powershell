@@ -116,7 +116,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Backup
             ParameterSetName = ParentObjectParameterSet,
             Mandatory = true,
             ValueFromPipeline = true,
-            HelpMessage = "The volume for the new backup object")]
+            HelpMessage = "The volume for the new subvolume object")]
         [ValidateNotNullOrEmpty]
         public PSNetAppFilesVolume VolumeObject { get; set; }
 
@@ -141,7 +141,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Backup
 
             if (ShouldProcess(Name, string.Format(PowerShell.Cmdlets.NetAppFiles.Properties.Resources.CreateResourceMessage, Name)))
             {
-                var anfSubvolume = AzureNetAppFilesManagementClient.Subvolumes.Create(subvolumeInfoBody, ResourceGroupName, AccountName, poolName: PoolName, volumeName: VolumeName, subvolumeName: Name);
+                var anfSubvolume = AzureNetAppFilesManagementClient.Subvolumes.Create(ResourceGroupName, AccountName, poolName: PoolName, volumeName: VolumeName, subvolumeName: Name, subvolumeInfoBody);
                 WriteObject(anfSubvolume.ConvertToPs());
             }
         }
