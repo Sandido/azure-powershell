@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ using Microsoft.Azure.Commands.Compute.Models;
 using Microsoft.Azure.Management.Compute.Models;
 using Microsoft.Azure.Commands.Compute.Automation.Models;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
+using Microsoft.WindowsAzure.Commands.Utilities.Common;
 
 namespace Microsoft.Azure.Commands.Compute
 {
@@ -42,9 +43,23 @@ namespace Microsoft.Azure.Commands.Compute
         [Parameter(
            Mandatory = true,
            ValueFromPipelineByPropertyName = true,
-            HelpMessage = "Gets or sets possible values include: TrustedLaunch")]
-        [PSArgumentCompleter("TrustedLaunch")]
+           HelpMessage = "Gets or sets the SecurityType property. Possible values include: TrustedLaunch, ConfidentialVM_DiskEncryptedWithCustomerKey, ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey, ConfidentialVM_DiskEncryptedWithPlatformKey")]
+        [PSArgumentCompleter("Standard", "TrustedLaunch", "ConfidentialVM_DiskEncryptedWithCustomerKey", "ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey",
+            "ConfidentialVM_DiskEncryptedWithPlatformKey")]
         public string SecurityType { get; set; }
+
+        [Parameter(
+           Mandatory = false,
+           ValueFromPipelineByPropertyName = true,
+           HelpMessage = "ResourceId of the disk encryption set to use for enabling encryption at rest.")]
+        public string SecureVMDiskEncryptionSet { get; set; }
+
+        [Parameter(
+           Mandatory = false,
+           ValueFromPipelineByPropertyName = true,
+           HelpMessage = "New parameter -ParameterFive is a string that is either One, Two, or Three.")]
+        [PSArgumentCompleter("One", "Two", "Three")]
+        public string ParameterFive { get; set; }
 
         protected override void ProcessRecord()
         {
@@ -56,12 +71,49 @@ namespace Microsoft.Azure.Commands.Compute
 
         private void Run()
         {
-            if(this.Disk.SecurityProfile == null)
+            if (string.IsNullOrEmpty(ParameterFive))
             {
-                this.Disk.SecurityProfile = new DiskSecurityProfile();
+                throw new ArgumentException("ParameterFive does not allow an empty string.");
             }
 
-            this.Disk.SecurityProfile.SecurityType = SecurityType;
+            // At this time, it is impossible to set SecurityType to Standard ("") as it is a mandatory property on the backend.
+            // If Standard is used, then there should be no securityProfile at all for now.
+            if (SecurityType.ToLower() != ConstantValues.StandardSecurityType)
+            {
+                if(this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.SecurityType = SecurityType;
+            }
+
+            // Allow the Standard scenario, which will be nulled out just before the .Net SDK create call for disks.
+            if (SecurityType.ToLower() == ConstantValues.StandardSecurityType)
+            {
+                if (this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.SecurityType = SecurityType;
+            }
+
+            if (this.IsParameterBound(c => c.SecureVMDiskEncryptionSet))
+            {
+                if (this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
+            }
+
+            if (this.IsParameterBound(c => c.ParameterFive))
+            {
+                if (this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.ParameterInput = this.ParameterFive;
+            }
 
             WriteObject(this.Disk);
         }
