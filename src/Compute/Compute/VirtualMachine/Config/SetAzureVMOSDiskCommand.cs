@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ namespace Microsoft.Azure.Commands.Compute
         protected const string LinuxParamSet = "LinuxParamSet";
         protected const string WindowsAndDiskEncryptionParameterSet = "WindowsDiskEncryptionParameterSet";
         protected const string LinuxAndDiskEncryptionParameterSet = "LinuxDiskEncryptionParameterSet";
+        protected const string GallantSecuritySetParameterSet = "GallantSecuritySetParameterSet";
         protected const string DiffDiskPlacementPresentButNotSetting = "The DiffDiskPlacement parameter can only be used when the DiffDiskSetting parameter is set to 'Local'. Please provide the DiffDiskSetting parameter.";
 
         [Alias("VMProfile")]
@@ -205,6 +206,13 @@ namespace Microsoft.Azure.Commands.Compute
             HelpMessage = "ARM Resource ID for Disk Encryption Set. Allows customer to provide ARM ID for Disk Encryption Set created with ConfidentialVmEncryptedWithCustomerKey encryption type. This will allow customer to use Customer Managed Key (CMK) encryption with Confidential VM. Parameter SecurityEncryptionType value should be DiskwithVMGuestState.")]
         public string SecureVMDiskEncryptionSet { get; set; }
 
+        [Parameter(
+            ParameterSetName = GallantSecuritySetParameterSet,
+            Mandatory = false,
+            ValueFromPipelineByPropertyName = true,
+            HelpMessage = "New parameter for Gallant Security Set")]
+        public string GallantSecuritySet { get; set; }
+
         public override void ExecuteCmdlet()
         {
             if (this.VM.StorageProfile == null)
@@ -357,7 +365,30 @@ namespace Microsoft.Azure.Commands.Compute
                 this.VM.StorageProfile.OsDisk.ManagedDisk.SecurityProfile.SecurityEncryptionType = SecurityEncryptionType;
             }
 
+            // GallantSecuritySet for Confidential VMs. 
+            if (this.IsParameterBound(c => c.GallantSecuritySet))
+            {
+                if (this.VM.StorageProfile == null)
+                {
+                    this.VM.StorageProfile = new StorageProfile();
+                }
+                if (this.VM.StorageProfile.OsDisk == null)
+                {
+                    this.VM.StorageProfile.OsDisk = new OSDisk();
+                }
+                if (this.VM.StorageProfile.OsDisk.ManagedDisk == null)
+                {
+                    this.VM.StorageProfile.OsDisk.ManagedDisk = new ManagedDiskParameters();
+                }
+                if (this.VM.StorageProfile.OsDisk.ManagedDisk.SecurityProfile == null)
+                {
+                    this.VM.StorageProfile.OsDisk.ManagedDisk.SecurityProfile = new VMDiskSecurityProfile();
+                }
+                this.VM.StorageProfile.OsDisk.ManagedDisk.SecurityProfile.GallantSecuritySet = GallantSecuritySet;
+            }
+
             WriteObject(this.VM);
         }
     }
 }
+.

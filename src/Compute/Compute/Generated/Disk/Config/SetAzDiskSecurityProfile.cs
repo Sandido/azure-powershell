@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,12 @@ namespace Microsoft.Azure.Commands.Compute
            HelpMessage = "ResourceId of the disk encryption set to use for enabling encryption at rest.")]
         public string SecureVMDiskEncryptionSet { get; set; }
 
+        [Parameter(
+           Mandatory = false,
+           ValueFromPipelineByPropertyName = true,
+           HelpMessage = "New parameter called GallantSecuritySet which is a string.")]
+        public string GallantSecuritySet { get; set; }
+
         protected override void ProcessRecord()
         {
             if (ShouldProcess("DiskSecurityProfile", "Set"))
@@ -92,6 +98,15 @@ namespace Microsoft.Azure.Commands.Compute
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
                 this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
+            }
+
+            if (this.IsParameterBound(c => c.GallantSecuritySet))
+            {
+                if (this.Disk.SecurityProfile == null)
+                {
+                    this.Disk.SecurityProfile = new DiskSecurityProfile();
+                }
+                this.Disk.SecurityProfile.GallantSecuritySet = this.GallantSecuritySet;
             }
 
             WriteObject(this.Disk);
