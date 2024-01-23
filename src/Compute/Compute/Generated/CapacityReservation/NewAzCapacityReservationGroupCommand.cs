@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) Microsoft and contributors.  All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,6 +70,12 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             Mandatory = false)]
         public string[] Zone { get; set; }
 
+        [Parameter(
+            Mandatory = false,
+            ValueFromPipeline = true,
+            HelpMessage = "Sharing Profile")]
+        public string[] SharingProfile { get; set; }
+
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
@@ -88,6 +94,10 @@ namespace Microsoft.Azure.Commands.Compute.Automation
                     {
                         capacityReservationGroup.Zones = this.Zone;
                     }
+                    if (this.IsParameterBound(c => c.SharingProfile))
+                    {
+                        capacityReservationGroup.SharingProfile = this.SharingProfile;
+                    }
 
                     var result = CapacityReservationGroupClient.CreateOrUpdate(this.ResourceGroupName, this.Name, capacityReservationGroup);
                     var psObject = new PSCapacityReservationGroup();
@@ -98,3 +108,4 @@ namespace Microsoft.Azure.Commands.Compute.Automation
         }
     }
 }
+.
