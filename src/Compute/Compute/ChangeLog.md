@@ -19,7 +19,19 @@
         - Additional information about change #1
 
 -->
-## Upcoming Release
+* `New-AzVmss` can now create VMSS with `OrchestrationMode` set to `Flexible` using `-SinglePlacementGroup` and `-UpgradePolicy`.
+* Removed unversioned and outdated images from New-AzVmss `-ImageName` argument completers.
+* [Breaking Change] Added defaulting logic for VM and VMSS creation to set SecurityType to TrustedLaunch and SecureBootEnabled and VTpmEnalbed to true when those are not set by the user.
+* [Breaking Change] Added defaulting logic for Disk creation to default to TrustedLaunch when able. Allows the user to turn this off by setting the SecurityType to Standard.
+* Added new parameter `-VirtualMachineScaleSetId` to `Update-AzVm` cmdlet.
+* Fixed `New-AzVmss` and `New-Azvm` to use `SharedGalleryImageId` parameter.
+* Reduced File Permissions from 0644 to 0600 for SSH Private Key File in `New-AzVm`.
+* Removed GuestAttestaion vm extension installation for Vmss and Vm creation cmdlets. 
+* Added new parameters to `Set-AzDiskSecurityProfile` and `New-AzDiskAccess` cmdlets.
+    - `Set-AzDiskSecurityProfile` now accepts `GallantSecurity`, a string type parameter with possible values `DiskOn`, `VMOn`, or `SecurityOff`.
+    - `New-AzDiskAccess` now accepts `GallantType`, a string type parameter with possible values `Gaul`, and `Ant`.
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 
