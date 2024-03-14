@@ -20,6 +20,11 @@
 
 -->
 ## Upcoming Release
+* Added new parameters to `Set-AzDiskSecurityProfile` and `New-AzDiskAccess` cmdlets.
+    - `Set-AzDiskSecurityProfile` gets a new parameter `GallantSecurity` which is a string type. The only possible values are DiskOn, VMOn, or SecurityOff.
+    - `New-AzDiskAccess` gets a new parameter `GallantType` which is a string that allows the values Gaul, and Ant.
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 
