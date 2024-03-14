@@ -1,4 +1,5 @@
-﻿
+ 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,11 +14,10 @@ using Microsoft.WindowsAzure.Commands.Utilities.Common;
 
 namespace Microsoft.Azure.Commands.Compute.Automation
 {
-    [Cmdlet(VerbsCommon.New, ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "DiskAccess", DefaultParameterSetName = "DefaultParameter", SupportsShouldProcess = true)]
-    [OutputType(typeof(PSDiskAccess))]
-    public class NewAzureDiskAccess : ComputeAutomationBaseCmdlet
+    [Cmdlet(VerbsCommon.Set, ResourceManager.Common.AzureRMConstants.AzureRMPrefix + "DiskSecurityProfile", DefaultParameterSetName = "DefaultParameter", SupportsShouldProcess = true)]
+    [OutputType(typeof(PSDiskSecurityProfile))]
+    public class SetAzureDiskSecurityProfile : ComputeAutomationBaseCmdlet
     {
-
         [Parameter(
             Position = 0,
             Mandatory = true,
@@ -29,15 +29,15 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             Position = 1,
             Mandatory = true,
             ValueFromPipelineByPropertyName = true)]
-        [Alias("DiskAccessName")]
+        [Alias("DiskSecurityProfileName")]
         public string Name { get; set; }
 
         [Parameter(
             Position = 2,
             Mandatory = true,
             ValueFromPipeline = true)]
-        [LocationCompleter("Microsoft.Compute/diskaccesses")]
-        public string Location { get; set; }
+        [ValidateSet("DiskOn", "VMOn", "SecurityOff")]
+        public string GallantSecurity { get; set; }
 
         [Parameter(Mandatory = false, HelpMessage = "Run cmdlet in the background")]
         public SwitchParameter AsJob { get; set; }
@@ -47,17 +47,18 @@ namespace Microsoft.Azure.Commands.Compute.Automation
             base.ExecuteCmdlet();
             ExecuteClientAction(() =>
             {
-                if (ShouldProcess(this.Name, VerbsCommon.New))
+                if (ShouldProcess(this.Name, VerbsCommon.Set))
                 {
-                    DiskAccess diskAccess = new DiskAccess();
-                    diskAccess.Location = this.Location;
+                    DiskSecurityProfile diskSecurityProfile = new DiskSecurityProfile();
+                    diskSecurityProfile.GallantSecurity = this.GallantSecurity;
 
-                    var result = DiskAccessesClient.CreateOrUpdate(this.ResourceGroupName, this.Name, diskAccess);
-                    var psObject = new PSDiskAccess();
-                    ComputeAutomationAutoMapperProfile.Mapper.Map<DiskAccess, PSDiskAccess>(result, psObject);
+                    var result = DiskSecurityProfilesClient.CreateOrUpdate(this.ResourceGroupName, this.Name, diskSecurityProfile);
+                    var psObject = new PSDiskSecurityProfile();
+                    ComputeAutomationAutoMapperProfile.Mapper.Map<DiskSecurityProfile, PSDiskSecurityProfile>(result, psObject);
                     WriteObject(psObject);
                 }
             });
         }
     }
 }
+
