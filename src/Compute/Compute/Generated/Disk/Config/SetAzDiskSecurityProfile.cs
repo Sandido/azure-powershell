@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,8 +64,6 @@ namespace Microsoft.Azure.Commands.Compute
 
         private void Run()
         {
-            // At this time, it is impossible to set SecurityType to Standard ("") as it is a mandatory property on the backend.
-            // If Standard is used, then there should be no securityProfile at all for now.
             if (SecurityType.ToLower() != ConstantValues.StandardSecurityType)
             {
                 if(this.Disk.SecurityProfile == null)
@@ -75,14 +73,13 @@ namespace Microsoft.Azure.Commands.Compute
                 this.Disk.SecurityProfile.SecurityType = SecurityType;
             }
 
-            // Allow the Standard scenario, which will be nulled out just before the .Net SDK create call for disks.
             if (SecurityType.ToLower() == ConstantValues.StandardSecurityType)
             {
                 if (this.Disk.SecurityProfile == null)
                 {
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
-                this.Disk.SecurityProfile.SecurityType = SecurityType;
+                this.Disk.SecurityProfile.SecurityType = null;
             }
 
             if (this.IsParameterBound(c => c.SecureVMDiskEncryptionSet))
@@ -98,4 +95,5 @@ namespace Microsoft.Azure.Commands.Compute
         }
     }
 
-}
+}.
+
