@@ -20,6 +20,13 @@
 
 -->
 ## Upcoming Release
+* Enhanced `Set-AzDiskSecurityProfile` cmdlet
+    - Added `SecureVMDiskEncryptionSet` parameter with logic to verify it is a resourceId and a string, and to set all its characters to lower case.
+    - Updated business logic of the cmdlet and parameters.
+    - Affected parameter sets: { INPUT HERE }
+    - Link to API tests: `{ ENTER LINK HERE }`
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 

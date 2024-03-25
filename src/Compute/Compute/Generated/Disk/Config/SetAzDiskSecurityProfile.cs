@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,7 @@ namespace Microsoft.Azure.Commands.Compute
            Mandatory = false,
            ValueFromPipelineByPropertyName = true,
            HelpMessage = "ResourceId of the disk encryption set to use for enabling encryption at rest.")]
+        [ValidatePattern("^/subscriptions/{guid}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskEncryptionSets/{diskEncryptionSetName}$", ErrorMessage = "Invalid ResourceId format")]
         public string SecureVMDiskEncryptionSet { get; set; }
 
         protected override void ProcessRecord()
@@ -91,7 +92,7 @@ namespace Microsoft.Azure.Commands.Compute
                 {
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
-                this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
+                this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet.ToLower();
             }
 
             WriteObject(this.Disk);
@@ -99,3 +100,4 @@ namespace Microsoft.Azure.Commands.Compute
     }
 
 }
+
