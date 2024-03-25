@@ -1,17 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
-//
-// Copyright Microsoft Corporation
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// http://www.apache.org/licenses/LICENSE-2.0
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// ----------------------------------------------------------------------------------
-
+ 
 
 using System;
 using System.Collections.Generic;
@@ -41,12 +28,12 @@ namespace Microsoft.Azure.Commands.Compute
         public PSDisk Disk { get; set; }
 
         [Parameter(
-           Mandatory = true,
+           Mandatory = false,
            ValueFromPipelineByPropertyName = true,
            HelpMessage = "Gets or sets the SecurityType property. Possible values include: TrustedLaunch, ConfidentialVM_DiskEncryptedWithCustomerKey, ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey, ConfidentialVM_DiskEncryptedWithPlatformKey")]
         [PSArgumentCompleter("Standard", "TrustedLaunch", "ConfidentialVM_DiskEncryptedWithCustomerKey", "ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey",
             "ConfidentialVM_DiskEncryptedWithPlatformKey")]
-        public string SecurityType { get; set; }
+        public string SecurityType { get; set; } = null;
 
         [Parameter(
            Mandatory = false,
@@ -64,21 +51,9 @@ namespace Microsoft.Azure.Commands.Compute
 
         private void Run()
         {
-            // At this time, it is impossible to set SecurityType to Standard ("") as it is a mandatory property on the backend.
-            // If Standard is used, then there should be no securityProfile at all for now.
-            if (SecurityType.ToLower() != ConstantValues.StandardSecurityType)
+            if (SecurityType != null)
             {
                 if(this.Disk.SecurityProfile == null)
-                {
-                    this.Disk.SecurityProfile = new DiskSecurityProfile();
-                }
-                this.Disk.SecurityProfile.SecurityType = SecurityType;
-            }
-
-            // Allow the Standard scenario, which will be nulled out just before the .Net SDK create call for disks.
-            if (SecurityType.ToLower() == ConstantValues.StandardSecurityType)
-            {
-                if (this.Disk.SecurityProfile == null)
                 {
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
@@ -99,3 +74,4 @@ namespace Microsoft.Azure.Commands.Compute
     }
 
 }
+
