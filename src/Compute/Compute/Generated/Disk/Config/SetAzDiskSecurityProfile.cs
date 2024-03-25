@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Commands.Compute
            Mandatory = false,
            ValueFromPipelineByPropertyName = true,
            HelpMessage = "ResourceId of the disk encryption set to use for enabling encryption at rest.")]
-        public string SecureVMDiskEncryptionSet { get; set; }
+        public string SecureVMDiskEncryptionSetId { get; set; }
 
         protected override void ProcessRecord()
         {
@@ -85,13 +85,13 @@ namespace Microsoft.Azure.Commands.Compute
                 this.Disk.SecurityProfile.SecurityType = SecurityType;
             }
 
-            if (this.IsParameterBound(c => c.SecureVMDiskEncryptionSet))
+            if (this.IsParameterBound(c => c.SecureVMDiskEncryptionSetId))
             {
                 if (this.Disk.SecurityProfile == null)
                 {
                     this.Disk.SecurityProfile = new DiskSecurityProfile();
                 }
-                this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
+                this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSetId.ToLower();
             }
 
             WriteObject(this.Disk);
@@ -99,3 +99,4 @@ namespace Microsoft.Azure.Commands.Compute
     }
 
 }
+
