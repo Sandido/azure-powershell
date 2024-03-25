@@ -20,6 +20,12 @@
 
 -->
 ## Upcoming Release
+* Updated `Set-AzDiskSecurityProfile` cmdlet
+    - Added new business logic to set the `SecurityType` property to null by default unless the user specifies a value.
+    - This change affects all parameter sets on the cmdlet.
+    - Link to API tests for this feature: `{ ENTER LINK HERE }`
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 

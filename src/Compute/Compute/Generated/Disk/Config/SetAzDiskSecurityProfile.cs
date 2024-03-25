@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //
 // Copyright Microsoft Corporation
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ namespace Microsoft.Azure.Commands.Compute
         public PSDisk Disk { get; set; }
 
         [Parameter(
-           Mandatory = true,
+           Mandatory = false,
            ValueFromPipelineByPropertyName = true,
            HelpMessage = "Gets or sets the SecurityType property. Possible values include: TrustedLaunch, ConfidentialVM_DiskEncryptedWithCustomerKey, ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey, ConfidentialVM_DiskEncryptedWithPlatformKey")]
         [PSArgumentCompleter("Standard", "TrustedLaunch", "ConfidentialVM_DiskEncryptedWithCustomerKey", "ConfidentialVM_VMGuestStateOnlyEncryptedWithPlatformKey",
@@ -64,33 +64,22 @@ namespace Microsoft.Azure.Commands.Compute
 
         private void Run()
         {
-            // At this time, it is impossible to set SecurityType to Standard ("") as it is a mandatory property on the backend.
-            // If Standard is used, then there should be no securityProfile at all for now.
-            if (SecurityType.ToLower() != ConstantValues.StandardSecurityType)
+            if (this.Disk.SecurityProfile == null)
             {
-                if(this.Disk.SecurityProfile == null)
-                {
-                    this.Disk.SecurityProfile = new DiskSecurityProfile();
-                }
-                this.Disk.SecurityProfile.SecurityType = SecurityType;
+                this.Disk.SecurityProfile = new DiskSecurityProfile();
             }
 
-            // Allow the Standard scenario, which will be nulled out just before the .Net SDK create call for disks.
-            if (SecurityType.ToLower() == ConstantValues.StandardSecurityType)
+            if (this.IsParameterBound(c => c.SecurityType))
             {
-                if (this.Disk.SecurityProfile == null)
-                {
-                    this.Disk.SecurityProfile = new DiskSecurityProfile();
-                }
                 this.Disk.SecurityProfile.SecurityType = SecurityType;
+            }
+            else
+            {
+                this.Disk.SecurityProfile.SecurityType = null;
             }
 
             if (this.IsParameterBound(c => c.SecureVMDiskEncryptionSet))
             {
-                if (this.Disk.SecurityProfile == null)
-                {
-                    this.Disk.SecurityProfile = new DiskSecurityProfile();
-                }
                 this.Disk.SecurityProfile.SecureVMDiskEncryptionSetId = this.SecureVMDiskEncryptionSet;
             }
 
@@ -98,4 +87,5 @@ namespace Microsoft.Azure.Commands.Compute
         }
     }
 
-}
+}.
+
