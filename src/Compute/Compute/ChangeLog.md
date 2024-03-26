@@ -20,6 +20,11 @@
 
 -->
 ## Upcoming Release
+* Added new parameter `GallantSecurity` to `Set-AzDiskSecurityProfile` cmdlet.
+    - The parameter is of string type, with allowed values: VMSecure, DiskSecure, GallerySecure.
+    - If the user does not provide a value to GallantSecurity, the value defaults to VMSecure.
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 
