@@ -20,6 +20,10 @@
 
 -->
 ## Upcoming Release
+* Updated `Set-AzDiskSecurityProfile` cmdlet.
+    - Added new business logic for the existing parameter `SecurityType`. The default value is now set to `ConfidentialVM` unless the user specifies a value. The `SecurityType` value is temporarily changed to all lower case for verification and then changed back to all upper case after assignment.
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 
