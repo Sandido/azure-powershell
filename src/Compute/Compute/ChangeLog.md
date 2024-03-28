@@ -20,6 +20,13 @@
 
 -->
 ## Upcoming Release
+* Added new parameter `Shield` to `Set-AzDiskSecurityProfile` cmdlet.
+    - This is a string parameter with possible values of On, Off, Away. On is the default value.
+    - The business logic of the cmdlet and parameters has been updated accordingly.
+    - The changes affect the parameter sets on the cmdlet.
+    - Specific test cases for this feature can be found at `{ ENTER LINK HERE }`.
+* Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
+* Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 * Fixed `New-AzVmss` to correctly work when using `-EdgeZone` by creating the Load Balancer in the correct edge zone.
 * Removed references to image aliases in `New-AzVM` and `New-AzVmss` to images that were removed.
 
