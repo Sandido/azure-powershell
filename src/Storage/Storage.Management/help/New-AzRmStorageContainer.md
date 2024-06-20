@@ -16,8 +16,8 @@ Creates a Storage blob container
 ```
 New-AzRmStorageContainer [-ResourceGroupName] <String> [-StorageAccountName] <String> -Name <String>
  [-PublicAccess <PSPublicAccess>] [-Metadata <Hashtable>] [-RootSquash <String>]
- [-EnableImmutableStorageWithVersioning] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-EnableImmutableStorageWithVersioning] [-DefaultProfile <IAzureContextContainer>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AccountNameEncryptionScope
@@ -25,14 +25,16 @@ New-AzRmStorageContainer [-ResourceGroupName] <String> [-StorageAccountName] <St
 New-AzRmStorageContainer [-ResourceGroupName] <String> [-StorageAccountName] <String> -Name <String>
  -DefaultEncryptionScope <String> -PreventEncryptionScopeOverride <Boolean> [-PublicAccess <PSPublicAccess>]
  [-Metadata <Hashtable>] [-RootSquash <String>] [-EnableImmutableStorageWithVersioning]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### AccountObject
 ```
 New-AzRmStorageContainer -StorageAccount <PSStorageAccount> -Name <String> [-PublicAccess <PSPublicAccess>]
  [-Metadata <Hashtable>] [-RootSquash <String>] [-EnableImmutableStorageWithVersioning]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### AccountObjectEncryptionScope
@@ -68,9 +70,9 @@ This command creates a Storage blob container with Storage account object and co
 
 
 ```
-PS C:\> $c = New-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "mystorageaccount" -Name testcontainer -DefaultEncryptionScope "testscope" -PreventEncryptionScopeOverride $true
+$c = New-AzRmStorageContainer -ResourceGroupName "myResourceGroup" -AccountName "mystorageaccount" -Name testcontainer -DefaultEncryptionScope "testscope" -PreventEncryptionScopeOverride $true
 
-PS C:\> $c
+$c
 
    ResourceGroupName: myResourceGroup, StorageAccountName: mystorageaccount
 
@@ -78,10 +80,10 @@ Name          PublicAccess LastModified HasLegalHold HasImmutabilityPolicy
 ----          ------------ ------------ ------------ ---------------------
 testcontainer                           False        False                
 
-PS C:\> $c.DefaultEncryptionScope
+$c.DefaultEncryptionScope
 testscope
 
-PS C:\> $c.DenyEncryptionScopeOverride
+$c.DenyEncryptionScopeOverride
 True
 ```
 
@@ -93,12 +95,12 @@ Then show the related container properties.
 
 
 ```
-PS C:\> $container = New-AzRmStorageContainer -ResourceGroupName "myersourcegroup" -AccountName "mystorageaccount" -Name "mycontainer" -RootSquash AllSquash
+$container = New-AzRmStorageContainer -ResourceGroupName "myersourcegroup" -AccountName "mystorageaccount" -Name "mycontainer" -RootSquash AllSquash
 
-PS C:\> $container.EnableNfsV3AllSquash
+$container.EnableNfsV3AllSquash
 True
 
-PS C:\> $container.EnableNfsV3RootSquash
+$container.EnableNfsV3RootSquash
 False
 ```
 

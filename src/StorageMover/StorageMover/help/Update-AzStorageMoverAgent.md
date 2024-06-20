@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/update-azstoragemoveragent
 schema: 2.0.0
@@ -15,27 +15,29 @@ Creates or updates an Agent resource.
 ### UpdateExpanded (Default)
 ```
 Update-AzStorageMoverAgent -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-SubscriptionId <String>] [-Description <String>]
+ [-UploadLimitScheduleWeeklyRecurrence <IUploadLimitWeeklyRecurrence[]>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Update
 ```
 Update-AzStorageMoverAgent -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- -Agent <IAgentUpdateParameters> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
-```
-
-### UpdateViaIdentity
-```
-Update-AzStorageMoverAgent -InputObject <IStorageMoverIdentity> -Agent <IAgentUpdateParameters>
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-SubscriptionId <String>] -Agent <IAgentUpdateParameters> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### UpdateViaIdentityExpanded
 ```
 Update-AzStorageMoverAgent -InputObject <IStorageMoverIdentity> [-Description <String>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-UploadLimitScheduleWeeklyRecurrence <IUploadLimitWeeklyRecurrence[]>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaIdentity
+```
+Update-AzStorageMoverAgent -InputObject <IStorageMoverIdentity> -Agent <IAgentUpdateParameters>
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -43,37 +45,51 @@ Creates or updates an Agent resource.
 
 ## EXAMPLES
 
-### Example 1: Update an agent.
+### Example 1: Update an agent
 ```powershell
-Update-AzStorageMoverAgent -ResourceGroupName myResourceGroup -StorageMoverName myStorageMover -Name myAgent -Description "Update description"
+$recurrence = New-AzStorageMoverUploadLimitWeeklyRecurrenceObject -Day 'Monday','Tuesday','Friday' -LimitInMbps 100 -EndTimeHour 5 -StartTimeHour 1 -StartTimeMinute 30 -EndTimeMinute 0
+Update-AzStorageMoverAgent -ResourceGroupName myresourcegroup -StorageMoverName mystoragemover -Name myagent -Description "Update description" -UploadLimitScheduleWeeklyRecurrence $recurrence
 ```
 
 ```output
-AgentStatus                  : Registering
-ArcResourceId                : /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.HybridCompute/machines/myAgent
-ArcVMUuid                    : aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
-Description                  : Update description
-ErrorDetailCode              :
-ErrorDetailMessage           :
-Id                           : /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/microsoft.storagemover/storagemovers/myStorageMover/agents/myAgent
-LastStatusUpdate             :
-LocalIPAddress               :
-MemoryInMb                   :
-Name                         : myAgent
-NumberOfCores                :
-ProvisioningState            : Succeeded
-SystemDataCreatedAt          : 8/2/2022 7:15:19 AM
-SystemDataCreatedBy          : myAccount@xxx.com
-SystemDataCreatedByType      : User
-SystemDataLastModifiedAt     : 8/2/2022 7:15:19 AM
-SystemDataLastModifiedBy     : myAccount@xxx.com
-SystemDataLastModifiedByType : User
-Type                         : microsoft.storagemover/storagemovers/agents
-UptimeInSeconds              :
-Version                      :
+AgentStatus                         : Online
+ArcResourceId                       : /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourcegroup/providers/Microsoft.HybridCompute/machines/myagent
+ArcVMUuid                           : 00000000-0000-0000-0000-000000000000
+Description                         : Update description
+ErrorDetailCode                     :
+ErrorDetailMessage                  :
+Id                                  : /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourcegroup/providers/Microsoft.StorageMover/storageMovers/mystoragemover/agents/myagent
+LastStatusUpdate                    : 6/12/2024 5:57:45 AM
+LocalIPAddress                      : 000.000.000.00
+MemoryInMb                          : 1470
+Name                                : myagent
+NumberOfCores                       : 8
+ProvisioningState                   : Succeeded
+SystemDataCreatedAt                 : 6/12/2024 5:47:26 AM
+SystemDataCreatedBy                 : example@microsoft.com
+SystemDataCreatedByType             : User
+SystemDataLastModifiedAt            : 6/12/2024 5:57:54 AM
+SystemDataLastModifiedBy            : example@microsoft.com
+SystemDataLastModifiedByType        : User
+TimeZone                            : UTC
+Type                                : microsoft.storagemover/storagemovers/agents
+UploadLimitScheduleWeeklyRecurrence : {{
+                                        "startTime": {
+                                          "hour": 1,
+                                          "minute": 30
+                                        },
+                                        "endTime": {
+                                          "hour": 5,
+                                          "minute": 0
+                                        },
+                                        "days": [ "Monday", "Tuesday", "Friday" ],
+                                        "limitInMbps": 100
+                                      }}
+UptimeInSeconds                     : 3417
+Version                             :
 ```
 
-This command updates the description of a Storage mover agent.
+This command updates the description and the upload limit weekly recurrence of an agent.
 
 ## PARAMETERS
 
@@ -82,7 +98,7 @@ The Agent resource.
 To construct, see NOTES section for AGENT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IAgentUpdateParameters
+Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IAgentUpdateParameters
 Parameter Sets: Update, UpdateViaIdentity
 Aliases:
 
@@ -130,7 +146,7 @@ To construct, see NOTES section for INPUTOBJECT properties and create a hash tab
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.IStorageMoverIdentity
-Parameter Sets: UpdateViaIdentity, UpdateViaIdentityExpanded
+Parameter Sets: UpdateViaIdentityExpanded, UpdateViaIdentity
 Aliases:
 
 Required: True
@@ -145,10 +161,25 @@ The name of the Agent resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases: AgentName
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -161,7 +192,7 @@ The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: True
@@ -176,7 +207,7 @@ The name of the Storage Mover resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: True
@@ -191,12 +222,28 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: False
 Position: Named
 Default value: (Get-AzContext).Subscription.Id
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UploadLimitScheduleWeeklyRecurrence
+The set of weekly repeating recurrences of the WAN-link upload limit schedule.
+To construct, see NOTES section for UPLOADLIMITSCHEDULEWEEKLYRECURRENCE properties and create a hash table.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IUploadLimitWeeklyRecurrence[]
+Parameter Sets: UpdateExpanded, UpdateViaIdentityExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -237,15 +284,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IAgentUpdateParameters
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IAgentUpdateParameters
 
 ### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.IStorageMoverIdentity
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IAgent
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IAgent
 
 ## NOTES
 
 ## RELATED LINKS
-

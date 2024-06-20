@@ -16,16 +16,16 @@ Removes ImmutabilityPolicy of a Storage blob.
 ```
 Remove-AzStorageBlobImmutabilityPolicy [-Blob] <String> [-Container] <String> [-TagCondition <String>]
  [-Context <IStorageContext>] [-ServerTimeoutPerRequest <Int32>] [-ClientTimeoutPerRequest <Int32>]
- [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### BlobPipeline
 ```
 Remove-AzStorageBlobImmutabilityPolicy -BlobBaseClient <BlobBaseClient> [-TagCondition <String>]
  [-Context <IStorageContext>] [-ServerTimeoutPerRequest <Int32>] [-ClientTimeoutPerRequest <Int32>]
- [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -38,9 +38,9 @@ The **Remove-AzStorageBlobImmutabilityPolicy** cmdlet removes immutability polic
 
 
 ```
-PS C:\> $blob = Remove-AzStorageBlobImmutabilityPolicy -Container $containerName -Blob $blobname  
+$blob = Remove-AzStorageBlobImmutabilityPolicy -Container $containerName -Blob $blobname  
 
-PS C:\> $blob
+$blob
 
    AccountName: mystorageaccount, ContainerName: mycontainer
 
@@ -48,7 +48,7 @@ Name                 BlobType  Length          ContentType                    La
 ----                 --------  ------          -----------                    ------------         ---------- ------------                 ---------  ---------                     
 testblob             BlockBlob 10485760        application/octet-stream       2021-07-19 08:56:00Z Hot                                     False      2021-07-19T08:56:01.8120788Z *
 
-PS C:\> $blob.BlobProperties.ImmutabilityPolicy
+$blob.BlobProperties.ImmutabilityPolicy
 
 ExpiresOn PolicyMode
 --------- ----------

@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.applicationinsights/get-azapplicationinsightsworkbook
 schema: 2.0.0
@@ -14,7 +14,7 @@ Get a single workbook by its resourceName.
 
 ### List (Default)
 ```
-Get-AzApplicationInsightsWorkbook -Category <CategoryType> [-SubscriptionId <String[]>] [-CanFetchContent]
+Get-AzApplicationInsightsWorkbook [-SubscriptionId <String[]>] [-CanFetchContent] -Category <CategoryType>
  [-Tag <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
@@ -24,16 +24,16 @@ Get-AzApplicationInsightsWorkbook -Name <String> -ResourceGroupName <String> [-S
  [-CanFetchContent] [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
+### List1
+```
+Get-AzApplicationInsightsWorkbook -ResourceGroupName <String> [-SubscriptionId <String[]>] [-CanFetchContent]
+ -Category <CategoryType> [-Tag <String[]>] [-LinkedSourceId <String>] [-DefaultProfile <PSObject>]
+ [<CommonParameters>]
+```
+
 ### GetViaIdentity
 ```
 Get-AzApplicationInsightsWorkbook -InputObject <IApplicationInsightsIdentity> [-CanFetchContent]
- [-DefaultProfile <PSObject>] [<CommonParameters>]
-```
-
-### List1
-```
-Get-AzApplicationInsightsWorkbook -ResourceGroupName <String> -Category <CategoryType>
- [-SubscriptionId <String[]>] [-CanFetchContent] [-LinkedSourceId <String>] [-Tag <String[]>]
  [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
@@ -145,7 +145,8 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -226,7 +227,7 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String[]
-Parameter Sets: Get, List, List1
+Parameter Sets: List, Get, List1
 Aliases:
 
 Required: False
@@ -264,26 +265,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IApplicationInsightsIdentity>`: Identity Parameter
-  - `[AnnotationId <String>]`: The unique annotation ID. This is unique within a Application Insights component.
-  - `[ComponentName <String>]`: The name of the Application Insights component resource.
-  - `[ExportId <String>]`: The Continuous Export configuration ID. This is unique within a Application Insights component.
-  - `[Id <String>]`: Resource identity path
-  - `[KeyId <String>]`: The API Key ID. This is unique within a Application Insights component.
-  - `[PurgeId <String>]`: In a purge status request, this is the Id of the operation the status of which is returned.
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[ResourceName <String>]`: The name of the Application Insights component resource.
-  - `[RevisionId <String>]`: The id of the workbook's revision.
-  - `[StorageType <StorageType?>]`: The type of the Application Insights component data source for the linked storage account.
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-  - `[WebTestName <String>]`: The name of the Application Insights WebTest resource.
-
 ## RELATED LINKS
-

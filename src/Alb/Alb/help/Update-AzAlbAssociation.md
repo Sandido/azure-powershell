@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Alb-help.xml
 Module Name: Az.Alb
 online version: https://learn.microsoft.com/powershell/module/az.alb/update-azalbassociation
 schema: 2.0.0
@@ -14,15 +14,23 @@ Update a Association
 
 ### UpdateExpanded (Default)
 ```
-Update-AzAlbAssociation -AlbName <String> -Name <String> -ResourceGroupName <String>
- [-SubscriptionId <String>] [-AssociationType <AssociationType>] [-SubnetId <String>] [-Tag <Hashtable>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+Update-AzAlbAssociation -AlbName <String> -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>]
+ [-AssociationType <String>] [-SubnetId <String>] [-Tag <Hashtable>] [-DefaultProfile <PSObject>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaIdentityTrafficControllerExpanded
+```
+Update-AzAlbAssociation -Name <String> -TrafficControllerInputObject <IAlbIdentity> [-AssociationType <String>]
+ [-SubnetId <String>] [-Tag <Hashtable>] [-DefaultProfile <PSObject>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### UpdateViaIdentityExpanded
 ```
-Update-AzAlbAssociation -InputObject <IAlbIdentity> [-AssociationType <AssociationType>] [-SubnetId <String>]
- [-Tag <Hashtable>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+Update-AzAlbAssociation -InputObject <IAlbIdentity> [-AssociationType <String>] [-SubnetId <String>]
+ [-Tag <Hashtable>] [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,7 +66,7 @@ Accept wildcard characters: False
 Association Type
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Support.AssociationType
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -87,7 +95,6 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
@@ -106,7 +113,7 @@ Name of Association
 
 ```yaml
 Type: System.String
-Parameter Sets: UpdateExpanded
+Parameter Sets: UpdateExpanded, UpdateViaIdentityTrafficControllerExpanded
 Aliases:
 
 Required: True
@@ -177,6 +184,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -TrafficControllerInputObject
+Identity Parameter
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
+Parameter Sets: UpdateViaIdentityTrafficControllerExpanded
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
 
@@ -217,24 +239,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation
+### Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IAlbIdentity>`: Identity Parameter
-  - `[AssociationName <String>]`: Name of Association
-  - `[FrontendName <String>]`: Frontends
-  - `[Id <String>]`: Resource identity path
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-  - `[TrafficControllerName <String>]`: traffic controller name for path
-
 ## RELATED LINKS
-

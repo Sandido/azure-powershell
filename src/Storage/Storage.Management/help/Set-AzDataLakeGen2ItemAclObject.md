@@ -14,7 +14,8 @@ Creates/Updates a DataLake gen2 item ACL object, which can be used in Update-AzD
 
 ```
 Set-AzDataLakeGen2ItemAclObject [-EntityId <String>] [-DefaultScope] -Permission <String>
- [-InputObject <PSPathAccessControlEntry[]>] -AccessControlType <AccessControlType> [<CommonParameters>]
+ [-InputObject <PSPathAccessControlEntry[]>] -AccessControlType <AccessControlType>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,11 +47,11 @@ This command creates an ACL object with 3 ACL entries (use -InputObject paramete
 
 
 ```
-PS C:\>$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -Permission rwx -DefaultScope
-PS C:\>$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType group -Permission rw- -InputObject $acl 
-PS C:\>$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType other -Permission "rwt" -InputObject $acl
-PS C:\>$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -EntityId $id -Permission rwx -InputObject $acl 
-PS C:\>$acl
+$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -Permission rwx -DefaultScope
+$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType group -Permission rw- -InputObject $acl 
+$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType other -Permission "rwt" -InputObject $acl
+$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -EntityId $id -Permission rwx -InputObject $acl 
+$acl
 
 DefaultScope AccessControlType EntityId                             Permissions
 ------------ ----------------- --------                             -----------
@@ -59,8 +60,8 @@ False        Group                                                  rw-
 False        Other                                                  rwt        
 False        User              ********-****-****-****-************ rwx        
 
-PS C:\>$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -EntityId $id -Permission r-x -InputObject $acl 
-PS C:\>$acl  
+$acl = Set-AzDataLakeGen2ItemAclObject -AccessControlType user -EntityId $id -Permission r-x -InputObject $acl 
+$acl  
 
 DefaultScope AccessControlType EntityId                             Permissions
 ------------ ----------------- --------                             -----------

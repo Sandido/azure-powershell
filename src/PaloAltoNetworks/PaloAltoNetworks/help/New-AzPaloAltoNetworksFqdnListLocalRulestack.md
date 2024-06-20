@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.PaloAltoNetworks-help.xml
 Module Name: Az.PaloAltoNetworks
 online version: https://learn.microsoft.com/powershell/module/az.paloaltonetworks/new-azpaloaltonetworksfqdnlistlocalrulestack
 schema: 2.0.0
@@ -14,9 +14,9 @@ Create a FqdnListLocalRulestackResource
 
 ```
 New-AzPaloAltoNetworksFqdnListLocalRulestack -LocalRulestackName <String> -Name <String>
- -ResourceGroupName <String> -FqdnList <String[]> [-SubscriptionId <String>] [-AuditComment <String>]
- [-Description <String>] [-Etag <String>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ -ResourceGroupName <String> [-SubscriptionId <String>] -FqdnList <String[]> [-AuditComment <String>]
+ [-Description <String>] [-Etag <String>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -175,6 +175,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ResourceGroupName
 The name of the resource group.
 The name is case insensitive.
@@ -244,11 +259,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IFqdnListLocalRulestackResource
+### Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IFqdnListLocalRulestackResource
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

@@ -8,7 +8,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
     using System.Linq;
 
     /// <summary>
-    /// Restore payload for single file backup restore
+    /// Restore payload for Single File Backup Restore
     /// </summary>
     public partial class BackupRestoreFiles
     {

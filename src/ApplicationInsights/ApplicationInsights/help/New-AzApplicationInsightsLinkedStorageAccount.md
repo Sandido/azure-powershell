@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.applicationinsights/new-azapplicationinsightslinkedstorageaccount
 schema: 2.0.0
@@ -14,8 +14,8 @@ Replace current linked storage account for an Application Insights component.
 
 ```
 New-AzApplicationInsightsLinkedStorageAccount -Name <String> -ResourceGroupName <String>
- [-SubscriptionId <String>] [-LinkedStorageAccountResourceId <String>] [-DefaultProfile <PSObject>] [-Confirm]
- [-WhatIf] [<CommonParameters>]
+ [-SubscriptionId <String>] [-LinkedStorageAccountResourceId <String>] [-DefaultProfile <PSObject>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,7 +34,8 @@ Create linked storage account $account under component "componentName"
 ## PARAMETERS
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -151,7 +152,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

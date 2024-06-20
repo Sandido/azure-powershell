@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.SqlVirtualMachine-help.xml
 Module Name: Az.SqlVirtualMachine
 online version: https://learn.microsoft.com/powershell/module/Az.SqlVirtualMachine/new-AzSqlVirtualMachineAgReplicaObject
 schema: 2.0.0
@@ -15,7 +15,7 @@ Create an in-memory object for AgReplica.
 ```
 New-AzSqlVirtualMachineAgReplicaObject [-Commit <Commit>] [-Failover <Failover>]
  [-ReadableSecondary <ReadableSecondary>] [-Role <Role>] [-SqlVirtualMachineInstanceId <String>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,7 +32,7 @@ $AgReplica
 ```output
 Commit             Failover ReadableSecondary Role    SqlVirtualMachineInstanceId
 ------             -------- ----------------- ----    ---------------------------
-SYNCHRONOUS_COMMIT MANUAL   NO                PRIMARY 
+SYNCHRONOUS_COMMIT MANUAL   NO                PRIMARY
 ```
 
 *New-AzSqlVirtualMachineAgReplicaObject* creates an in-memory object of type *AgReplica*.
@@ -62,6 +62,21 @@ Replica failover mode in availability group.
 Type: Microsoft.Azure.PowerShell.Cmdlets.SqlVirtualMachine.Support.Failover
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -126,7 +141,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

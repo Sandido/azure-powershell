@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/new-azstoragemoverazstoragecontainerendpoint
 schema: 2.0.0
@@ -14,9 +14,9 @@ Creates an AzStorageContainer endpoint resource, which represents a data transfe
 
 ```
 New-AzStorageMoverAzStorageContainerEndpoint -Name <String> -ResourceGroupName <String>
- -StorageMoverName <String> -BlobContainerName <String> -StorageAccountResourceId <String>
- [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ -StorageMoverName <String> [-SubscriptionId <String>] -BlobContainerName <String>
+ -StorageAccountResourceId <String> [-Description <String>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -105,6 +105,21 @@ Parameter Sets: (All)
 Aliases: EndpointName
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -208,15 +223,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IEndpoint
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IEndpoint
 
 ### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.IStorageMoverIdentity
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IEndpoint
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IEndpoint
 
 ## NOTES
 
 ## RELATED LINKS
-

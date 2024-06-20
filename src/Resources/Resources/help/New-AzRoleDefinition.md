@@ -19,12 +19,14 @@ Finally, use this command to create a custom role using role definition.
 
 ### InputFileParameterSet
 ```
-New-AzRoleDefinition [-InputFile] <String> [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+New-AzRoleDefinition [-InputFile] <String> [-SkipClientSideScopeValidation]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### RoleDefinitionParameterSet
 ```
-New-AzRoleDefinition [-Role] <PSRoleDefinition> [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+New-AzRoleDefinition [-Role] <PSRoleDefinition> [-SkipClientSideScopeValidation]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -101,7 +103,7 @@ $role.Actions = @(
     "Microsoft.Support/*"
 )
 
-New-AzRoleDefinition -Role $role 
+New-AzRoleDefinition -Role $role
 ```
 
 ### Example 2: Create using JSON file
@@ -141,6 +143,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Role
 Role definition object.
 
@@ -151,6 +168,21 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipClientSideScopeValidation
+If specified, skip client side scope validation.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -179,4 +211,3 @@ Keywords: azure, azurerm, arm, resource, management, manager, resource, group, t
 [Set-AzRoleDefinition](./Set-AzRoleDefinition.md)
 
 [Remove-AzRoleDefinition](./Remove-AzRoleDefinition.md)
-

@@ -42,7 +42,7 @@ namespace Microsoft.Azure.Management.NetApp
 
 
         /// <summary>
-        /// The ID of the target subscription.
+        /// The ID of the target subscription. The value must be an UUID.
         /// </summary>
         string SubscriptionId { get; set;}
 
@@ -55,15 +55,15 @@ namespace Microsoft.Azure.Management.NetApp
 
         /// <summary>
         /// The retry timeout in seconds for Long Running Operations. Default
-        /// value is 30.
+        /// /// value is 30.
         /// </summary>
         int? LongRunningOperationRetryTimeout { get; set;}
 
 
         /// <summary>
-        /// Whether a unique x-ms-client-request-id should be generated. When 
-        /// set to true a unique x-ms-client-request-id value is generated and 
-        /// included in each request. Default is true.
+        /// Whether a unique x-ms-client-request-id should be generated. When
+        /// /// set to true a unique x-ms-client-request-id value is generated and
+        /// /// included in each request. Default is true.
         /// </summary>
         bool? GenerateClientRequestId { get; set;}
 
@@ -82,6 +82,11 @@ namespace Microsoft.Azure.Management.NetApp
         /// Gets the INetAppResourceQuotaLimitsOperations
         /// </summary>
         INetAppResourceQuotaLimitsOperations NetAppResourceQuotaLimits { get; }
+
+        /// <summary>
+        /// Gets the INetAppResourceRegionInfosOperations
+        /// </summary>
+        INetAppResourceRegionInfosOperations NetAppResourceRegionInfos { get; }
 
         /// <summary>
         /// Gets the IAccountsOperations
@@ -109,16 +114,6 @@ namespace Microsoft.Azure.Management.NetApp
         ISnapshotPoliciesOperations SnapshotPolicies { get; }
 
         /// <summary>
-        /// Gets the IBackupsOperations
-        /// </summary>
-        IBackupsOperations Backups { get; }
-
-        /// <summary>
-        /// Gets the IAccountBackupsOperations
-        /// </summary>
-        IAccountBackupsOperations AccountBackups { get; }
-
-        /// <summary>
         /// Gets the IBackupPoliciesOperations
         /// </summary>
         IBackupPoliciesOperations BackupPolicies { get; }
@@ -137,6 +132,31 @@ namespace Microsoft.Azure.Management.NetApp
         /// Gets the ISubvolumesOperations
         /// </summary>
         ISubvolumesOperations Subvolumes { get; }
+
+        /// <summary>
+        /// Gets the IBackupsOperations
+        /// </summary>
+        IBackupsOperations Backups { get; }
+
+        /// <summary>
+        /// Gets the IBackupVaultsOperations
+        /// </summary>
+        IBackupVaultsOperations BackupVaults { get; }
+
+        /// <summary>
+        /// Gets the IBackupsUnderBackupVaultOperations
+        /// </summary>
+        IBackupsUnderBackupVaultOperations BackupsUnderBackupVault { get; }
+
+        /// <summary>
+        /// Gets the IBackupsUnderVolumeOperations
+        /// </summary>
+        IBackupsUnderVolumeOperations BackupsUnderVolume { get; }
+
+        /// <summary>
+        /// Gets the IBackupsUnderAccountOperations
+        /// </summary>
+        IBackupsUnderAccountOperations BackupsUnderAccount { get; }
 
     }
 }

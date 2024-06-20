@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.SqlVirtualMachine-help.xml
 Module Name: Az.SqlVirtualMachine
 online version: https://learn.microsoft.com/powershell/module/az.sqlvirtualmachine/get-azsqlvmgroup
 schema: 2.0.0
@@ -14,24 +14,26 @@ Gets a SQL virtual machine group.
 
 ### List1 (Default)
 ```
-Get-AzSqlVMGroup [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
+Get-AzSqlVMGroup [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ### Get
 ```
 Get-AzSqlVMGroup -Name <String> -ResourceGroupName <String> [-SubscriptionId <String[]>]
- [-DefaultProfile <PSObject>] [<CommonParameters>]
-```
-
-### GetViaIdentity
-```
-Get-AzSqlVMGroup -InputObject <ISqlVirtualMachineIdentity> [-DefaultProfile <PSObject>] [<CommonParameters>]
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### List
 ```
 Get-AzSqlVMGroup -ResourceGroupName <String> [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### GetViaIdentity
+```
+Get-AzSqlVMGroup -InputObject <ISqlVirtualMachineIdentity> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -52,8 +54,6 @@ eastus   sqlvmgroup02	ResourceGroup01
 eastus   sqlvmgroup03	ResourceGroup02
 ```
 
-
-
 ### Example 2: List all SQL Virtual Machine Groups in a Resource Group
 ```powershell
 Get-AzSqlVMGroup -ResourceGroupName 'ResourceGroup01'
@@ -66,8 +66,6 @@ eastus   sqlvmgroup01	ResourceGroup01
 eastus   sqlvmgroup02	ResourceGroup01
 ```
 
-
-
 ### Example 3: Get a SQL Virtual Machine Group
 ```powershell
 Get-AzSqlVMGroup -ResourceGroupName 'ResourceGroup01' -Name 'sqlvmgroup01'
@@ -78,8 +76,6 @@ Location Name           ResourceGroupName
 -------- ----           -----------------
 eastus   sqlvmgroup01	ResourceGroup01
 ```
-
-
 
 ## PARAMETERS
 
@@ -130,6 +126,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ResourceGroupName
 Name of the resource group that contains the resource.
 You can obtain this value from the Azure Resource Manager API or the portal.
@@ -151,7 +162,7 @@ Subscription ID that identifies an Azure subscription.
 
 ```yaml
 Type: System.String[]
-Parameter Sets: Get, List, List1
+Parameter Sets: List1, Get, List
 Aliases:
 
 Required: False
@@ -174,20 +185,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <ISqlVirtualMachineIdentity>`: Identity Parameter
-  - `[AvailabilityGroupListenerName <String>]`: Name of the availability group listener.
-  - `[Id <String>]`: Resource identity path
-  - `[ResourceGroupName <String>]`: Name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal.
-  - `[SqlVirtualMachineGroupName <String>]`: Name of the SQL virtual machine group.
-  - `[SqlVirtualMachineName <String>]`: Name of the SQL virtual machine.
-  - `[SubscriptionId <String>]`: Subscription ID that identifies an Azure subscription.
-
 ## RELATED LINKS
-

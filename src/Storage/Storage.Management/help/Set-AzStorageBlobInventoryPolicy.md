@@ -15,39 +15,43 @@ Creates or updates blob inventory policy in a Storage account.
 ### AccountNamePolicyRule (Default)
 ```
 Set-AzStorageBlobInventoryPolicy [-ResourceGroupName] <String> [-StorageAccountName] <String>
- -Rule <PSBlobInventoryPolicyRule[]> [-Disabled] [-DefaultProfile <IAzureContextContainer>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ -Rule <PSBlobInventoryPolicyRule[]> [-Disabled] [-DefaultProfile <IAzureContextContainer>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AccountNamePolicyObject
 ```
 Set-AzStorageBlobInventoryPolicy [-ResourceGroupName] <String> [-StorageAccountName] <String>
- -Policy <PSBlobInventoryPolicy> [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ -Policy <PSBlobInventoryPolicy> [-DefaultProfile <IAzureContextContainer>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AccountObjectPolicyRule
 ```
 Set-AzStorageBlobInventoryPolicy -StorageAccount <PSStorageAccount> -Rule <PSBlobInventoryPolicyRule[]>
- [-Disabled] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Disabled] [-DefaultProfile <IAzureContextContainer>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### AccountObjectPolicyObject
 ```
 Set-AzStorageBlobInventoryPolicy -StorageAccount <PSStorageAccount> -Policy <PSBlobInventoryPolicy>
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### AccountResourceIdPolicyRule
 ```
 Set-AzStorageBlobInventoryPolicy [-StorageAccountResourceId] <String> -Rule <PSBlobInventoryPolicyRule[]>
- [-Disabled] [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Disabled] [-DefaultProfile <IAzureContextContainer>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### AccountResourceIdPolicyObject
 ```
 Set-AzStorageBlobInventoryPolicy [-StorageAccountResourceId] <String> -Policy <PSBlobInventoryPolicy>
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,17 +64,17 @@ The **Set-AzStorageBlobInventoryPolicy** cmdlet creates or updates blob inventor
 
 
 ```
-PS C:\> $rule1 = New-AzStorageBlobInventoryPolicyRule -Name Test1 -Destination $containerName -Disabled -Format Csv -Schedule Daily -ContainerSchemaField Name,Metadata,PublicAccess,Last-mOdified,LeaseStatus,LeaseState,LeaseDuration,HasImmutabilityPolicy,HasLegalHold -PrefixMatch con1,con2
+$rule1 = New-AzStorageBlobInventoryPolicyRule -Name Test1 -Destination $containerName -Disabled -Format Csv -Schedule Daily -ContainerSchemaField Name,Metadata,PublicAccess,Last-mOdified,LeaseStatus,LeaseState,LeaseDuration,HasImmutabilityPolicy,HasLegalHold -PrefixMatch con1,con2
 
-PS C:\> $rule2 = New-AzStorageBlobInventoryPolicyRule -Name Test2 -Destination $containerName -Format Parquet -Schedule Weekly -IncludeBlobVersion -IncludeSnapshot -BlobType blockBlob,appendBlob -PrefixMatch aaa,bbb `
+$rule2 = New-AzStorageBlobInventoryPolicyRule -Name Test2 -Destination $containerName -Format Parquet -Schedule Weekly -IncludeBlobVersion -IncludeSnapshot -BlobType blockBlob,appendBlob -PrefixMatch aaa,bbb `
                 -BlobSchemaField name,Creation-Time,Last-Modified,Content-Length,Content-MD5,BlobType,AccessTier,AccessTierChangeTime,Expiry-Time,hdi_isfolder,Owner,Group,Permissions,Acl,Metadata
 
-PS C:\> $rule3 = New-AzStorageBlobInventoryPolicyRule -Name Test3 -Destination $containerName -Format Parquet -Schedule Weekly -IncludeBlobVersion -IncludeSnapshot -IncludeDeleted -BlobType blockBlob,appendBlob -PrefixMatch aaa,bbb `
+$rule3 = New-AzStorageBlobInventoryPolicyRule -Name Test3 -Destination $containerName -Format Parquet -Schedule Weekly -IncludeBlobVersion -IncludeSnapshot -IncludeDeleted -BlobType blockBlob,appendBlob -PrefixMatch aaa,bbb `
                 -ExcludePrefix ccc,ddd -BlobSchemaField name,Last-Modified,BlobType,AccessTier,AccessTierChangeTime,Content-Type,Content-CRC64,CopyId,x-ms-blob-sequence-number,TagCount
 
-PS C:\> $policy = Set-AzStorageBlobInventoryPolicy -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -Disabled -Rule $rule1,$rule2,$rule3
+$policy = Set-AzStorageBlobInventoryPolicy -ResourceGroupName "myresourcegroup" -AccountName "mystorageaccount" -Disabled -Rule $rule1,$rule2,$rule3
 
-PS C:\> $policy
+$policy
 
 StorageAccountName : mystorageaccount
 ResourceGroupName  : myresourcegroup
@@ -81,7 +85,7 @@ LastModifiedTime   : 5/12/2021 8:53:38 AM
 Enabled            : False
 Rules              : {Test1, Test2, Test3}
 
-PS C:\> $policy.Rules
+$policy.Rules
 
 Name  Enabled Destination   ObjectType Format  Schedule IncludeSnapshots IncludeBlobVersions IncludeDeleted BlobTypes               PrefixMatch ExcludePrefix  SchemaFields                                           
 ----  ------- -----------   ---------- ------  -------- ---------------- ------------------- -------------- ---------               ----------- -------------  ------------                                           
@@ -98,7 +102,7 @@ The following command sets blob inventory policy to a Storage account with the 2
 
 
 ```
-PS C:\> $policy = Set-AzStorageBlobInventoryPolicy -ResourceGroupName $resourceGroupName  -StorageAccountName $accountName -Policy (@{
+$policy = Set-AzStorageBlobInventoryPolicy -ResourceGroupName $resourceGroupName  -StorageAccountName $accountName -Policy (@{
                 Enabled=$true;
                 Rules=(@{
                     Enabled=$true;
@@ -151,7 +155,7 @@ PS C:\> $policy = Set-AzStorageBlobInventoryPolicy -ResourceGroupName $resourceG
             })
 
 
-PS C:\> $policy
+$policy
 
 StorageAccountName : weiadlscanary1
 ResourceGroupName  : weitry
@@ -162,7 +166,7 @@ LastModifiedTime   : 5/12/2021 9:02:21 AM
 Enabled            : True
 Rules              : {Test1, Test2, Test3}
 
-PS C:\> $policy.Rules 
+$policy.Rules 
 
 Name  Enabled Destination   ObjectType Format  Schedule IncludeSnapshots IncludeBlobVersions IncludeDeleted BlobTypes               PrefixMatch        ExcludePrefix    SchemaFields                                           
 ----  ------- -----------   ---------- ------  -------- ---------------- ------------------- -------------- ---------               -----------        -------------    ------------                                           

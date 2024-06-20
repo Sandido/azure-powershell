@@ -16,18 +16,18 @@
 
 <#
 .Synopsis
-Creates (or updates) a Azure Arc PrivateLinkScope.
+Update (or updates) a Azure Arc PrivateLinkScope.
 Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 .Description
-Creates (or updates) a Azure Arc PrivateLinkScope.
+Update (or updates) a Azure Arc PrivateLinkScope.
 Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 .Example
 Set-AzConnectedPrivateLinkScope -ResourceGroupName $resourceGroupName -ScopeName $scopeName -PublicNetworkAccess "Disabled" -Tag $tags -Location $location
 
 .Inputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -35,20 +35,14 @@ To create the parameters described below, construct a hash table containing the 
 
 PARAMETER <IHybridComputePrivateLinkScope>: An Azure Arc PrivateLinkScope definition.
   Location <String>: Resource location
-  [Tag <IPrivateLinkScopesResourceTags>]: Resource tags
+  [Tags <IPrivateLinkScopesResourceTags>]: Resource tags
     [(Any) <String>]: This indicates any property can be added to this object.
-  [PublicNetworkAccess <PublicNetworkAccessType?>]: Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.
-  [SystemDataCreatedAt <DateTime?>]: The timestamp of resource creation (UTC).
-  [SystemDataCreatedBy <String>]: The identity that created the resource.
-  [SystemDataCreatedByType <CreatedByType?>]: The type of identity that created the resource.
-  [SystemDataLastModifiedAt <DateTime?>]: The timestamp of resource last modification (UTC)
-  [SystemDataLastModifiedBy <String>]: The identity that last modified the resource.
-  [SystemDataLastModifiedByType <CreatedByType?>]: The type of identity that last modified the resource.
+  [PublicNetworkAccess <String>]: Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.
 .Link
 https://learn.microsoft.com/powershell/module/az.connectedmachine/set-azconnectedprivatelinkscope
 #>
 function Set-AzConnectedPrivateLinkScope {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory)]
@@ -74,9 +68,8 @@ param(
 
     [Parameter(ParameterSetName='Update', Mandatory, ValueFromPipeline)]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope]
     # An Azure Arc PrivateLinkScope definition.
-    # To construct, see NOTES section for PARAMETER properties and create a hash table.
     ${Parameter},
 
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -87,18 +80,30 @@ param(
     ${Location},
 
     [Parameter(ParameterSetName='UpdateExpanded')]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.PublicNetworkAccessType])]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.PSArgumentCompleterAttribute("Enabled", "Disabled", "SecuredByPerimeter")]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.PublicNetworkAccessType]
+    [System.String]
     # Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.
     ${PublicNetworkAccess},
 
     [Parameter(ParameterSetName='UpdateExpanded')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IPrivateLinkScopesResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IPrivateLinkScopesResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags
     ${Tag},
+
+    [Parameter(ParameterSetName='UpdateViaJsonFilePath', Mandatory)]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
+    [System.String]
+    # Path of Json file supplied to the Update operation
+    ${JsonFilePath},
+
+    [Parameter(ParameterSetName='UpdateViaJsonString', Mandatory)]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
+    [System.String]
+    # Json string supplied to the Update operation
+    ${JsonString},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -177,9 +182,17 @@ begin {
         $mapping = @{
             Update = 'Az.ConnectedMachine.private\Set-AzConnectedPrivateLinkScope_Update';
             UpdateExpanded = 'Az.ConnectedMachine.private\Set-AzConnectedPrivateLinkScope_UpdateExpanded';
+            UpdateViaJsonFilePath = 'Az.ConnectedMachine.private\Set-AzConnectedPrivateLinkScope_UpdateViaJsonFilePath';
+            UpdateViaJsonString = 'Az.ConnectedMachine.private\Set-AzConnectedPrivateLinkScope_UpdateViaJsonString';
         }
-        if (('Update', 'UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Update', 'UpdateExpanded', 'UpdateViaJsonFilePath', 'UpdateViaJsonString') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)

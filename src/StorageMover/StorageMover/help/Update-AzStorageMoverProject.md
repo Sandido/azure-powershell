@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/update-azstoragemoverproject
 schema: 2.0.0
@@ -16,27 +16,27 @@ Properties not specified in the request body will be unchanged.
 ### UpdateExpanded (Default)
 ```
 Update-AzStorageMoverProject -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Update
 ```
 Update-AzStorageMoverProject -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- -Project <IProjectUpdateParameters> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm]
- [-WhatIf] [<CommonParameters>]
-```
-
-### UpdateViaIdentity
-```
-Update-AzStorageMoverProject -InputObject <IStorageMoverIdentity> -Project <IProjectUpdateParameters>
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-SubscriptionId <String>] -Project <IProjectUpdateParameters> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### UpdateViaIdentityExpanded
 ```
 Update-AzStorageMoverProject -InputObject <IStorageMoverIdentity> [-Description <String>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaIdentity
+```
+Update-AzStorageMoverProject -InputObject <IStorageMoverIdentity> -Project <IProjectUpdateParameters>
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -105,7 +105,7 @@ To construct, see NOTES section for INPUTOBJECT properties and create a hash tab
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.IStorageMoverIdentity
-Parameter Sets: UpdateViaIdentity, UpdateViaIdentityExpanded
+Parameter Sets: UpdateViaIdentityExpanded, UpdateViaIdentity
 Aliases:
 
 Required: True
@@ -120,10 +120,25 @@ The name of the Project resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases: ProjectName
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -135,7 +150,7 @@ The Project resource.
 To construct, see NOTES section for PROJECT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProjectUpdateParameters
+Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProjectUpdateParameters
 Parameter Sets: Update, UpdateViaIdentity
 Aliases:
 
@@ -152,7 +167,7 @@ The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: True
@@ -167,7 +182,7 @@ The name of the Storage Mover resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: True
@@ -182,7 +197,7 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, Update
 Aliases:
 
 Required: False
@@ -228,15 +243,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProjectUpdateParameters
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProjectUpdateParameters
 
 ### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.IStorageMoverIdentity
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProject
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProject
 
 ## NOTES
 
 ## RELATED LINKS
-

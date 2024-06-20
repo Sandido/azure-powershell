@@ -1351,6 +1351,7 @@ function Test-AzureFirewallPrivateRangeCRUD {
 
     $privateRange1 = @("IANAPrivateRanges", "0.0.0.0/0", "66.92.0.0/16")
     $privateRange2 = @("3.3.0.0/24", "98.0.0.0/8","10.227.16.0/20","10.226.0.0/16")
+    $privateRange3 = @("255.255.255.255/32")
     
     try {
         # Create the resource group
@@ -1375,6 +1376,12 @@ function Test-AzureFirewallPrivateRangeCRUD {
         Set-AzFirewall -AzureFirewall $azureFirewall
         $getAzureFirewall = Get-AzFirewall -Name $azureFirewallName -ResourceGroupName $rgname
         Assert-AreEqualArray $privateRange2 $getAzureFirewall.PrivateRange
+
+        # Test Always SNAT
+        $azureFirewall.PrivateRange = $privateRange3
+        Set-AzFirewall -AzureFirewall $azureFirewall
+        $getAzureFirewall = Get-AzFirewall -Name $azureFirewallName -ResourceGroupName $rgname
+        Assert-AreEqualArray $privateRange3 $getAzureFirewall.PrivateRange
     }
     finally {
         # Cleanup
@@ -2114,6 +2121,104 @@ function Test-GetAzureFirewallLearnedIpPrefixes {
 
         # Verify
          Assert-NotNull $learnedPrefixes
+    }
+    finally {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+}
+
+<#
+.SYNOPSIS
+Tests Invoke-AzureFirewallPacketCapture
+#>
+function Test-InvokeAzureFirewallPacketCapture {
+    $rgname = Get-ResourceGroupName
+    $azureFirewallName = Get-ResourceName
+    $resourceTypeParent = "Microsoft.Network/AzureFirewalls"
+    $location = Get-ProviderLocation $resourceTypeParent "eastus"
+
+    $vnetName = Get-ResourceName
+    $subnetName = "AzureFirewallSubnet"
+    $publicIpName = Get-ResourceName
+
+    try {
+
+        # Create the resource group
+        $resourceGroup = New-AzResourceGroup -Name $rgname -Location $location
+
+        # Create public ip
+        $publicip = New-AzPublicIpAddress -ResourceGroupName $rgname -name $publicIpName -location $location -AllocationMethod Static -Sku Standard
+
+        # Create AzureFirewall
+        $azureFirewall = New-AzFirewall -Name $azureFirewallName -ResourceGroupName $rgname -Location $location
+
+        # Verify
+        $azFirewall = Get-AzFirewall -Name $azureFirewallName -ResourceGroupName $rgname
+
+        # Create a filter rules
+        $filter1 = New-AzFirewallPacketCaptureRule -Source "10.0.0.2","192.123.12.1" -Destination "172.32.1.2" -DestinationPort "80","443"
+        $filter2 = New-AzFirewallPacketCaptureRule -Source "10.0.0.5" -Destination "172.20.10.2" -DestinationPort "80","443"
+    
+        # Create the firewall packet capture parameters
+        $Params =  New-AzFirewallPacketCaptureParameter  -DurationInSeconds 300 -NumberOfPackets 5000 -SASUrl "ValidSasUrl" -Filename "AzFwPacketCapture" -Flag "Syn","Ack" -Protocol "Any" -Filter $Filter1, $Filter2
+
+        # Invoke a firewall packet capture
+        Invoke-AzFirewallPacketCapture -AzureFirewall $azureFirewall -Parameter $Params
+    }
+    finally {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+}
+
+<#
+.SYNOPSIS
+Tests Byopip feature for Hub Firewall
+#>
+function Test-InvokeAzureByopipHubFirewall {
+    # Setup
+    $rgname = Get-ResourceGroupName
+    $azureFirewallName = Get-ResourceName
+    $resourceTypeParent = "Microsoft.Network/AzureFirewalls"
+    $location = Get-ProviderLocation $resourceTypeParent "eastus2euap"
+    $azureFirewallPolicyName = Get-ResourceName
+    $skuName = "AZFW_Hub"
+    $skuTier = "Standard"
+    $publicIpName = Get-ResourceName
+    $virtualWanName = Get-ResourceName
+    $virtualHubName = Get-ResourceName
+
+    try {
+        # Create the resource group
+        $resourceGroup = New-AzResourceGroup -Name $rgname -Location $location -Tags @{ testtag = "testval" }
+
+        #Creating Public Ip
+        $publicip = New-AzPublicIpAddress -ResourceGroupName $rgname -name $publicIpName -location $location -AllocationMethod Static -Sku Standard
+
+        # Create virtual Hub
+        $Vwan = New-AzVirtualWan -Name $virtualWanName -ResourceGroupName $rgname -Location $location -AllowVnetToVnetTraffic -AllowBranchToBranchTraffic -VirtualWANType "Standard"
+        $Hub = New-AzVirtualHub -Name $virtualHubName -ResourceGroupName $rgname -VirtualWan $Vwan -Location $Location -AddressPrefix "192.168.1.0/24" -Sku "Standard"
+
+        # Create firewall
+        $vHubId = $Hub.Id
+
+        New-AzFirewall -Name $azureFirewallName -ResourceGroupName $rgname -Location $location -SkuName $skuName -SkuTier $skuTier -PublicIpAddress $publicip -VirtualHubId $vHubId
+        
+        # Get AzureFirewall
+        $getAzureFirewall = Get-AzFirewall -name $azureFirewallName -ResourceGroupName $rgname
+
+        #verification
+        Assert-AreEqual $rgName $getAzureFirewall.ResourceGroupName
+        Assert-AreEqual $azureFirewallName $getAzureFirewall.Name
+        Assert-NotNull $getAzureFirewall.Location
+        Assert-AreEqual (Normalize-Location $location) $getAzureFirewall.Location
+        Assert-NotNull $getAzureFirewall.Sku
+        Assert-AreEqual $skuName $getAzureFirewall.Sku.Name
+        Assert-AreEqual $skuTier $getAzureFirewall.Sku.Tier
+        Assert-AreEqual 1 @($getAzureFirewall.IpConfigurations).Count
+        Assert-NotNull $getAzureFirewall.IpConfigurations[0].PublicIpAddress.Id
+        Assert-NotNull $getAzureFirewall.IpConfigurations[0].PrivateIpAddress
     }
     finally {
         # Cleanup

@@ -14,10 +14,10 @@ namespace Microsoft.Azure.Management.NetApp
     public partial interface IBackupsOperations
     {
         /// <summary>
-        /// Get the status of the backup for a volume
+        /// Get the latest status of the backup for a volume
         /// </summary>
         /// <remarks>
-        /// Get the status of the backup for a volume
+        /// Get the latest status of the backup for a volume
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -43,13 +43,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<BackupStatus>> GetStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<BackupStatus>> GetLatestStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Get the status of the restore for a volume
+        /// Get the latest status of the restore for a volume
         /// </summary>
         /// <remarks>
-        /// Get the status of the restore for a volume
+        /// Get the latest status of the restore for a volume
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -75,13 +75,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<RestoreStatus>> GetVolumeRestoreStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<RestoreStatus>> GetVolumeLatestRestoreStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// List all backups for a volume
+        /// List all backups Under a Backup Vault
         /// </summary>
         /// <remarks>
-        /// List all backups for a volume
+        /// List all backups Under a Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -89,11 +89,12 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='filter'>
+        /// An option to specify the VolumeResourceId. If present, then only returns
+        /// the backups under the specified volume
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -107,13 +108,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<System.Collections.Generic.IEnumerable<Backup>>> ListWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>> ListByVaultWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string filter = default(string), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Gets the specified backup of the volume
+        /// Get the specified Backup under Backup Vault.
         /// </summary>
         /// <remarks>
-        /// Gets the specified backup of the volume
+        /// Get the specified Backup under Backup Vault.
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -121,11 +122,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -142,13 +140,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> GetWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> GetWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -156,11 +154,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -180,13 +175,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -194,11 +189,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -218,13 +210,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -232,11 +224,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -250,13 +239,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse> DeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders>> DeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// Create a backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -264,46 +253,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='body'>
-        /// Restore payload supplied in the body of the operation.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="Microsoft.Rest.Azure.CloudException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders>> RestoreFilesWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Create a backup for the volume
-        /// </summary>
-        /// <remarks>
-        /// Create a backup for the volume
-        /// </remarks>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -323,13 +274,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginCreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginCreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -337,11 +288,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -361,13 +309,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.SerializationException">
         /// Thrown when unable to deserialize the response
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginUpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders>> BeginUpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <remarks>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </remarks>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -375,11 +323,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -393,31 +338,16 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse> BeginDeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders>> BeginDeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// List all backups Under a Backup Vault
         /// </summary>
         /// <remarks>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// List all backups Under a Backup Vault
         /// </remarks>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='body'>
-        /// Restore payload supplied in the body of the operation.
+        /// <param name='nextPageLink'>
+        /// The NextLink from the previous successful call to List operation.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -428,7 +358,10 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
-        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders>> BeginRestoreFilesWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <exception cref="Microsoft.Rest.SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>> ListByVaultNextWithHttpMessagesAsync(string nextPageLink, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 }

@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/set-azconnectedmachineextension
 schema: 2.0.0
@@ -15,20 +15,34 @@ The operation to create or update the extension.
 ### UpdateExpanded (Default)
 ```
 Set-AzConnectedMachineExtension -MachineName <String> -Name <String> -ResourceGroupName <String>
- -Location <String> [-SubscriptionId <String>] [-AutoUpgradeMinorVersion] [-EnableAutomaticUpgrade]
+ [-SubscriptionId <String>] -Location <String> [-AutoUpgradeMinorVersion] [-EnableAutomaticUpgrade]
  [-ExtensionType <String>] [-ForceRerun <String>] [-InstanceViewName <String>] [-InstanceViewType <String>]
  [-InstanceViewTypeHandlerVersion <String>] [-ProtectedSetting <Hashtable>] [-Publisher <String>]
- [-Setting <Hashtable>] [-StatusCode <String>] [-StatusDisplayStatus <String>]
- [-StatusLevel <StatusLevelTypes>] [-StatusMessage <String>] [-StatusTime <DateTime>] [-Tag <Hashtable>]
- [-TypeHandlerVersion <String>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-Confirm] [-WhatIf]
+ [-Setting <Hashtable>] [-StatusCode <String>] [-StatusDisplayStatus <String>] [-StatusLevel <String>]
+ [-StatusMessage <String>] [-StatusTime <DateTime>] [-Tag <Hashtable>] [-TypeHandlerVersion <String>]
+ [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
 ### Update
 ```
 Set-AzConnectedMachineExtension -MachineName <String> -Name <String> -ResourceGroupName <String>
- -ExtensionParameter <IMachineExtension> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-AsJob]
- [-NoWait] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-SubscriptionId <String>] -ExtensionParameter <IMachineExtension> [-DefaultProfile <PSObject>] [-AsJob]
+ [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaJsonFilePath
+```
+Set-AzConnectedMachineExtension -MachineName <String> -Name <String> -ResourceGroupName <String>
+ [-SubscriptionId <String>] -JsonFilePath <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaJsonString
+```
+Set-AzConnectedMachineExtension -MachineName <String> -Name <String> -ResourceGroupName <String>
+ [-SubscriptionId <String>] -JsonString <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -131,10 +145,9 @@ Accept wildcard characters: False
 
 ### -ExtensionParameter
 Describes a Machine Extension.
-To construct, see NOTES section for EXTENSIONPARAMETER properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineExtension
+Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineExtension
 Parameter Sets: Update
 Aliases:
 
@@ -220,6 +233,36 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -JsonFilePath
+Path of Json file supplied to the Update operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateViaJsonFilePath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonString
+Json string supplied to the Update operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateViaJsonString
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Location
 The geo-location where the resource lives
 
@@ -272,6 +315,21 @@ Run the command asynchronously
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -375,7 +433,7 @@ Accept wildcard characters: False
 The level code.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.StatusLevelTypes
+Type: System.String
 Parameter Sets: UpdateExpanded
 Aliases:
 
@@ -497,13 +555,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineExtension
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineExtension
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineExtension
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineExtension
 
 ## NOTES
 
 ## RELATED LINKS
-

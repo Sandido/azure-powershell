@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/update-azconnectedextension
 schema: 2.0.0
@@ -15,28 +15,36 @@ The operation to Upgrade Machine Extensions.
 ### UpgradeExpanded (Default)
 ```
 Update-AzConnectedExtension -MachineName <String> -ResourceGroupName <String> [-SubscriptionId <String>]
- [-ExtensionTarget <Hashtable>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru] [-Confirm]
- [-WhatIf] [<CommonParameters>]
+ [-ExtensionTarget <Hashtable>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
-### Upgrade
+### UpgradeViaJsonString
 ```
-Update-AzConnectedExtension -MachineName <String> -ResourceGroupName <String>
- -ExtensionUpgradeParameter <IMachineExtensionUpgrade> [-SubscriptionId <String>] [-DefaultProfile <PSObject>]
- [-AsJob] [-NoWait] [-PassThru] [-Confirm] [-WhatIf] [<CommonParameters>]
+Update-AzConnectedExtension -MachineName <String> -ResourceGroupName <String> [-SubscriptionId <String>]
+ -JsonString <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpgradeViaJsonFilePath
+```
+Update-AzConnectedExtension -MachineName <String> -ResourceGroupName <String> [-SubscriptionId <String>]
+ -JsonFilePath <String> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpgradeViaIdentityExpanded
+```
+Update-AzConnectedExtension -InputObject <IConnectedMachineIdentity> [-ExtensionTarget <Hashtable>]
+ [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### UpgradeViaIdentity
 ```
 Update-AzConnectedExtension -InputObject <IConnectedMachineIdentity>
  -ExtensionUpgradeParameter <IMachineExtensionUpgrade> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
- [-PassThru] [-Confirm] [-WhatIf] [<CommonParameters>]
-```
-
-### UpgradeViaIdentityExpanded
-```
-Update-AzConnectedExtension -InputObject <IConnectedMachineIdentity> [-ExtensionTarget <Hashtable>]
- [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-PassThru] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -106,11 +114,10 @@ Accept wildcard characters: False
 
 ### -ExtensionUpgradeParameter
 Describes the Machine Extension Upgrade Properties.
-To construct, see NOTES section for EXTENSIONUPGRADEPARAMETER properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineExtensionUpgrade
-Parameter Sets: Upgrade, UpgradeViaIdentity
+Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineExtensionUpgrade
+Parameter Sets: UpgradeViaIdentity
 Aliases:
 
 Required: True
@@ -122,11 +129,10 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
-Parameter Sets: UpgradeViaIdentity, UpgradeViaIdentityExpanded
+Parameter Sets: UpgradeViaIdentityExpanded, UpgradeViaIdentity
 Aliases:
 
 Required: True
@@ -136,12 +142,42 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
+### -JsonFilePath
+Path of Json file supplied to the Upgrade operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpgradeViaJsonFilePath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonString
+Json string supplied to the Upgrade operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpgradeViaJsonString
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -MachineName
 The name of the hybrid machine.
 
 ```yaml
 Type: System.String
-Parameter Sets: Upgrade, UpgradeExpanded
+Parameter Sets: UpgradeExpanded, UpgradeViaJsonString, UpgradeViaJsonFilePath
 Aliases:
 
 Required: True
@@ -181,13 +217,28 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ResourceGroupName
 The name of the resource group.
 The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Upgrade, UpgradeExpanded
+Parameter Sets: UpgradeExpanded, UpgradeViaJsonString, UpgradeViaJsonFilePath
 Aliases:
 
 Required: True
@@ -202,7 +253,7 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String
-Parameter Sets: Upgrade, UpgradeExpanded
+Parameter Sets: UpgradeExpanded, UpgradeViaJsonString, UpgradeViaJsonFilePath
 Aliases:
 
 Required: False
@@ -248,9 +299,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineExtensionUpgrade
-
 ### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
+
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineExtensionUpgrade
 
 ## OUTPUTS
 
@@ -259,4 +310,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-

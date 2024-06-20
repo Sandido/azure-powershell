@@ -72,6 +72,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
             public const string TierAfterDurationType = "Specifies whether the TierAfterDuration is in Days or Months";
             public const string AzureBackupResourceGroup = "Custom resource group name to store the instant recovery points of managed virtual machines. This is optional";
             public const string AzureBackupResourceGroupSuffix = "Custom resource group name suffix to store the instant recovery points of managed virtual machines. This is optional";
+            public const string SnapshotConsistencyType = "Snapshot consistency type to be used for backup. If set to OnlyCrashConsistent, all associated items will have crash consistent snapshot. Possible values are OnlyCrashConsistent, Default";
         }
 
         internal static class Job
@@ -171,6 +172,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
             public const string RestoreDiskList = "Specify which disks to recover of the backed up VM";
             public const string RestoreAsUnmanagedDisks = "Use this switch to specify to restore as unmanaged disks";
             public const string TargetZone = "Target zone to restore the disks";
+            public const string EdgeZone = "Switch parameter to indicate edge zone VM restore. This parameter can't be used in cross region and corss subscription restore scenario";
             public const string RestoreAsManagedDisk = "Use this switch to specify to restore as managed disks.";
             public const string UseSystemAssignedIdentity = "Use this switch to trigger MSI based restore with SystemAssigned Identity";
             public const string UserAssignedIdentityId = "UserAssigned Identity Id to trigger MSI based restore with UserAssigned Identity";            
@@ -240,7 +242,7 @@ namespace Microsoft.Azure.Commands.RecoveryServices.Backup.Cmdlets
         internal static class ResourceGuard
         {
             public const string ResourceGuardMappingName = "Resource guard mapping Name to be fetched";
-            public const string AuxiliaryAccessToken = "Auxiliary access token for authenticating critical operation to resource guard subscription";
+            public const string AuxiliaryAccessToken = "Parameter to authorize operations protected by cross tenant resource guard. Use command (Get-AzAccessToken -TenantId \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\").Token to fetch authorization token for different tenant";
             public const string ResourceGuardId = "ResourceGuardId of the ResourceGuard to be mapped with RecoveryServicesVault";
         }
     }

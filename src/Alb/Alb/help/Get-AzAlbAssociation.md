@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Alb-help.xml
 Module Name: Az.Alb
 online version: https://learn.microsoft.com/powershell/module/az.alb/get-azalbassociation
 schema: 2.0.0
@@ -24,9 +24,16 @@ Get-AzAlbAssociation -AlbName <String> -Name <String> -ResourceGroupName <String
  [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
+### GetViaIdentityTrafficController
+```
+Get-AzAlbAssociation -Name <String> -TrafficControllerInputObject <IAlbIdentity> [-DefaultProfile <PSObject>]
+ [<CommonParameters>]
+```
+
 ### GetViaIdentity
 ```
-Get-AzAlbAssociation -InputObject <IAlbIdentity> [-DefaultProfile <PSObject>] [<CommonParameters>]
+Get-AzAlbAssociation -InputObject <IAlbIdentity> [-DefaultProfile <PSObject>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,7 +76,7 @@ traffic controller name for path
 
 ```yaml
 Type: System.String
-Parameter Sets: Get, List
+Parameter Sets: List, Get
 Aliases:
 
 Required: True
@@ -97,7 +104,6 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
@@ -116,7 +122,7 @@ Name of Association
 
 ```yaml
 Type: System.String
-Parameter Sets: Get
+Parameter Sets: Get, GetViaIdentityTrafficController
 Aliases:
 
 Required: True
@@ -132,7 +138,7 @@ The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Get, List
+Parameter Sets: List, Get
 Aliases:
 
 Required: True
@@ -147,13 +153,28 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String[]
-Parameter Sets: Get, List
+Parameter Sets: List, Get
 Aliases:
 
 Required: False
 Position: Named
 Default value: (Get-AzContext).Subscription.Id
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TrafficControllerInputObject
+Identity Parameter
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
+Parameter Sets: GetViaIdentityTrafficController
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -166,24 +187,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation
+### Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IAlbIdentity>`: Identity Parameter
-  - `[AssociationName <String>]`: Name of Association
-  - `[FrontendName <String>]`: Frontends
-  - `[Id <String>]`: Resource identity path
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-  - `[TrafficControllerName <String>]`: traffic controller name for path
-
 ## RELATED LINKS
-

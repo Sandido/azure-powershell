@@ -1,7 +1,11 @@
-﻿using Microsoft.Azure.Commands.KeyVault.Models;
+﻿using Microsoft.Azure.Commands.Common.Exceptions;
+using Microsoft.Azure.Commands.KeyVault.Models;
 using Microsoft.Azure.Commands.ResourceManager.Common.ArgumentCompleters;
+using Microsoft.WindowsAzure.Commands.Common.CustomAttributes;
+using Microsoft.WindowsAzure.Commands.Utilities.Common;
 
 using System;
+using System.Collections;
 using System.Management.Automation;
 using System.Security;
 using System.Text;
@@ -52,11 +56,15 @@ namespace Microsoft.Azure.Commands.KeyVault.Commands.Key
         [Alias("EncryptionAlgorithm", "WrapAlgorithm")]
         public string Algorithm { get; set; }
 
-        [Parameter(Mandatory = true,
-            HelpMessage = "The value to be operated")]
+        [Parameter(Mandatory = true, HelpMessage = "The value to be operated in byte array format.")]
         [ValidateNotNullOrEmpty]
-        public SecureString Value { get; set; }
+        public byte[] ByteArrayValue { get; set; }
+
         #endregion Input Parameter Definitions
+
+        private Operations opt = Operations.Unknown;
+
+        internal void ValidateParameters() { }
 
         internal override void NormalizeParameterSets()
         {
@@ -64,15 +72,16 @@ namespace Microsoft.Azure.Commands.KeyVault.Commands.Key
             {
                 Version = Version ?? InputObject.Version;
             }
+
+            Enum.TryParse(Operation, out opt);
+
             base.NormalizeParameterSets();
         }
         
         public override void ExecuteCmdlet()
         {
+            ValidateParameters();
             NormalizeParameterSets();
-
-            Operations opt = Operations.Unknown;
-            Enum.TryParse(Operation, out opt);
 
             if (string.IsNullOrEmpty(HsmName))
             {
@@ -80,26 +89,22 @@ namespace Microsoft.Azure.Commands.KeyVault.Commands.Key
                 {
                     case Operations.Encrypt:
                         this.WriteObject(
-                            this.Track2DataClient.Encrypt(VaultName, Name, Version,
-                                Encoding.UTF8.GetBytes(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.Encrypt(VaultName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Decrypt:
                         this.WriteObject(
-                            this.Track2DataClient.Decrypt(VaultName, Name, Version,
-                                Convert.FromBase64String(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.Decrypt(VaultName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Wrap:
                         this.WriteObject(
-                            this.Track2DataClient.WrapKey(VaultName, Name, Version,
-                                Encoding.UTF8.GetBytes(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.WrapKey(VaultName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Unwrap:
                         this.WriteObject(
-                            this.Track2DataClient.UnwrapKey(VaultName, Name, Version,
-                                Convert.FromBase64String(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.UnwrapKey(VaultName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Unknown:
-                        throw new NotSupportedException("Not supported ${Operation} yet");
+                        throw new NotSupportedException($"Not supported operation '{Operation}' yet");
                 }
             }
             else
@@ -108,26 +113,22 @@ namespace Microsoft.Azure.Commands.KeyVault.Commands.Key
                 {
                     case Operations.Encrypt:
                         this.WriteObject(
-                            this.Track2DataClient.ManagedHsmKeyEncrypt(HsmName, Name, Version,
-                                Encoding.UTF8.GetBytes(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.ManagedHsmKeyEncrypt(HsmName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Decrypt:
                         this.WriteObject(
-                            this.Track2DataClient.ManagedHsmKeyDecrypt(HsmName, Name, Version,
-                                Convert.FromBase64String(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.ManagedHsmKeyDecrypt(HsmName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Wrap:
                         this.WriteObject(
-                            this.Track2DataClient.ManagedHsmWrapKey(HsmName, Name, Version,
-                                Encoding.UTF8.GetBytes(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.ManagedHsmWrapKey(HsmName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Unwrap:
                         this.WriteObject(
-                            this.Track2DataClient.ManagedHsmUnwrapKey(HsmName, Name, Version,
-                                Convert.FromBase64String(Value.ConvertToString()), Algorithm));
+                            this.Track2DataClient.ManagedHsmUnwrapKey(HsmName, Name, Version, ByteArrayValue, Algorithm));
                         break;
                     case Operations.Unknown:
-                        throw new NotSupportedException("Not supported ${Operation} yet");
+                        throw new NotSupportedException($"Not supported operation '{Operation}' yet");
                 }
                 
             }

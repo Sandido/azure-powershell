@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/az.workloads/new-azworkloadsproviderprometheusosinstanceobject
 schema: 2.0.0
@@ -14,7 +14,8 @@ Create an in-memory object for PrometheusOSProviderInstanceProperties.
 
 ```
 New-AzWorkloadsProviderPrometheusOSInstanceObject [-PrometheusUrl <String>] [-SapSid <String>]
- [-SslCertificateUri <String>] [-SslPreference <SslPreference>] [<CommonParameters>]
+ [-SslCertificateUri <String>] [-SslPreference <SslPreference>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,6 +37,21 @@ PrometheusOS http://10.1.0.4:9100/metrics X00                      Disabled
 Create Linux Operating System provider for an AMS instance
 
 ## PARAMETERS
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -PrometheusUrl
 URL of the Node Exporter endpoint.
@@ -108,7 +124,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

@@ -16,54 +16,68 @@
 
 <#
 .Synopsis
-Updates an existing PrivateLinkScope's tags.
+Update an existing PrivateLinkScope's tags.
 To update other fields use the CreateOrUpdate method.
 .Description
-Updates an existing PrivateLinkScope's tags.
+Update an existing PrivateLinkScope's tags.
 To update other fields use the CreateOrUpdate method.
 .Example
 $tag = @{ "Tag1" = "Value1" }
 Update-AzConnectedPrivateLinkScopeTag -ResourceGroupName "az-sdk-test" -ScopeName "scope-test" -Tag $tag
 
 .Inputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.ITagsResource
-.Inputs
 Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
+.Inputs
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.ITagsResource
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 INPUTOBJECT <IConnectedMachineIdentity>: Identity Parameter
+  [BaseProvider <String>]: The name of the base Resource Provider.
+  [BaseResourceName <String>]: The name of the base resource.
+  [BaseResourceType <String>]: The name of the base Resource Type.
   [ExtensionName <String>]: The name of the machine extension.
   [ExtensionType <String>]: The extensionType of the Extension being received.
+  [GatewayName <String>]: The name of the Gateway.
   [GroupName <String>]: The name of the private link resource.
   [Id <String>]: Resource identity path
+  [LicenseName <String>]: The name of the license.
+  [LicenseProfileName <String>]: The name of the license profile.
   [Location <String>]: The location of the Extension being received.
   [MachineName <String>]: The name of the hybrid machine.
+  [MetadataName <String>]: Name of the HybridIdentityMetadata.
   [Name <String>]: The name of the hybrid machine.
+  [OSType <String>]: Defines the os type.
+  [PerimeterName <String>]: The name, in the format {perimeterGuid}.{associationName}, of the Network Security Perimeter resource.
   [PrivateEndpointConnectionName <String>]: The name of the private endpoint connection.
   [PrivateLinkScopeId <String>]: The id (Guid) of the Azure Arc PrivateLinkScope resource.
   [Publisher <String>]: The publisher of the Extension being received.
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [ResourceUri <String>]: The fully qualified Azure Resource manager identifier of the resource to be connected.
+  [RunCommandName <String>]: The name of the run command.
   [ScopeName <String>]: The name of the Azure Arc PrivateLinkScope resource.
+  [SettingsResourceName <String>]: The name of the settings resource.
   [SubscriptionId <String>]: The ID of the target subscription.
   [Version <String>]: The version of the Extension being received.
 
 PRIVATELINKSCOPETAG <ITagsResource>: A container holding only the Tags for a resource, allowing the user to update the tags on a PrivateLinkScope instance.
-  [Tag <ITagsResourceTags>]: Resource tags
+  [Tags <ITagsResourceTags>]: Resource tags
     [(Any) <String>]: This indicates any property can be added to this object.
 .Link
 https://learn.microsoft.com/powershell/module/az.connectedmachine/update-azconnectedprivatelinkscopetag
 #>
 function Update-AzConnectedPrivateLinkScopeTag {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='Update', Mandatory)]
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaJsonFilePath', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaJsonString', Mandatory)]
     [ArgumentCompleter({Get-AzResourceGroup | Select-Object -ExpandProperty ResourceGroupName})]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Path')]
     [System.String]
@@ -73,6 +87,8 @@ param(
 
     [Parameter(ParameterSetName='Update', Mandatory)]
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaJsonFilePath', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaJsonString', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Path')]
     [System.String]
     # The name of the Azure Arc PrivateLinkScope resource.
@@ -80,6 +96,8 @@ param(
 
     [Parameter(ParameterSetName='Update')]
     [Parameter(ParameterSetName='UpdateExpanded')]
+    [Parameter(ParameterSetName='UpdateViaJsonFilePath')]
+    [Parameter(ParameterSetName='UpdateViaJsonString')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.DefaultInfo(Script='(Get-AzContext).Subscription.Id')]
     [System.String]
@@ -91,24 +109,34 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter(ParameterSetName='Update', Mandatory, ValueFromPipeline)]
     [Parameter(ParameterSetName='UpdateViaIdentity', Mandatory, ValueFromPipeline)]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.ITagsResource]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.ITagsResource]
     # A container holding only the Tags for a resource, allowing the user to update the tags on a PrivateLinkScope instance.
-    # To construct, see NOTES section for PRIVATELINKSCOPETAG properties and create a hash table.
     ${PrivateLinkScopeTag},
 
     [Parameter(ParameterSetName='UpdateExpanded')]
     [Parameter(ParameterSetName='UpdateViaIdentityExpanded')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.ITagsResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.ITagsResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags
     ${Tag},
+
+    [Parameter(ParameterSetName='UpdateViaJsonFilePath', Mandatory)]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
+    [System.String]
+    # Path of Json file supplied to the Update operation
+    ${JsonFilePath},
+
+    [Parameter(ParameterSetName='UpdateViaJsonString', Mandatory)]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
+    [System.String]
+    # Json string supplied to the Update operation
+    ${JsonString},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -189,9 +217,17 @@ begin {
             UpdateExpanded = 'Az.ConnectedMachine.private\Update-AzConnectedPrivateLinkScopeTag_UpdateExpanded';
             UpdateViaIdentity = 'Az.ConnectedMachine.private\Update-AzConnectedPrivateLinkScopeTag_UpdateViaIdentity';
             UpdateViaIdentityExpanded = 'Az.ConnectedMachine.private\Update-AzConnectedPrivateLinkScopeTag_UpdateViaIdentityExpanded';
+            UpdateViaJsonFilePath = 'Az.ConnectedMachine.private\Update-AzConnectedPrivateLinkScopeTag_UpdateViaJsonFilePath';
+            UpdateViaJsonString = 'Az.ConnectedMachine.private\Update-AzConnectedPrivateLinkScopeTag_UpdateViaJsonString';
         }
-        if (('Update', 'UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Update', 'UpdateExpanded', 'UpdateViaJsonFilePath', 'UpdateViaJsonString') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)

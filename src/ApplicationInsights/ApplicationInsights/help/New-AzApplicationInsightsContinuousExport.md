@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.applicationinsights/new-azapplicationinsightscontinuousexport
 schema: 2.0.0
@@ -13,11 +13,10 @@ Create a Continuous Export configuration of an Application Insights component.
 ## SYNTAX
 
 ```
-New-AzApplicationInsightsContinuousExport -Name <String> -ResourceGroupName <String>
- [-SubscriptionId <String>] [-DestinationType <String>] [-DocumentType <String[]>]
- [-NotificationQueueEnabled <String>] [-NotificationQueueUri <String>] [-StorageAccountId <String>]
- [-StorageLocation <String>] [-StorageSASUri <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+New-AzApplicationInsightsContinuousExport -ResourceGroupName <String> -Name <String> [-SubscriptionId <String>]
+ [-DestinationType <String>] [-NotificationQueueEnabled <String>] [-NotificationQueueUri <String>]
+ [-DocumentType <String[]>] [-StorageAccountId <String>] [-StorageLocation <String>] [-StorageSASUri <String>]
+ [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -250,7 +249,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

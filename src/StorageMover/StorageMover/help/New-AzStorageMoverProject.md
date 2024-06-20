@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/new-azstoragemoverproject
 schema: 2.0.0
@@ -15,15 +15,15 @@ Creates or updates a Project resource, which is a logical grouping of related jo
 ### CreateExpanded (Default)
 ```
 New-AzStorageMoverProject -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-SubscriptionId <String>] [-Description <String>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Create
 ```
 New-AzStorageMoverProject -Name <String> -ResourceGroupName <String> -StorageMoverName <String>
- -Project <IProject> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-SubscriptionId <String>] -Project <IProject> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -101,12 +101,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Project
 The Project resource.
 To construct, see NOTES section for PROJECT properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProject
+Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProject
 Parameter Sets: Create
 Aliases:
 
@@ -199,13 +214,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProject
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProject
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IProject
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IProject
 
 ## NOTES
 
 ## RELATED LINKS
-

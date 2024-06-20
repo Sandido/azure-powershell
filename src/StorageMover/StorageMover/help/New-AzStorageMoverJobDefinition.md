@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/new-azstoragemoverjobdefinition
 schema: 2.0.0
@@ -15,16 +15,17 @@ Creates or updates a Job Definition resource, which contains configuration for a
 ### CreateExpanded (Default)
 ```
 New-AzStorageMoverJobDefinition -Name <String> -ProjectName <String> -ResourceGroupName <String>
- -StorageMoverName <String> -CopyMode <CopyMode> -SourceName <String> -TargetName <String>
- [-SubscriptionId <String>] [-AgentName <String>] [-Description <String>] [-SourceSubpath <String>]
- [-TargetSubpath <String>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ -StorageMoverName <String> [-SubscriptionId <String>] -CopyMode <CopyMode> -SourceName <String>
+ -TargetName <String> [-AgentName <String>] [-Description <String>] [-SourceSubpath <String>]
+ [-TargetSubpath <String>] [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### Create
 ```
 New-AzStorageMoverJobDefinition -Name <String> -ProjectName <String> -ResourceGroupName <String>
- -StorageMoverName <String> -JobDefinition <IJobDefinition> [-SubscriptionId <String>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ -StorageMoverName <String> [-SubscriptionId <String>] -JobDefinition <IJobDefinition>
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -134,7 +135,7 @@ The Job Definition resource.
 To construct, see NOTES section for JOBDEFINITION properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IJobDefinition
+Type: Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IJobDefinition
 Parameter Sets: Create
 Aliases:
 
@@ -154,6 +155,21 @@ Parameter Sets: (All)
 Aliases: JobDefinitionName
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -317,13 +333,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IJobDefinition
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IJobDefinition
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20231001.IJobDefinition
+### Microsoft.Azure.PowerShell.Cmdlets.StorageMover.Models.Api20240701.IJobDefinition
 
 ## NOTES
 
 ## RELATED LINKS
-

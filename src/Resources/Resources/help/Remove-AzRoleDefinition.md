@@ -17,20 +17,23 @@ Delete will fail if there are existing role assignments made to the custom role.
 
 ### RoleDefinitionIdParameterSet (Default)
 ```
-Remove-AzRoleDefinition -Id <Guid> [-Scope <String>] [-Force] [-PassThru]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AzRoleDefinition -Id <Guid> [-Scope <String>] [-SkipClientSideScopeValidation] [-Force] [-PassThru]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### RoleDefinitionNameParameterSet
 ```
-Remove-AzRoleDefinition [-Name] <String> [-Scope <String>] [-Force] [-PassThru]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AzRoleDefinition [-Name] <String> [-Scope <String>] [-SkipClientSideScopeValidation] [-Force]
+ [-PassThru] [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ### InputObjectParameterSet
 ```
-Remove-AzRoleDefinition -InputObject <PSRoleDefinition> [-Force] [-PassThru]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-AzRoleDefinition -InputObject <PSRoleDefinition> [-SkipClientSideScopeValidation] [-Force] [-PassThru]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -142,6 +145,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Scope
 Role definition scope.
 
@@ -154,6 +172,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SkipClientSideScopeValidation
+If specified, skip client side scope validation.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -210,4 +243,3 @@ Keywords: azure, azurerm, arm, resource, management, manager, resource, group, t
 [Get-AzRoleDefinition](./Get-AzRoleDefinition.md)
 
 [Set-AzRoleDefinition](./Set-AzRoleDefinition.md)
-

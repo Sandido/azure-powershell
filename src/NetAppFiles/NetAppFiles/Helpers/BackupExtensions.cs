@@ -20,13 +20,12 @@ using System.Linq;
 namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
 {
     public static class BackupExtensions
-    {       
+    {
         public static PSNetAppFilesBackup ConvertToPs(this Management.NetApp.Models.Backup backup)
         {
             var psBackup = new PSNetAppFilesBackup
             {
-                ResourceGroupName = new ResourceIdentifier(backup.Id).ResourceGroupName,
-                Location = backup.Location,
+                ResourceGroupName = new ResourceIdentifier(backup.Id).ResourceGroupName,                
                 Id = backup.Id,
                 Name = backup.Name,
                 BackupId = backup.BackupId,
@@ -35,7 +34,7 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
                 Label = backup.Label,
                 ProvisioningState = backup.ProvisioningState,
                 Size = backup.Size,
-                VolumeName = backup.VolumeName,
+                VolumeResourceId = backup.VolumeResourceId,
                 UseExistingSnapshot = backup.UseExistingSnapshot,
                 CreationDate = backup.CreationDate
             };
@@ -51,14 +50,14 @@ namespace Microsoft.Azure.Commands.NetAppFiles.Helpers
         {
             var psBackupStatus = new PSNetAppFilesVolumeBackupStatus
             {
-               Healthy = backupStatus.Healthy,
-               MirrorState = backupStatus.MirrorState,
-               RelationshipStatus = backupStatus.RelationshipStatus,
-               UnhealthyReason = backupStatus.UnhealthyReason,
-               ErrorMessage = backupStatus.ErrorMessage,
-               LastTransferSize = backupStatus.LastTransferSize,
-               LastTransferType = backupStatus.LastTransferType,
-               TotalTransferBytes = backupStatus.TotalTransferBytes
+                Healthy = backupStatus.Healthy,
+                MirrorState = backupStatus.MirrorState,
+                RelationshipStatus = backupStatus.RelationshipStatus,
+                UnhealthyReason = backupStatus.UnhealthyReason,
+                ErrorMessage = backupStatus.ErrorMessage,
+                LastTransferSize = backupStatus.LastTransferSize,
+                LastTransferType = backupStatus.LastTransferType,
+                TotalTransferBytes = backupStatus.TotalTransferBytes
             };
             return psBackupStatus;
         }

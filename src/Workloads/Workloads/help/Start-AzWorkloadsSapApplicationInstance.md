@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/az.workloads/start-azworkloadssapapplicationinstance
 schema: 2.0.0
@@ -12,17 +12,32 @@ Starts the SAP Application Server Instance.
 
 ## SYNTAX
 
-### Start (Default)
+### StartExpanded (Default)
 ```
 Start-AzWorkloadsSapApplicationInstance -Name <String> -ResourceGroupName <String>
- -SapVirtualInstanceName <String> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
- [-Confirm] [-WhatIf] [<CommonParameters>]
+ -SapVirtualInstanceName <String> [-SubscriptionId <String>] [-StartVM] [-DefaultProfile <PSObject>] [-AsJob]
+ [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### Start
+```
+Start-AzWorkloadsSapApplicationInstance -Name <String> -ResourceGroupName <String>
+ -SapVirtualInstanceName <String> [-SubscriptionId <String>] -Body <IStartRequest> [-DefaultProfile <PSObject>]
+ [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### StartViaIdentityExpanded
+```
+Start-AzWorkloadsSapApplicationInstance -InputObject <IWorkloadsIdentity> [-StartVM]
+ [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### StartViaIdentity
 ```
-Start-AzWorkloadsSapApplicationInstance -InputObject <IWorkloadsIdentity> [-DefaultProfile <PSObject>]
- [-AsJob] [-NoWait] [-Confirm] [-WhatIf] [<CommonParameters>]
+Start-AzWorkloadsSapApplicationInstance -InputObject <IWorkloadsIdentity> -Body <IStartRequest>
+ [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -82,6 +97,32 @@ Start-AzWorkloadsSapApplicationInstance cmdlet starts the App server instance of
 Currently, start action is supported for ABAP stack.
 In this example, you can see that instance can be started by passing the App server instance Azure resource ID as InputObject to the cmdlet.
 
+### Example 3: Start Application server instance of the SAP system and its underlying Virtual Machine
+```powershell
+Start-AzWorkloadsSapApplicationInstance -Name app0 -ResourceGroupName db0-vis-rg -SapVirtualInstanceName DB0 -StartVM
+```
+
+```output
+AdditionalInfo    :
+Code              :
+Detail            :
+EndTime           : 15-03-2023 08:21:31
+Id                : /subscriptions/49d64d54-e966-4c46-a868-1999802b762c/providers/Microsoft.Workloads/locations/CENTRALUSEUAP/operationStatuses/58527855-a695-48a5-ac11-fbc
+                    74b836859*DF20ACAC495F17B1D0D9182C3A4C44BC6EDFF718387348FAE17F19BCB5DE687C
+Message           :
+Name              : 58527855-a695-48a5-ac11-fbc74b836859*DF20ACAC495F17B1D0D9182C3A4C44BC6EDFF718387348FAE17F19BCB5DE687C
+Operation         :
+PercentComplete   :
+ResourceGroupName :
+StartTime         : 15-03-2023 08:18:22
+Status            : Succeeded
+Target            :
+```
+
+Start-AzWorkloadsSapApplicationInstance cmdlet starts the App server instance of the SAP system and its underlying Virtual Machines represented by the VIS.
+Currently, start action is supported for ABAP stack.
+In this example, you can see that the VMs and instance can be started by passing the App server instance resource name, Resource Group name, VIS name and StartVM parameter as inputs.
+
 ## PARAMETERS
 
 ### -AsJob
@@ -96,6 +137,22 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Body
+Start SAP instance(s) request body.
+To construct, see NOTES section for BODY properties and create a hash table.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Workloads.Models.Api20231001Preview.IStartRequest
+Parameter Sets: Start, StartViaIdentity
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -121,7 +178,7 @@ To construct, see NOTES section for INPUTOBJECT properties and create a hash tab
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.Workloads.Models.IWorkloadsIdentity
-Parameter Sets: StartViaIdentity
+Parameter Sets: StartViaIdentityExpanded, StartViaIdentity
 Aliases:
 
 Required: True
@@ -136,7 +193,7 @@ The name of SAP Application Server instance resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Start
+Parameter Sets: StartExpanded, Start
 Aliases:
 
 Required: True
@@ -161,13 +218,28 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ResourceGroupName
 The name of the resource group.
 The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Start
+Parameter Sets: StartExpanded, Start
 Aliases:
 
 Required: True
@@ -182,10 +254,25 @@ The name of the Virtual Instances for SAP solutions resource
 
 ```yaml
 Type: System.String
-Parameter Sets: Start
+Parameter Sets: StartExpanded, Start
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -StartVM
+The boolean value indicates whether to start the virtual machines before starting the SAP instances.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: StartExpanded, StartViaIdentityExpanded
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -197,7 +284,7 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String
-Parameter Sets: Start
+Parameter Sets: StartExpanded, Start
 Aliases:
 
 Required: False
@@ -243,6 +330,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### Microsoft.Azure.PowerShell.Cmdlets.Workloads.Models.Api20231001Preview.IStartRequest
+
 ### Microsoft.Azure.PowerShell.Cmdlets.Workloads.Models.IWorkloadsIdentity
 
 ## OUTPUTS
@@ -251,24 +340,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IWorkloadsIdentity>`: Identity Parameter
-  - `[ApplicationInstanceName <String>]`: The name of SAP Application Server instance resource.
-  - `[CentralInstanceName <String>]`: Central Services Instance resource name string modeled as parameter for auto generation to work correctly.
-  - `[DatabaseInstanceName <String>]`: Database resource name string modeled as parameter for auto generation to work correctly.
-  - `[Id <String>]`: Resource identity path
-  - `[Location <String>]`: The name of Azure region.
-  - `[MonitorName <String>]`: Name of the SAP monitor resource.
-  - `[ProviderInstanceName <String>]`: Name of the provider instance.
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SapVirtualInstanceName <String>]`: The name of the Virtual Instances for SAP solutions resource
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-
 ## RELATED LINKS
-

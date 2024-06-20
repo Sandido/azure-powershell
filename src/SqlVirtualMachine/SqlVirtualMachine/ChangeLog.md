@@ -18,6 +18,13 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+* Enabled Microsoft entra id on SQL VM.
+
+## Version 2.2.1
+* Introduced secrets detection feature to safeguard sensitive data.
+
+## Version 2.2.0
+* Fixed a bug of parameter `VirtualMachineResourceId` of cmdlet `New-AzSqlVM`.
 
 ## Version 2.1.0
 * Added more parameters on cmdlet `Update-AzSqlVM`.

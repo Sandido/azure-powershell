@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/set-azconnectedprivatelinkscope
 schema: 2.0.0
@@ -8,27 +8,41 @@ schema: 2.0.0
 # Set-AzConnectedPrivateLinkScope
 
 ## SYNOPSIS
-Creates (or updates) a Azure Arc PrivateLinkScope.
+Update (or updates) a Azure Arc PrivateLinkScope.
 Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 
 ## SYNTAX
 
 ### UpdateExpanded (Default)
 ```
-Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String> -Location <String>
- [-SubscriptionId <String>] [-PublicNetworkAccess <PublicNetworkAccessType>] [-Tag <Hashtable>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String> [-SubscriptionId <String>]
+ -Location <String> [-PublicNetworkAccess <String>] [-Tag <Hashtable>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Update
 ```
-Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String>
- -Parameter <IHybridComputePrivateLinkScope> [-SubscriptionId <String>] [-DefaultProfile <PSObject>]
- [-Confirm] [-WhatIf] [<CommonParameters>]
+Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String> [-SubscriptionId <String>]
+ -Parameter <IHybridComputePrivateLinkScope> [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaJsonFilePath
+```
+Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String> [-SubscriptionId <String>]
+ -JsonFilePath <String> [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### UpdateViaJsonString
+```
+Set-AzConnectedPrivateLinkScope -ResourceGroupName <String> -ScopeName <String> [-SubscriptionId <String>]
+ -JsonString <String> [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates (or updates) a Azure Arc PrivateLinkScope.
+Update (or updates) a Azure Arc PrivateLinkScope.
 Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 
 ## EXAMPLES
@@ -41,7 +55,7 @@ Set-AzConnectedPrivateLinkScope -ResourceGroupName $resourceGroupName -ScopeName
 ```output
 Name         Location    PublicNetworkAccess ProvisioningState
 ----         --------    ------------------- -----------------
-name         eastus2euap Disabled            Succeeded         
+name         eastus2euap Disabled            Succeeded
 ```
 
 Updates the PublicNetworkAccess to "Disable" and tags to $tags
@@ -58,6 +72,36 @@ Parameter Sets: (All)
 Aliases: AzureRMContext, AzureCredential
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonFilePath
+Path of Json file supplied to the Update operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateViaJsonFilePath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonString
+Json string supplied to the Update operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateViaJsonString
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -81,10 +125,9 @@ Accept wildcard characters: False
 
 ### -Parameter
 An Azure Arc PrivateLinkScope definition.
-To construct, see NOTES section for PARAMETER properties and create a hash table.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 Parameter Sets: Update
 Aliases:
 
@@ -95,11 +138,26 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -PublicNetworkAccess
 Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.PublicNetworkAccessType
+Type: System.String
 Parameter Sets: UpdateExpanded
 Aliases:
 
@@ -207,13 +265,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 
 ## NOTES
 
 ## RELATED LINKS
-

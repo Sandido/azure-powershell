@@ -25,25 +25,11 @@ Update-AzPaloAltoNetworksFirewall -Name azps-firewall -ResourceGroupName azps_te
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IPaloAltoNetworksIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IFirewallResource
+Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IFirewallResource
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-DNSSETTINGDNSSERVER <IIPAddress[]>: List of IPs associated with the Firewall
-  [Address <String>]: Address value
-  [ResourceId <String>]: Resource Id
-
-FRONTENDSETTING <IFrontendSetting[]>: Frontend settings for Firewall
-  BackendConfigurationPort <String>: port ID
-  FrontendConfigurationPort <String>: port ID
-  Name <String>: Settings name
-  Protocol <ProtocolType>: Protocol Type
-  [Address <String>]: Address value
-  [BackendConfigurationAddress1 <String>]: Address value
-  [BackendConfigurationAddressResourceId <String>]: Resource Id
-  [FrontendConfigurationAddressResourceId <String>]: Resource Id
 
 INPUTOBJECT <IPaloAltoNetworksIdentity>: Identity Parameter
   [FirewallName <String>]: Firewall resource name
@@ -54,36 +40,11 @@ INPUTOBJECT <IPaloAltoNetworksIdentity>: Identity Parameter
   [Priority <String>]: Post Rule priority
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
-
-NETWORKPROFILE <INetworkProfile>: Network settings
-  EnableEgressNat <EgressNat>: Enable egress NAT, enabled by default
-  NetworkType <NetworkType>: vnet or vwan, cannot be updated
-  PublicIP <IIPAddress[]>: List of IPs associated with the Firewall
-  [EgressNatIP <IIPAddress[]>]: Egress nat IP to use
-    [Address <String>]: Address value
-    [ResourceId <String>]: Resource Id
-  [VHubAddressSpace <String>]: Address Space
-  [VHubResourceId <String>]: Resource Id
-  [VnetAddressSpace <String>]: Address Space
-  [VnetConfigurationIPOfTrustSubnetForUdrAddress <String>]: Address value
-  [VnetConfigurationIPOfTrustSubnetForUdrResourceId <String>]: Resource Id
-  [VnetConfigurationTrustSubnetAddressSpace <String>]: Address Space
-  [VnetConfigurationTrustSubnetResourceId <String>]: Resource Id
-  [VnetConfigurationUnTrustSubnetAddressSpace <String>]: Address Space
-  [VnetConfigurationUnTrustSubnetResourceId <String>]: Resource Id
-  [VnetResourceId <String>]: Resource Id
-  [VwanConfigurationIPOfTrustSubnetForUdrAddress <String>]: Address value
-  [VwanConfigurationIPOfTrustSubnetForUdrResourceId <String>]: Resource Id
-  [VwanConfigurationNetworkVirtualApplianceId <String>]: Network Virtual Appliance resource ID 
-  [VwanConfigurationTrustSubnetAddressSpace <String>]: Address Space
-  [VwanConfigurationTrustSubnetResourceId <String>]: Resource Id
-  [VwanConfigurationUnTrustSubnetAddressSpace <String>]: Address Space
-  [VwanConfigurationUnTrustSubnetResourceId <String>]: Resource Id
 .Link
 https://learn.microsoft.com/powershell/module/az.paloaltonetworks/update-azpaloaltonetworksfirewall
 #>
 function Update-AzPaloAltoNetworksFirewall {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IFirewallResource])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IFirewallResource])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -111,144 +72,28 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IPaloAltoNetworksIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Associated rulestack Id
-    ${AssociatedRulestackId},
+    [System.Nullable[System.Boolean]]
+    # Decides if enable a system assigned identity for the resource.
+    ${EnableSystemAssignedIdentity},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Rulestack location
-    ${AssociatedRulestackLocation},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Resource Id
-    ${AssociatedRulestackResourceId},
-
-    [Parameter()]
-    [AllowEmptyCollection()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IIPAddress[]]
-    # List of IPs associated with the Firewall
-    # To construct, see NOTES section for DNSSETTINGDNSSERVER properties and create a hash table.
-    ${DnsSettingDnsServer},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DnsProxy])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DnsProxy]
-    # Enable DNS proxy, disabled by default
-    ${DnsSettingEnableDnsProxy},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.EnabledDnsType])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.EnabledDnsType]
-    # Enabled DNS proxy type, disabled by default
-    ${DnsSettingEnabledDnsType},
-
-    [Parameter()]
-    [AllowEmptyCollection()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IFrontendSetting[]]
-    # Frontend settings for Firewall
-    # To construct, see NOTES section for FRONTENDSETTING properties and create a hash table.
-    ${FrontEndSetting},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType]
-    # The type of managed identity assigned to this resource.
-    ${IdentityType},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IAzureResourceManagerManagedIdentityPropertiesUserAssignedIdentities]))]
-    [System.Collections.Hashtable]
-    # The identities assigned to this resource by the user.
-    ${IdentityUserAssignedIdentity},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.BooleanEnum])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.BooleanEnum]
-    # Panorama Managed: Default is False.
-    # Default will be CloudSec managed
-    ${IsPanoramaManaged},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.MarketplaceSubscriptionStatus])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.MarketplaceSubscriptionStatus]
-    # Marketplace Subscription Status
-    ${MarketplaceDetailMarketplaceSubscriptionStatus},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Offer Id
-    ${MarketplaceDetailOfferId},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Publisher Id
-    ${MarketplaceDetailPublisherId},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.INetworkProfile]
-    # Network settings
-    # To construct, see NOTES section for NETWORKPROFILE properties and create a hash table.
-    ${NetworkProfile},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # panEtag info
-    ${PanEtag},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # Base64 encoded string representing Panorama parameters to be used by Firewall to connect to Panorama.
-    # This string is generated via azure plugin in Panorama
-    ${PanoramaConfigString},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.BillingCycle])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.BillingCycle]
-    # different billing cycles like MONTHLY/WEEKLY
-    ${PlanDataBillingCycle},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [System.String]
-    # plan id as published by Liftr.PAN
-    ${PlanDataPlanId},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.UsageType])]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.UsageType]
-    # different usage type like PAYG/COMMITTED
-    ${PlanDataUsageType},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IFirewallResourceUpdateTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
+
+    [Parameter()]
+    [AllowEmptyCollection()]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
+    [System.String[]]
+    # The array of user assigned identities associated with the resource.
+    # The elements in array will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.'
+    ${UserAssignedIdentity},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -258,6 +103,12 @@ param(
     # The DefaultProfile parameter is not functional.
     # Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
     ${DefaultProfile},
+
+    [Parameter()]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Runtime')]
+    [System.Management.Automation.SwitchParameter]
+    # Run the command as a job
+    ${AsJob},
 
     [Parameter(DontShow)]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Runtime')]
@@ -278,6 +129,12 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.SendAsyncStep[]]
     # SendAsync Pipeline Steps to be prepended to the front of the pipeline
     ${HttpPipelinePrepend},
+
+    [Parameter()]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Runtime')]
+    [System.Management.Automation.SwitchParameter]
+    # Run the command asynchronously
+    ${NoWait},
 
     [Parameter(DontShow)]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Runtime')]
@@ -328,11 +185,21 @@ begin {
             UpdateExpanded = 'Az.PaloAltoNetworks.private\Update-AzPaloAltoNetworksFirewall_UpdateExpanded';
             UpdateViaIdentityExpanded = 'Az.PaloAltoNetworks.private\Update-AzPaloAltoNetworksFirewall_UpdateViaIdentityExpanded';
         }
-        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)

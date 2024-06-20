@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/Az.Workloads/new-AzWorkloadsSapLandscapeMonitorMetricThresholdsObject
 schema: 2.0.0
@@ -14,7 +14,7 @@ Create an in-memory object for SapLandscapeMonitorMetricThresholds.
 
 ```
 New-AzWorkloadsSapLandscapeMonitorMetricThresholdsObject [-Green <Single>] [-Name <String>] [-Red <Single>]
- [-Yellow <Single>] [<CommonParameters>]
+ [-Yellow <Single>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,7 +31,6 @@ New-AzWorkloadsSapLandscapeMonitorMetricThresholdsObject -Green 90 -Name X00 -Re
 Green Name Red Yellow
 ----- ---- --- ------
 90    X00  50  80
-
 ```
 
 Create a new Metrics Threshold object to be used for creating a SAP Landscape Monitor
@@ -60,6 +59,21 @@ Gets or sets the name of the threshold.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -109,7 +123,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

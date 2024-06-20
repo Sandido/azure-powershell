@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.applicationinsights/new-azapplicationinsightsmyworkbook
 schema: 2.0.0
@@ -17,7 +17,7 @@ New-AzApplicationInsightsMyWorkbook -Name <String> -ResourceGroupName <String> [
  [-LinkedSourceId <String>] [-Category <String>] [-DisplayName <String>] [-Etag <Hashtable>] [-Id <String>]
  [-IdentityType <String>] [-Location <String>] [-SerializedData <String>] [-SourceId <String>]
  [-SourceTag <String[]>] [-StorageUri <String>] [-Tag <Hashtable>] [-Type <String>] [-Version <String>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-DefaultProfile <PSObject>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,7 +58,8 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -357,7 +358,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

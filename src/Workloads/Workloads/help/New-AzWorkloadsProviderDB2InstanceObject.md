@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/az.workloads/new-azworkloadsproviderdb2instanceobject
 schema: 2.0.0
@@ -13,9 +13,9 @@ Create an in-memory object for DB2ProviderInstanceProperties.
 ## SYNTAX
 
 ```
-New-AzWorkloadsProviderDB2InstanceObject [-Hostname <String>] [-Name <String>] [-Password <String>]
- [-PasswordUri <String>] [-Port <String>] [-SapSid <String>] [-SslCertificateUri <String>]
- [-SslPreference <SslPreference>] [-Username <String>] [<CommonParameters>]
+New-AzWorkloadsProviderDB2InstanceObject [-Name <String>] [-Password <String>] [-PasswordUri <String>]
+ [-Port <String>] [-Username <String>] [-Hostname <String>] [-SapSid <String>] [-SslCertificateUri <String>]
+ [-SslPreference <SslPreference>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -113,6 +113,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SapSid
 Gets or sets the SAP System Identifier.
 
@@ -184,7 +199,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/Az.Workloads/new-AzWorkloadsSapLandscapeMonitorSidMappingObject
 schema: 2.0.0
@@ -13,7 +13,8 @@ Create an in-memory object for SapLandscapeMonitorSidMapping.
 ## SYNTAX
 
 ```
-New-AzWorkloadsSapLandscapeMonitorSidMappingObject [-Name <String>] [-TopSid <String[]>] [<CommonParameters>]
+New-AzWorkloadsSapLandscapeMonitorSidMappingObject [-Name <String>] [-TopSid <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,6 +52,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -TopSid
 Gets or sets the list of SID's.
 
@@ -77,7 +93,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

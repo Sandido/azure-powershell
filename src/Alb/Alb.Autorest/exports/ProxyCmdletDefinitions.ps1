@@ -27,7 +27,7 @@ Get-AzAlbAssociation -AlbName test-alb -ResourceGroupName test-rg
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -40,11 +40,19 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/get-azalbassociation
 #>
 function Get-AzAlbAssociation {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation])]
 [CmdletBinding(DefaultParameterSetName='List', PositionalBinding=$false)]
 param(
     [Parameter(ParameterSetName='Get', Mandatory)]
@@ -55,6 +63,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='Get', Mandatory)]
+    [Parameter(ParameterSetName='GetViaIdentityTrafficController', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Name of Association
@@ -80,8 +89,13 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
+
+    [Parameter(ParameterSetName='GetViaIdentityTrafficController', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -160,13 +174,24 @@ begin {
         $mapping = @{
             Get = 'Az.Alb.private\Get-AzAlbAssociation_Get';
             GetViaIdentity = 'Az.Alb.private\Get-AzAlbAssociation_GetViaIdentity';
+            GetViaIdentityTrafficController = 'Az.Alb.private\Get-AzAlbAssociation_GetViaIdentityTrafficController';
             List = 'Az.Alb.private\Get-AzAlbAssociation_List';
         }
-        if (('Get', 'List') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Get', 'List') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -224,7 +249,7 @@ Get-AzAlbFrontend -AlbName test-alb -ResourceGroupName test-rg
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -237,11 +262,19 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/get-azalbfrontend
 #>
 function Get-AzAlbFrontend {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend])]
 [CmdletBinding(DefaultParameterSetName='List', PositionalBinding=$false)]
 param(
     [Parameter(ParameterSetName='Get', Mandatory)]
@@ -252,6 +285,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='Get', Mandatory)]
+    [Parameter(ParameterSetName='GetViaIdentityTrafficController', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Frontends
@@ -277,8 +311,13 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
+
+    [Parameter(ParameterSetName='GetViaIdentityTrafficController', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -357,13 +396,24 @@ begin {
         $mapping = @{
             Get = 'Az.Alb.private\Get-AzAlbFrontend_Get';
             GetViaIdentity = 'Az.Alb.private\Get-AzAlbFrontend_GetViaIdentity';
+            GetViaIdentityTrafficController = 'Az.Alb.private\Get-AzAlbFrontend_GetViaIdentityTrafficController';
             List = 'Az.Alb.private\Get-AzAlbFrontend_List';
         }
-        if (('Get', 'List') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Get', 'List') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -423,7 +473,7 @@ Get-AzAlb
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -440,7 +490,7 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
 https://learn.microsoft.com/powershell/module/az.alb/get-azalb
 #>
 function Get-AzAlb {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController])]
 [CmdletBinding(DefaultParameterSetName='List', PositionalBinding=$false)]
 param(
     [Parameter(ParameterSetName='Get', Mandatory)]
@@ -470,7 +520,6 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter()]
@@ -553,11 +602,21 @@ begin {
             List = 'Az.Alb.private\Get-AzAlb_List';
             List1 = 'Az.Alb.private\Get-AzAlb_List1';
         }
-        if (('Get', 'List', 'List1') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Get', 'List', 'List1') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -611,12 +670,12 @@ Create a Association
 New-AzAlbAssociation -Name test-association -AlbName test-alb -ResourceGroupName test-rg -Location NorthCentralUS -SubnetId /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/vnet01/subnets/alb-subnet
 
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/new-azalbassociation
 #>
 function New-AzAlbAssociation {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation])]
 [CmdletBinding(DefaultParameterSetName='CreateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory)]
@@ -659,7 +718,7 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api30.ITrackedResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -753,11 +812,21 @@ begin {
         $mapping = @{
             CreateExpanded = 'Az.Alb.private\New-AzAlbAssociation_CreateExpanded';
         }
-        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -811,12 +880,12 @@ Create a Frontend
 New-AzAlbFrontend -Name alb-frontend -AlbName test-alb -ResourceGroupName test-rg -Location NorthCentralUS
 
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/new-azalbfrontend
 #>
 function New-AzAlbFrontend {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend])]
 [CmdletBinding(DefaultParameterSetName='CreateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory)]
@@ -853,7 +922,7 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api30.ITrackedResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -947,11 +1016,21 @@ begin {
         $mapping = @{
             CreateExpanded = 'Az.Alb.private\New-AzAlbFrontend_CreateExpanded';
         }
-        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -1005,12 +1084,12 @@ Create a TrafficController
 New-AzAlb -Name test-alb -ResourceGroupName test-rg -Location NorthCentralUS
 
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/new-azalb
 #>
 function New-AzAlb {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController])]
 [CmdletBinding(DefaultParameterSetName='CreateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory)]
@@ -1041,7 +1120,7 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api30.ITrackedResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -1135,11 +1214,21 @@ begin {
         $mapping = @{
             CreateExpanded = 'Az.Alb.private\New-AzAlb_CreateExpanded';
         }
-        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -1208,6 +1297,14 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/remove-azalbassociation
 #>
@@ -1222,6 +1319,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='Delete', Mandatory)]
+    [Parameter(ParameterSetName='DeleteViaIdentityTrafficController', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Name of Association
@@ -1245,8 +1343,13 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
+
+    [Parameter(ParameterSetName='DeleteViaIdentityTrafficController', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -1343,12 +1446,23 @@ begin {
         $mapping = @{
             Delete = 'Az.Alb.private\Remove-AzAlbAssociation_Delete';
             DeleteViaIdentity = 'Az.Alb.private\Remove-AzAlbAssociation_DeleteViaIdentity';
+            DeleteViaIdentityTrafficController = 'Az.Alb.private\Remove-AzAlbAssociation_DeleteViaIdentityTrafficController';
         }
-        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -1417,6 +1531,14 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/remove-azalbfrontend
 #>
@@ -1431,6 +1553,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='Delete', Mandatory)]
+    [Parameter(ParameterSetName='DeleteViaIdentityTrafficController', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Frontends
@@ -1454,8 +1577,13 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
+
+    [Parameter(ParameterSetName='DeleteViaIdentityTrafficController', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -1552,12 +1680,23 @@ begin {
         $mapping = @{
             Delete = 'Az.Alb.private\Remove-AzAlbFrontend_Delete';
             DeleteViaIdentity = 'Az.Alb.private\Remove-AzAlbFrontend_DeleteViaIdentity';
+            DeleteViaIdentityTrafficController = 'Az.Alb.private\Remove-AzAlbFrontend_DeleteViaIdentityTrafficController';
         }
-        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -1657,7 +1796,6 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter()]
@@ -1756,11 +1894,21 @@ begin {
             Delete = 'Az.Alb.private\Remove-AzAlb_Delete';
             DeleteViaIdentity = 'Az.Alb.private\Remove-AzAlb_DeleteViaIdentity';
         }
-        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Delete') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -1816,7 +1964,7 @@ Update-AzAlbAssociation -Name test-association -AlbName test-alb -ResourceGroupN
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -1829,11 +1977,19 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/update-azalbassociation
 #>
 function Update-AzAlbAssociation {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociation])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociation])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -1843,6 +1999,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaIdentityTrafficControllerExpanded', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Name of Association
@@ -1866,13 +2023,18 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
+    [Parameter(ParameterSetName='UpdateViaIdentityTrafficControllerExpanded', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
+
     [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.Alb.Support.AssociationType])]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.PSArgumentCompleterAttribute("subnets")]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Support.AssociationType]
+    [System.String]
     # Association Type
     ${AssociationType},
 
@@ -1884,7 +2046,7 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IAssociationUpdateTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAssociationUpdateTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -1966,12 +2128,23 @@ begin {
         $mapping = @{
             UpdateExpanded = 'Az.Alb.private\Update-AzAlbAssociation_UpdateExpanded';
             UpdateViaIdentityExpanded = 'Az.Alb.private\Update-AzAlbAssociation_UpdateViaIdentityExpanded';
+            UpdateViaIdentityTrafficControllerExpanded = 'Az.Alb.private\Update-AzAlbAssociation_UpdateViaIdentityTrafficControllerExpanded';
         }
-        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -2027,7 +2200,7 @@ Update-AzAlbFrontend -Name test-frontend -AlbName test-alb -ResourceGroupName te
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -2040,11 +2213,19 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [SubscriptionId <String>]: The ID of the target subscription.
   [TrafficControllerName <String>]: traffic controller name for path
+
+TRAFFICCONTROLLERINPUTOBJECT <IAlbIdentity>: Identity Parameter
+  [AssociationName <String>]: Name of Association
+  [FrontendName <String>]: Frontends
+  [Id <String>]: Resource identity path
+  [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [SubscriptionId <String>]: The ID of the target subscription.
+  [TrafficControllerName <String>]: traffic controller name for path
 .Link
 https://learn.microsoft.com/powershell/module/az.alb/update-azalbfrontend
 #>
 function Update-AzAlbFrontend {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontend])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontend])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -2054,6 +2235,7 @@ param(
     ${AlbName},
 
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
+    [Parameter(ParameterSetName='UpdateViaIdentityTrafficControllerExpanded', Mandatory)]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [System.String]
     # Frontends
@@ -2077,12 +2259,17 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
+
+    [Parameter(ParameterSetName='UpdateViaIdentityTrafficControllerExpanded', Mandatory, ValueFromPipeline)]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
+    # Identity Parameter
+    ${TrafficControllerInputObject},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.IFrontendUpdateTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IFrontendUpdateTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -2164,12 +2351,23 @@ begin {
         $mapping = @{
             UpdateExpanded = 'Az.Alb.private\Update-AzAlbFrontend_UpdateExpanded';
             UpdateViaIdentityExpanded = 'Az.Alb.private\Update-AzAlbFrontend_UpdateViaIdentityExpanded';
+            UpdateViaIdentityTrafficControllerExpanded = 'Az.Alb.private\Update-AzAlbFrontend_UpdateViaIdentityTrafficControllerExpanded';
         }
-        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
@@ -2225,7 +2423,7 @@ Update-AzAlb -Name test-alb -ResourceGroupName test-rg -Tag @{TestTag="Test tag 
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController
+Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
@@ -2242,7 +2440,7 @@ INPUTOBJECT <IAlbIdentity>: Identity Parameter
 https://learn.microsoft.com/powershell/module/az.alb/update-azalb
 #>
 function Update-AzAlb {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficController])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficController])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -2269,12 +2467,11 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.Alb.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.Api20230501Preview.ITrafficControllerUpdateTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.ITrafficControllerUpdateTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
@@ -2357,11 +2554,21 @@ begin {
             UpdateExpanded = 'Az.Alb.private\Update-AzAlb_UpdateExpanded';
             UpdateViaIdentityExpanded = 'Az.Alb.private\Update-AzAlb_UpdateViaIdentityExpanded';
         }
-        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.Alb.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)

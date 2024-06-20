@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Migrate-help.xml
 Module Name: Az.Migrate
 online version: https://learn.microsoft.com/powershell/module/az.migrate/start-azmigratetestmigration
 schema: 2.0.0
@@ -14,16 +14,16 @@ Starts the test migration for the replicating server.
 
 ### ByIDVMwareCbt (Default)
 ```
-Start-AzMigrateTestMigration -TargetObjectID <String> -TestNetworkID <String>
- [-NicToUpdate <IVMwareCbtNicInput[]>] [-OsUpgradeVersion <String>] [-SubscriptionId <String>]
- [-DefaultProfile <PSObject>] [<CommonParameters>]
+Start-AzMigrateTestMigration -TestNetworkID <String> -TargetObjectID <String> [-OsUpgradeVersion <String>]
+ [-NicToUpdate <IVMwareCbtNicInput[]>] [-SubscriptionId <String>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### ByInputObjectVMwareCbt
 ```
-Start-AzMigrateTestMigration -InputObject <IMigrationItem> -TestNetworkID <String>
- [-NicToUpdate <IVMwareCbtNicInput[]>] [-OsUpgradeVersion <String>] [-SubscriptionId <String>]
- [-DefaultProfile <PSObject>] [<CommonParameters>]
+Start-AzMigrateTestMigration -TestNetworkID <String> [-OsUpgradeVersion <String>]
+ [-NicToUpdate <IVMwareCbtNicInput[]>] [-SubscriptionId <String>] -InputObject <IMigrationItem>
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -57,7 +57,6 @@ TargetObjectId                   : 101883a0-23f7-538a-bbd5-6d8b4fa900e2
 TargetObjectName                 : prsadhu-TestVM
 Task                             : {DisableProtectionOnPrimary, UpdateDraState}
 Type                             : Microsoft.RecoveryServices/vaults/replicationJobs
-
 ```
 
 By machine id.
@@ -89,7 +88,6 @@ TargetObjectId                   : 101883a0-23f7-538a-bbd5-6d8b4fa900e2
 TargetObjectName                 : prsadhu-TestVM
 Task                             : {DisableProtectionOnPrimary, UpdateDraState}
 Type                             : Microsoft.RecoveryServices/vaults/replicationJobs
-
 ```
 
 By input object.
@@ -160,6 +158,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SubscriptionId
 Azure Subscription ID.
 
@@ -217,27 +230,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IMigrationItem>`: Specifies the replicating server for which the test migration needs to be initiated. The server object can be retrieved using the Get-AzMigrateServerReplication cmdlet.
-  - `[Location <String>]`: Resource Location
-  - `[ProviderSpecificDetail <IMigrationProviderSpecificSettings>]`: The migration provider custom settings.
-    - `InstanceType <String>`: Gets the instance type.
-
-`NICTOUPDATE <IVMwareCbtNicInput[]>`: Updates the NIC for the Azure VM to be created.
-  - `IsPrimaryNic <String>`: A value indicating whether this is the primary NIC.
-  - `NicId <String>`: The NIC Id.
-  - `[IsSelectedForMigration <String>]`: A value indicating whether this NIC is selected for migration.
-  - `[TargetNicName <String>]`: Target NIC name.
-  - `[TargetStaticIPAddress <String>]`: The static IP address.
-  - `[TargetSubnetName <String>]`: Target subnet name.
-  - `[TestStaticIPAddress <String>]`: The test static IP address.
-  - `[TestSubnetName <String>]`: The test subnet name.
-
 ## RELATED LINKS
-

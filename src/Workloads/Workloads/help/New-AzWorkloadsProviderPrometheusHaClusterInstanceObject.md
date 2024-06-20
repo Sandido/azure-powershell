@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/az.workloads/new-azworkloadsproviderprometheushaclusterinstanceobject
 schema: 2.0.0
@@ -15,7 +15,7 @@ Create an in-memory object for PrometheusHaClusterProviderInstanceProperties.
 ```
 New-AzWorkloadsProviderPrometheusHaClusterInstanceObject [-ClusterName <String>] [-Hostname <String>]
  [-PrometheusUrl <String>] [-Sid <String>] [-SslCertificateUri <String>] [-SslPreference <SslPreference>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,6 +60,21 @@ Gets or sets the target machine name.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -139,7 +154,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

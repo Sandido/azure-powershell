@@ -16,32 +16,30 @@
 
 <#
 .Synopsis
-Updates a Custom Location with the specified Resource Name in the specified Resource Group and Subscription.
+Update a Custom Location in the specified Subscription and Resource Group
 .Description
-Updates a Custom Location with the specified Resource Name in the specified Resource Group and Subscription.
+Update a Custom Location in the specified Subscription and Resource Group
 .Example
-PS C:\> Update-AzCustomLocation -ResourceGroupName azps_test_group -Name azps_test_cluster_1 -ClusterExtensionId "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/azps_test_group/providers/Microsoft.Kubernetes/connectedClusters/azps_test_cluster/providers/Microsoft.KubernetesConfiguration/extensions/azps_test_extension" -HostResourceId "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/azps_test_group/providers/Microsoft.Kubernetes/connectedClusters/azps_test_cluster" -Namespace arc
-
-Location Name                Namespace
--------- ----                ----
-eastus   azps_test_cluster_1 arc
+$HostResourceId = (Get-AzConnectedKubernetes -ClusterName azps-connect -ResourceGroupName azps_test_cluster).Id
+$ClusterExtensionId = (Get-AzKubernetesExtension -ClusterName azps-connect -ClusterType ConnectedClusters -ResourceGroupName azps_test_cluster -Name azps-extension).Id
+Update-AzCustomLocation -ResourceGroupName azps_test_cluster -Name azps-customlocation -ClusterExtensionId $ClusterExtensionId -HostResourceId $HostResourceId -Namespace azps-namespace -Tag @{"Key1"="Value1"}
 .Example
-PS C:\> Get-AzCustomLocation -ResourceGroupName azps_test_group -Name azps_test_cluster | Update-AzCustomLocation
-
-Location Name                Namespace
--------- ----                ----
-eastus   azps_test_cluster_1 arc
+$obj = Get-AzCustomLocation -ResourceGroupName azps_test_cluster -Name azps-customlocation
+Update-AzCustomLocation -InputObject $obj -Tag @{"Key1"="Value1"}
+.Example
+Update-AzCustomLocation -Name azps-customlocation -ResourceGroupName group01 -EnableSystemAssignedIdentity $false -Tag @{"aaa"= "111"}
 
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocationIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation
+Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 INPUTOBJECT <ICustomLocationIdentity>: Identity Parameter
+  [ChildResourceName <String>]: Resource Sync Rule name.
   [Id <String>]: Resource identity path
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
   [ResourceName <String>]: Custom Locations name.
@@ -50,7 +48,7 @@ INPUTOBJECT <ICustomLocationIdentity>: Identity Parameter
 https://learn.microsoft.com/powershell/module/az.customlocation/update-azcustomlocation
 #>
 function Update-AzCustomLocation {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation])]
 [CmdletBinding(DefaultParameterSetName='UpdateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='UpdateExpanded', Mandatory)]
@@ -77,7 +75,6 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocationIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter()]
@@ -93,6 +90,7 @@ param(
     ${AuthenticationValue},
 
     [Parameter()]
+    [AllowEmptyCollection()]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
     [System.String[]]
     # Contains the reference to the add-on that contains charts to deploy CRDs and operators.
@@ -106,17 +104,16 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
+    [System.Nullable[System.Boolean]]
+    # Decides if enable a system assigned identity for the resource.
+    ${EnableSystemAssignedIdentity},
+
+    [Parameter()]
+    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
     [System.String]
     # Connected Cluster or AKS Cluster.
     # The Custom Locations RP will perform a checkAccess API for listAdminCredentials permissions.
     ${HostResourceId},
-
-    [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType])]
-    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType]
-    # The identity type.
-    ${IdentityType},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
@@ -126,9 +123,9 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.IPatchableCustomLocationsTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
-    # Resource tags
+    # Resource tags.
     ${Tag},
 
     [Parameter()]
@@ -136,8 +133,15 @@ param(
     [ValidateNotNull()]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Azure')]
     [System.Management.Automation.PSObject]
-    # The credentials, account, tenant, and subscription used for communication with Azure.
+    # The DefaultProfile parameter is not functional.
+    # Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
     ${DefaultProfile},
+
+    [Parameter()]
+    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Runtime')]
+    [System.Management.Automation.SwitchParameter]
+    # Run the command as a job
+    ${AsJob},
 
     [Parameter(DontShow)]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Runtime')]
@@ -158,6 +162,12 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.SendAsyncStep[]]
     # SendAsync Pipeline Steps to be prepended to the front of the pipeline
     ${HttpPipelinePrepend},
+
+    [Parameter()]
+    [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Runtime')]
+    [System.Management.Automation.SwitchParameter]
+    # Run the command asynchronously
+    ${NoWait},
 
     [Parameter(DontShow)]
     [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category('Runtime')]
@@ -186,20 +196,52 @@ begin {
             $PSBoundParameters['OutBuffer'] = 1
         }
         $parameterSet = $PSCmdlet.ParameterSetName
-        $mapping = @{
-            UpdateExpanded = 'Az.CustomLocation.custom\Update-AzCustomLocation';
-            UpdateViaIdentityExpanded = 'Az.CustomLocation.custom\Update-AzCustomLocation';
+
+        if ($null -eq [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PowerShellVersion) {
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PowerShellVersion = $PSVersionTable.PSVersion.ToString()
+        }         
+        $preTelemetryId = [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId
+        if ($preTelemetryId -eq '') {
+            [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId =(New-Guid).ToString()
+            [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.module]::Instance.Telemetry.Invoke('Create', $MyInvocation, $parameterSet, $PSCmdlet)
+        } else {
+            $internalCalledCmdlets = [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::InternalCalledCmdlets
+            if ($internalCalledCmdlets -eq '') {
+                [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::InternalCalledCmdlets = $MyInvocation.MyCommand.Name
+            } else {
+                [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::InternalCalledCmdlets += ',' + $MyInvocation.MyCommand.Name
+            }
+            [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId = 'internal'
         }
-        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+
+        $mapping = @{
+            UpdateExpanded = 'Az.CustomLocation.private\Update-AzCustomLocation_UpdateExpanded';
+            UpdateViaIdentityExpanded = 'Az.CustomLocation.private\Update-AzCustomLocation_UpdateViaIdentityExpanded';
+        }
+        if (('UpdateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
+        }
+        if (('UpdateExpanded', 'UpdateViaIdentityExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('HostType') ) {
+            $PSBoundParameters['HostType'] = "Kubernetes"
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
         $steppablePipeline.Begin($PSCmdlet)
     } catch {
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::ClearTelemetryContext()
         throw
     }
 }
@@ -208,15 +250,32 @@ process {
     try {
         $steppablePipeline.Process($_)
     } catch {
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::ClearTelemetryContext()
         throw
     }
-}
 
+    finally {
+        $backupTelemetryId = [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId
+        $backupInternalCalledCmdlets = [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::InternalCalledCmdlets
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::ClearTelemetryContext()
+    }
+
+}
 end {
     try {
         $steppablePipeline.End()
+
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId = $backupTelemetryId
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::InternalCalledCmdlets = $backupInternalCalledCmdlets
+        if ($preTelemetryId -eq '') {
+            [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.module]::Instance.Telemetry.Invoke('Send', $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::ClearTelemetryContext()
+        }
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::TelemetryId = $preTelemetryId
+
     } catch {
+        [Microsoft.WindowsAzure.Commands.Common.MetricHelper]::ClearTelemetryContext()
         throw
     }
-}
+} 
 }

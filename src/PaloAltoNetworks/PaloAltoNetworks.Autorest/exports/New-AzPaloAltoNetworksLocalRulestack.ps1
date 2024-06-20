@@ -21,14 +21,16 @@ Create a LocalRulestackResource
 Create a LocalRulestackResource
 .Example
 New-AzPaloAltoNetworksLocalRulestack -Name azps-panlr -ResourceGroupName azps_test_group_pan -Location eastus -Description "testing powershell" -DefaultMode 'NONE'
+.Example
+New-AzPaloAltoNetworksLocalRulestack -Name azps-panlr2 -ResourceGroupName azps_test_group_pan -Location eastus -Description "testing powershell" -DefaultMode 'NONE' -UserAssignedIdentity "/subscriptions/{subId}/resourcegroups/azps_test_group_pan/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami"
 
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource
+Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource
 .Link
 https://learn.microsoft.com/powershell/module/az.paloaltonetworks/new-azpaloaltonetworkslocalrulestack
 #>
 function New-AzPaloAltoNetworksLocalRulestack {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource])]
 [CmdletBinding(DefaultParameterSetName='CreateExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory)]
@@ -66,9 +68,9 @@ param(
     ${AssociatedSubscription},
 
     [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode])]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.PSArgumentCompleterAttribute("IPS", "FIREWALL", "NONE")]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode]
+    [System.String]
     # Mode for default rules creation
     ${DefaultMode},
 
@@ -79,18 +81,10 @@ param(
     ${Description},
 
     [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType])]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType]
-    # The type of managed identity assigned to this resource.
-    ${IdentityType},
-
-    [Parameter()]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IAzureResourceManagerManagedIdentityPropertiesUserAssignedIdentities]))]
-    [System.Collections.Hashtable]
-    # The identities assigned to this resource by the user.
-    ${IdentityUserAssignedIdentity},
+    [System.Management.Automation.SwitchParameter]
+    # Decides if enable a system assigned identity for the resource.
+    ${EnableSystemAssignedIdentity},
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
@@ -111,9 +105,9 @@ param(
     ${PanLocation},
 
     [Parameter()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType])]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.PSArgumentCompleterAttribute("LOCAL", "GLOBAL")]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType]
+    [System.String]
     # Rulestack Type
     ${Scope},
 
@@ -167,10 +161,18 @@ param(
 
     [Parameter()]
     [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.ITrackedResourceTags]))]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(PossibleTypes=([Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ITrackedResourceTags]))]
     [System.Collections.Hashtable]
     # Resource tags.
     ${Tag},
+
+    [Parameter()]
+    [AllowEmptyCollection()]
+    [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category('Body')]
+    [System.String[]]
+    # The array of user assigned identities associated with the resource.
+    # The elements in array will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.'
+    ${UserAssignedIdentity},
 
     [Parameter()]
     [Alias('AzureRMContext', 'AzureCredential')]
@@ -261,11 +263,21 @@ begin {
         $mapping = @{
             CreateExpanded = 'Az.PaloAltoNetworks.private\New-AzPaloAltoNetworksLocalRulestack_CreateExpanded';
         }
-        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('CreateExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+        if ($null -ne $MyInvocation.MyCommand -and [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets -notcontains $MyInvocation.MyCommand.Name -and [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ContainsPreviewAttribute($cmdInfo, $MyInvocation)){
+            [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.MessageAttributeHelper]::ProcessPreviewMessageAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)
+            [Microsoft.WindowsAzure.Commands.Utilities.Common.AzurePSCmdlet]::PromptedPreviewMessageCmdlets.Enqueue($MyInvocation.MyCommand.Name)
+        }
         $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand(($mapping[$parameterSet]), [System.Management.Automation.CommandTypes]::Cmdlet)
         $scriptCmd = {& $wrappedCmd @PSBoundParameters}
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)

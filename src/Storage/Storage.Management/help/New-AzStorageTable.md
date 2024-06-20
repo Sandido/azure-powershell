@@ -35,7 +35,7 @@ This command creates a storage table with a name of tableabc.
 
 
 ```
-PS C:\>"table1 table2 table3".split() | New-AzStorageTable
+"table1 table2 table3".split() | New-AzStorageTable
 ```
 
 This command creates multiple tables.
@@ -109,5 +109,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Get-AzStorageTable](./Get-AzStorageTable.md)
 
 [Remove-AzStorageTable](./Remove-AzStorageTable.md)
-
-

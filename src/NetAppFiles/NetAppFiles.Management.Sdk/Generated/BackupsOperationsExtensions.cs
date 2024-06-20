@@ -13,7 +13,7 @@ namespace Microsoft.Azure.Management.NetApp
     public static partial class BackupsOperationsExtensions
     {
         /// <summary>
-        /// Get the status of the backup for a volume
+        /// Get the latest status of the backup for a volume
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -30,13 +30,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='volumeName'>
         /// The name of the volume
         /// </param>
-        public static BackupStatus GetStatus(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName)
+        public static BackupStatus GetLatestStatus(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName)
         {
-                return ((IBackupsOperations)operations).GetStatusAsync(resourceGroupName, accountName, poolName, volumeName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).GetLatestStatusAsync(resourceGroupName, accountName, poolName, volumeName).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Get the status of the backup for a volume
+        /// Get the latest status of the backup for a volume
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -56,15 +56,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<BackupStatus> GetStatusAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<BackupStatus> GetLatestStatusAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.GetStatusWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.GetLatestStatusWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Get the status of the restore for a volume
+        /// Get the latest status of the restore for a volume
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -81,13 +81,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='volumeName'>
         /// The name of the volume
         /// </param>
-        public static RestoreStatus GetVolumeRestoreStatus(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName)
+        public static RestoreStatus GetVolumeLatestRestoreStatus(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName)
         {
-                return ((IBackupsOperations)operations).GetVolumeRestoreStatusAsync(resourceGroupName, accountName, poolName, volumeName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).GetVolumeLatestRestoreStatusAsync(resourceGroupName, accountName, poolName, volumeName).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Get the status of the restore for a volume
+        /// Get the latest status of the restore for a volume
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -107,15 +107,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<RestoreStatus> GetVolumeRestoreStatusAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<RestoreStatus> GetVolumeLatestRestoreStatusAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.GetVolumeRestoreStatusWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.GetVolumeLatestRestoreStatusWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// List all backups for a volume
+        /// List all backups Under a Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -126,19 +126,20 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='filter'>
+        /// An option to specify the VolumeResourceId. If present, then only returns
+        /// the backups under the specified volume
         /// </param>
-        public static System.Collections.Generic.IEnumerable<Backup> List(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName)
+        public static Microsoft.Rest.Azure.IPage<Backup> ListByVault(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string filter = default(string))
         {
-                return ((IBackupsOperations)operations).ListAsync(resourceGroupName, accountName, poolName, volumeName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).ListByVaultAsync(resourceGroupName, accountName, backupVaultName, filter).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// List all backups for a volume
+        /// List all backups Under a Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -149,24 +150,25 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='filter'>
+        /// An option to specify the VolumeResourceId. If present, then only returns
+        /// the backups under the specified volume
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<Backup>> ListAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Microsoft.Rest.Azure.IPage<Backup>> ListByVaultAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string filter = default(string), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.ListWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.ListByVaultWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, filter, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Gets the specified backup of the volume
+        /// Get the specified Backup under Backup Vault.
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -177,22 +179,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static Backup Get(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName)
+        public static Backup Get(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName)
         {
-                return ((IBackupsOperations)operations).GetAsync(resourceGroupName, accountName, poolName, volumeName, backupName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).GetAsync(resourceGroupName, accountName, backupVaultName, backupName).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Gets the specified backup of the volume
+        /// Get the specified Backup under Backup Vault.
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -203,11 +202,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -215,15 +211,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<Backup> GetAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Backup> GetAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.GetWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.GetWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -234,22 +230,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static Backup Create(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body)
+        public static Backup Create(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body)
         {
-                return ((IBackupsOperations)operations).CreateAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).CreateAsync(resourceGroupName, accountName, backupVaultName, backupName, body).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -260,11 +253,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -272,15 +262,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<Backup> CreateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Backup> CreateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.CreateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.CreateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -291,22 +281,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static Backup Update(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch))
+        public static Backup Update(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch))
         {
-                return ((IBackupsOperations)operations).UpdateAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).UpdateAsync(resourceGroupName, accountName, backupVaultName, backupName, body).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -317,11 +304,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -329,15 +313,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<Backup> UpdateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Backup> UpdateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.UpdateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.UpdateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -348,22 +332,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static void Delete(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName)
+        public static BackupsDeleteHeaders Delete(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName)
         {
-                ((IBackupsOperations)operations).DeleteAsync(resourceGroupName, accountName, poolName, volumeName, backupName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).DeleteAsync(resourceGroupName, accountName, backupVaultName, backupName).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -374,11 +355,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -386,69 +364,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task DeleteAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<BackupsDeleteHeaders> DeleteAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            (await operations.DeleteWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, null, cancellationToken).ConfigureAwait(false)).Dispose();
-        }
-        /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
-        /// </summary>
-        /// <param name='operations'>
-        /// The operations group for this extension method.
-        /// </param>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        public static BackupsRestoreFilesHeaders RestoreFiles(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body)
-        {
-                return ((IBackupsOperations)operations).RestoreFilesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
-        /// </summary>
-        /// <param name='operations'>
-        /// The operations group for this extension method.
-        /// </param>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        public static async System.Threading.Tasks.Task<BackupsRestoreFilesHeaders> RestoreFilesAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            using (var _result = await operations.RestoreFilesWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.DeleteWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Headers;
             }
         }
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -459,22 +383,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static Backup BeginCreate(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body)
+        public static Backup BeginCreate(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body)
         {
-                return ((IBackupsOperations)operations).BeginCreateAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).BeginCreateAsync(resourceGroupName, accountName, backupVaultName, backupName, body).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -485,11 +406,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -497,15 +415,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<Backup> BeginCreateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Backup> BeginCreateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.BeginCreateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.BeginCreateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -516,22 +434,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static Backup BeginUpdate(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch))
+        public static Backup BeginUpdate(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch))
         {
-                return ((IBackupsOperations)operations).BeginUpdateAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).BeginUpdateAsync(resourceGroupName, accountName, backupVaultName, backupName, body).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -542,11 +457,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -554,15 +466,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task<Backup> BeginUpdateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<Backup> BeginUpdateAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            using (var _result = await operations.BeginUpdateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.BeginUpdateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Body;
             }
         }
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -573,22 +485,19 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
         /// </param>
-        public static void BeginDelete(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName)
+        public static BackupsDeleteHeaders BeginDelete(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName)
         {
-                ((IBackupsOperations)operations).BeginDeleteAsync(resourceGroupName, accountName, poolName, volumeName, backupName).GetAwaiter().GetResult();
+                return ((IBackupsOperations)operations).BeginDeleteAsync(resourceGroupName, accountName, backupVaultName, backupName).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='operations'>
         /// The operations group for this extension method.
@@ -599,11 +508,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -611,65 +517,44 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public static async System.Threading.Tasks.Task BeginDeleteAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public static async System.Threading.Tasks.Task<BackupsDeleteHeaders> BeginDeleteAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            (await operations.BeginDeleteWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, null, cancellationToken).ConfigureAwait(false)).Dispose();
-        }
-        /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
-        /// </summary>
-        /// <param name='operations'>
-        /// The operations group for this extension method.
-        /// </param>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        public static BackupsRestoreFilesHeaders BeginRestoreFiles(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body)
-        {
-                return ((IBackupsOperations)operations).BeginRestoreFilesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
-        /// </summary>
-        /// <param name='operations'>
-        /// The operations group for this extension method.
-        /// </param>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        public static async System.Threading.Tasks.Task<BackupsRestoreFilesHeaders> BeginRestoreFilesAsync(this IBackupsOperations operations, string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            using (var _result = await operations.BeginRestoreFilesWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, null, cancellationToken).ConfigureAwait(false))
+            using (var _result = await operations.BeginDeleteWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, null, cancellationToken).ConfigureAwait(false))
             {
                 return _result.Headers;
+            }
+        }
+        /// <summary>
+        /// List all backups Under a Backup Vault
+        /// </summary>
+        /// <param name='operations'>
+        /// The operations group for this extension method.
+        /// </param>
+        /// <param name='nextPageLink'>
+        /// The NextLink from the previous successful call to List operation.
+        /// </param>
+        public static Microsoft.Rest.Azure.IPage<Backup> ListByVaultNext(this IBackupsOperations operations, string nextPageLink)
+        {
+                return ((IBackupsOperations)operations).ListByVaultNextAsync(nextPageLink).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// List all backups Under a Backup Vault
+        /// </summary>
+        /// <param name='operations'>
+        /// The operations group for this extension method.
+        /// </param>
+        /// <param name='nextPageLink'>
+        /// The NextLink from the previous successful call to List operation.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        public static async System.Threading.Tasks.Task<Microsoft.Rest.Azure.IPage<Backup>> ListByVaultNextAsync(this IBackupsOperations operations, string nextPageLink, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        {
+            using (var _result = await operations.ListByVaultNextWithHttpMessagesAsync(nextPageLink, null, cancellationToken).ConfigureAwait(false))
+            {
+                return _result.Body;
             }
         }
     }

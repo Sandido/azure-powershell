@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.SqlVirtualMachine-help.xml
 Module Name: Az.SqlVirtualMachine
 online version: https://learn.microsoft.com/powershell/module/Az.SqlVirtualMachine/new-AzSqlVirtualMachineMultiSubnetIPConfigurationObject
 schema: 2.0.0
@@ -14,7 +14,8 @@ Create an in-memory object for MultiSubnetIPConfiguration.
 
 ```
 New-AzSqlVirtualMachineMultiSubnetIPConfigurationObject -SqlVirtualMachineInstance <String>
- [-PrivateIPAddressIpaddress <String>] [-PrivateIPAddressSubnetResourceId <String>] [<CommonParameters>]
+ [-PrivateIPAddressIpaddress <String>] [-PrivateIPAddressSubnetResourceId <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,7 +32,7 @@ $multiSubnetIpConfig | Format-List
 ```output
 PrivateIPAddressIpaddress        : 192.168.16.7
 PrivateIPAddressSubnetResourceId : 
-SqlVirtualMachineInstance        : 
+SqlVirtualMachineInstance        :
 ```
 
 *New-AzSqlVirtualMachineMultiSubnetIPConfigurationObject* creates an in-memory object of type *MultiSubnetIPConfiguration*.
@@ -70,6 +71,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SqlVirtualMachineInstance
 SQL virtual machine instance resource id that are enrolled into the availability group listener.
 
@@ -96,7 +112,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

@@ -22,7 +22,28 @@ Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] 
  [-RestoreDiskList <String[]>] [-DiskEncryptionSetId <String>] [-RestoreToSecondaryRegion]
  [-TargetZoneNumber <Int32>] [-RehydratePriority <String>] [-UseSystemAssignedIdentity]
  [-UserAssignedIdentityId <String>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
- [-RehydrateDuration <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-RehydrateDuration <String>] [-Token <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### AzureFileShareParameterSet
+```
+Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] <RecoveryPointBase>
+ -ResolveConflict <RestoreFSResolveConflictOption> [-SourceFilePath <String>]
+ [-SourceFileType <SourceFileType>] [-TargetStorageAccountName <String>] [-TargetFileShareName <String>]
+ [-TargetFolder <String>] [-MultipleSourceFilePath <String[]>] [-RestoreToSecondaryRegion] [-VaultId <String>]
+ [-DefaultProfile <IAzureContextContainer>] [-Token <String>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
+```
+
+### AzureVMRestoreManagedAsUnmanaged
+```
+Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] <RecoveryPointBase>
+ [-StorageAccountName] <String> [-StorageAccountResourceGroupName] <String> [-RestoreOnlyOSDisk]
+ [-RestoreDiskList <String[]>] [-RestoreAsUnmanagedDisks] [-RestoreToSecondaryRegion]
+ [-RehydratePriority <String>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
+ [-RehydrateDuration <String>] [-Token <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### AzureManagedVMCreateNewParameterSet
@@ -33,26 +54,9 @@ Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] 
  [-TargetZoneNumber <Int32>] [-RehydratePriority <String>] [-UseSystemAssignedIdentity]
  [-UserAssignedIdentityId <String>] [-TargetVMName <String>] [-TargetVNetName <String>]
  [-TargetVNetResourceGroup <String>] [-TargetSubnetName <String>] [-TargetSubscriptionId <String>]
- [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
-```
-
-### AzureFileShareParameterSet
-```
-Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] <RecoveryPointBase>
- -ResolveConflict <RestoreFSResolveConflictOption> [-SourceFilePath <String>]
- [-SourceFileType <SourceFileType>] [-TargetStorageAccountName <String>] [-TargetFileShareName <String>]
- [-TargetFolder <String>] [-MultipleSourceFilePath <String[]>] [-RestoreToSecondaryRegion] [-VaultId <String>]
- [-DefaultProfile <IAzureContextContainer>] [-WhatIf] [-Confirm] [<CommonParameters>]
-```
-
-### AzureVMRestoreManagedAsUnmanaged
-```
-Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] <RecoveryPointBase>
- [-StorageAccountName] <String> [-StorageAccountResourceGroupName] <String> [-RestoreOnlyOSDisk]
- [-RestoreDiskList <String[]>] [-RestoreAsUnmanagedDisks] [-RestoreToSecondaryRegion]
- [-RehydratePriority <String>] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
- [-RehydrateDuration <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-RestoreToEdgeZone] [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>]
+ [-RehydrateDuration <String>] [-Token <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### AzureVMUnManagedDiskParameterSet
@@ -60,8 +64,8 @@ Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] 
 Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] <RecoveryPointBase>
  [-StorageAccountName] <String> [-StorageAccountResourceGroupName] <String> [-UseOriginalStorageAccount]
  [-RestoreOnlyOSDisk] [-RestoreDiskList <String[]>] [-RestoreToSecondaryRegion] [-RehydratePriority <String>]
- [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [-VaultId <String>] [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-Token <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AzureVMRestoreUnmanagedAsManaged
@@ -70,16 +74,16 @@ Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-RecoveryPoint] 
  [-StorageAccountName] <String> [-StorageAccountResourceGroupName] <String> [-TargetResourceGroupName] <String>
  [-UseOriginalStorageAccount] [-RestoreOnlyOSDisk] [-RestoreDiskList <String[]>] [-RestoreToSecondaryRegion]
  [-RestoreAsManagedDisk] [-RehydratePriority <String>] [-VaultId <String>]
- [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-Token <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AzureWorkloadParameterSet
 ```
 Restore-AzRecoveryServicesBackupItem [-VaultLocation <String>] [-WLRecoveryConfig] <RecoveryConfigBase>
  [-RestoreToSecondaryRegion] [-RehydratePriority <String>] [-VaultId <String>]
- [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-RehydrateDuration <String>] [-Token <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -309,10 +313,21 @@ Here we filter the recovery points present in the VaultArchive tier and trigger 
 $vault = Get-AzRecoveryServicesVault -ResourceGroupName "resourceGroup" -Name "vaultName"
 $item = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureVM -WorkloadType AzureVM -VaultId $vault.ID
 $rp = Get-AzRecoveryServicesBackupRecoveryPoint -StartDate (Get-Date).AddDays(-29).ToUniversalTime() -EndDate (Get-Date).AddDays(0).ToUniversalTime() -VaultId $vault.ID -Item $item[3] -Tier VaultStandard
-$restoreJob = Restore-AzRecoveryServicesBackupItem -VaultId $vault.ID -VaultLocation $vault.Location -RecoveryPoint $rp[0] -StorageAccountName "saName" -StorageAccountResourceGroupName $vault.ResourceGroupName -TargetResourceGroupName $vault.ResourceGroupName -TargetVMName "targetVMName" -TargetVNetName "targetVNet" -TargetVNetResourceGroup $vault.ResourceGroupName -TargetSubnetName "default" -TargetZoneNumber 2 
+$restoreJob = Restore-AzRecoveryServicesBackupItem -VaultId $vault.ID -VaultLocation $vault.Location -RecoveryPoint $rp[0] -StorageAccountName "saName" -StorageAccountResourceGroupName $vault.ResourceGroupName -TargetResourceGroupName $vault.ResourceGroupName -TargetVMName "targetVMName" -TargetVNetName "targetVNet" -TargetVNetResourceGroup $vault.ResourceGroupName -TargetSubnetName "default" -TargetZoneNumber 2
 ```
 
-Here we filter the recovery points present in the VaultStandard tier and trigger a cross zonal restore for non-ZonePinned VM in a ZRS vault. For CZR we pass -TargetZoneNumber parameter. For Non-ZonedPinned VM, CZR is supported only for ZRS vaults. For ZonePinned VMs CZR is supported for ZRS vaults and cross region restore to secondary region for CRR enabled vaults.
+Here we filter the recovery points present in the VaultStandard tier and trigger a cross zonal restore for non-ZonePinned VM in a ZRS vault. For CZR we pass -TargetZoneNumber parameter. For Non-ZonedPinned VM, CZR is supported only for ZRS vaults. For ZonePinned VMs CZR is supported for ZRS vaults and cross region restore to secondary region for CRR enabled vaults. We can use Snapshot or vaulted tier enabled recovery points for CZR with a limitation that snapshot recovery point should be more than 4 hrs old.
+
+### Example 11: Edge zone restore for a managed AzureVM to alternate location
+
+```powershell
+$vault = Get-AzRecoveryServicesVault -ResourceGroupName "resourceGroup" -Name "vaultName"
+$item = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureVM -WorkloadType AzureVM -VaultId $vault.ID
+$rp = Get-AzRecoveryServicesBackupRecoveryPoint -StartDate (Get-Date).AddDays(-29).ToUniversalTime() -EndDate (Get-Date).AddDays(0).ToUniversalTime() -VaultId $vault.ID -Item $item[3]
+$restoreJob = Restore-AzRecoveryServicesBackupItem -VaultId $vault.ID -VaultLocation $vault.Location -RecoveryPoint $rp[0] -StorageAccountName "saName" -StorageAccountResourceGroupName $vault.ResourceGroupName -TargetResourceGroupName $vault.ResourceGroupName -TargetVMName "targetVMName" -TargetVNetName "targetVNet" -TargetVNetResourceGroup $vault.ResourceGroupName -TargetSubnetName "default" -TargetZoneNumber 2 -RestoreToEdgeZone
+```
+
+In this example, we use RestoreToEdgeZone parameter to trigger a restore to new edge zone vm in alternate location. For Original location restore (OLR), restore will implicitly be an edge zone restore if the source VM is an edge zone VM.
 
 ## PARAMETERS
 
@@ -485,6 +500,21 @@ Use this switch to restore only OS disks of a backed up VM
 ```yaml
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: AzureManagedVMReplaceExistingParameterSet, AzureVMRestoreManagedAsUnmanaged, AzureManagedVMCreateNewParameterSet, AzureVMUnManagedDiskParameterSet, AzureVMRestoreUnmanagedAsManaged
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RestoreToEdgeZone
+Switch parameter to indicate edge zone VM restore. This parameter can't be used in cross region and corss subscription restore scenario
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: AzureManagedVMCreateNewParameterSet
 Aliases:
 
 Required: False
@@ -727,6 +757,21 @@ The target availability zone number where the restored disks are pinned.
 ```yaml
 Type: System.Nullable`1[System.Int32]
 Parameter Sets: AzureManagedVMReplaceExistingParameterSet, AzureManagedVMCreateNewParameterSet
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Token
+Parameter to authorize operations protected by cross tenant resource guard. Use command (Get-AzAccessToken -TenantId "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").Token to fetch authorization token for different tenant
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
 Aliases:
 
 Required: False

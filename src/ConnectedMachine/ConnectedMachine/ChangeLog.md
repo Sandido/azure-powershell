@@ -19,6 +19,27 @@
 -->
 ## Upcoming Release
 
+## Version 0.8.0
+* Updated the API version to 2024-03-31-preview.
+* Added cmdlets `Get-AzConnectedLicense`, `Get-AzConnectedNetworkSecurityPerimeterConfiguration`, `New-AzConnectedLicense`, `New-AzConnectedLicenseDetail`, `Remove-AzConnectedLicense` and `Set-AzConnectedLicense`.
+
+## Version 0.7.2
+* Introduced secrets detection feature to safeguard sensitive data.
+
+## Version 0.7.1
+* Introduced secrets detection feature to safeguard sensitive data.
+
+## Version 0.7.0
+* Added `ScriptLocalPath` to `New-AzConnectedMachineRunCommand` to let users add script files locally
+* Added `MachineName` parameter to the McahineExtension and MachineRunCommand models
+
+## Version 0.6.0
+* This release, aimed at version 2023-10-03-preview of ConnectedMachine, introduces new commands alongside the existing ones
+    - Get-AzConnectedMachineRunCommand: Retrieve run commands for an Azure Arc-Enabled Server
+    - New-AzConnectedMachineRunCommand: Create a run command for an Azure Arc-Enabled Server
+    - Remove-AzConnectedMachineRunCommand: Delete a run command for an Azure Arc-Enabled Server
+    - Update-AzConnectedMachineRunCommand: Modify a run command for an Azure Arc-Enabled Server
+
 ## Version 0.5.2
 * Removed the version check in MachineExtensionProperties
 

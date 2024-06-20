@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/get-azconnectedextensionmetadata
 schema: 2.0.0
@@ -15,13 +15,15 @@ Gets an Extension Metadata based on location, publisher, extensionType and versi
 ### List (Default)
 ```
 Get-AzConnectedExtensionMetadata -ExtensionType <String> -Location <String> -Publisher <String>
- [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
+ [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ### Get
 ```
 Get-AzConnectedExtensionMetadata -ExtensionType <String> -Location <String> -Publisher <String>
- -Version <String> [-SubscriptionId <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
+ [-SubscriptionId <String[]>] -Version <String> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,7 +53,6 @@ Get-AzConnectedExtensionMetadata -ExtensionType 'CustomScriptExtension' -Locatio
 Name SystemDataCreatedAt SystemDataCreatedBy SystemDataCreatedByType SystemDataLastModifiedAt SystemDataLastModifi
                                                                                               edBy
 ---- ------------------- ------------------- ----------------------- ------------------------ --------------------
-
 ```
 
 Get a specific machine extension metadata
@@ -98,6 +99,21 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -156,9 +172,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IExtensionValue
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IExtensionValue
 
 ## NOTES
 
 ## RELATED LINKS
-

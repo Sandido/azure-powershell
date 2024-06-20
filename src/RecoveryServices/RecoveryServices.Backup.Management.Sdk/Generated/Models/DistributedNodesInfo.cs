@@ -27,18 +27,21 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         /// <param name="nodeName">Name of the node under a distributed container.
         /// </param>
 
-        /// <param name="status">Status of this Node.
-        /// Failed | Succeeded
+        /// <param name="status">Status of this Node. Failed | Succeeded
         /// </param>
 
         /// <param name="errorDetail">Error Details if the Status is non-success.
         /// </param>
-        public DistributedNodesInfo(string nodeName = default(string), string status = default(string), ErrorDetail errorDetail = default(ErrorDetail))
+
+        /// <param name="sourceResourceId">ARM resource id of the node
+        /// </param>
+        public DistributedNodesInfo(string nodeName = default(string), string status = default(string), ErrorDetail errorDetail = default(ErrorDetail), string sourceResourceId = default(string))
 
         {
             this.NodeName = nodeName;
             this.Status = status;
             this.ErrorDetail = errorDetail;
+            this.SourceResourceId = sourceResourceId;
             CustomInit();
         }
 
@@ -55,8 +58,7 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         public string NodeName {get; set; }
 
         /// <summary>
-        /// Gets or sets status of this Node.
-        /// Failed | Succeeded
+        /// Gets or sets status of this Node. Failed | Succeeded
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "status")]
         public string Status {get; set; }
@@ -66,5 +68,11 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "errorDetail")]
         public ErrorDetail ErrorDetail {get; set; }
+
+        /// <summary>
+        /// Gets or sets aRM resource id of the node
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty(PropertyName = "sourceResourceId")]
+        public string SourceResourceId {get; set; }
     }
 }

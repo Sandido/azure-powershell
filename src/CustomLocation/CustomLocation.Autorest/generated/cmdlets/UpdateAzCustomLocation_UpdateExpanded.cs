@@ -6,21 +6,22 @@
 namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
 {
     using static Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Extensions;
+    using Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell;
+    using Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Cmdlets;
     using System;
 
-    /// <summary>
-    /// Updates a Custom Location with the specified Resource Name in the specified Resource Group and Subscription.
-    /// </summary>
+    /// <summary>Update a Custom Location in the specified Subscription and Resource Group</summary>
     /// <remarks>
-    /// [OpenAPI] Update=>PATCH:"/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.extendedlocation/customlocations/{resourceName}"
+    /// [OpenAPI] Get=>GET:"/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.extendedlocation/customlocations/{resourceName}"
+    /// [OpenAPI] CreateOrUpdate=>PUT:"/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.extendedlocation/customlocations/{resourceName}"
     /// </remarks>
-    [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.InternalExport]
     [global::System.Management.Automation.Cmdlet(global::System.Management.Automation.VerbsData.Update, @"AzCustomLocation_UpdateExpanded", SupportsShouldProcess = true)]
-    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation))]
-    [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Description(@"Updates a Custom Location with the specified Resource Name in the specified Resource Group and Subscription.")]
+    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation))]
+    [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Description(@"Update a Custom Location in the specified Subscription and Resource Group")]
     [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Generated]
     public partial class UpdateAzCustomLocation_UpdateExpanded : global::System.Management.Automation.PSCmdlet,
-        Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener
+        Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener,
+        Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IContext
     {
         /// <summary>A unique id generatd for the this cmdlet when it is instantiated.</summary>
         private string __correlationId = System.Guid.NewGuid().ToString();
@@ -36,6 +37,26 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         /// </summary>
         private global::System.Threading.CancellationTokenSource _cancellationTokenSource = new global::System.Threading.CancellationTokenSource();
 
+        /// <summary>A dictionary to carry over additional data for pipeline.</summary>
+        private global::System.Collections.Generic.Dictionary<global::System.String,global::System.Object> _extensibleParameters = new System.Collections.Generic.Dictionary<string, object>();
+
+        /// <summary>A buffer to record first returned object in response.</summary>
+        private object _firstResponse = null;
+
+        /// <summary>Custom Locations definition.</summary>
+        private Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation _parametersBody = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.CustomLocation();
+
+        /// <summary>
+        /// A flag to tell whether it is the first returned object in a call. Zero means no response yet. One means 1 returned object.
+        /// Two means multiple returned objects in response.
+        /// </summary>
+        private int _responseSize = 0;
+
+        /// <summary>when specified, runs this cmdlet as a PowerShell job</summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Run the command as a job")]
+        [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Runtime)]
+        public global::System.Management.Automation.SwitchParameter AsJob { get; set; }
+
         /// <summary>The type of the Custom Locations authentication</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The type of the Custom Locations authentication")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Body)]
@@ -45,7 +66,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"The type of the Custom Locations authentication",
         SerializedName = @"type",
         PossibleTypes = new [] { typeof(string) })]
-        public string AuthenticationType { get => ParametersBody.AuthenticationType ?? null; set => ParametersBody.AuthenticationType = value; }
+        public string AuthenticationType { get => _parametersBody.AuthenticationType ?? null; set => _parametersBody.AuthenticationType = value; }
 
         /// <summary>The kubeconfig value.</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The kubeconfig value.")]
@@ -56,12 +77,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"The kubeconfig value.",
         SerializedName = @"value",
         PossibleTypes = new [] { typeof(string) })]
-        public string AuthenticationValue { get => ParametersBody.AuthenticationValue ?? null; set => ParametersBody.AuthenticationValue = value; }
+        public string AuthenticationValue { get => _parametersBody.AuthenticationValue ?? null; set => _parametersBody.AuthenticationValue = value; }
 
         /// <summary>Wait for .NET debugger to attach</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "Wait for .NET debugger to attach")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Runtime)]
         public global::System.Management.Automation.SwitchParameter Break { get; set; }
+
+        /// <summary>Accessor for cancellationTokenSource.</summary>
+        public global::System.Threading.CancellationTokenSource CancellationTokenSource { get => _cancellationTokenSource ; set { _cancellationTokenSource = value; } }
 
         /// <summary>The reference to the client API class.</summary>
         public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.CustomLocation Client => Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.ClientAPI;
@@ -78,12 +102,13 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"Contains the reference to the add-on that contains charts to deploy CRDs and operators.",
         SerializedName = @"clusterExtensionIds",
         PossibleTypes = new [] { typeof(string) })]
-        public string[] ClusterExtensionId { get => ParametersBody.ClusterExtensionId ?? null /* arrayOf */; set => ParametersBody.ClusterExtensionId = value; }
+        public string[] ClusterExtensionId { get => _parametersBody.ClusterExtensionId?.ToArray() ?? null /* fixedArrayOf */; set => _parametersBody.ClusterExtensionId = (value != null ? new System.Collections.Generic.List<string>(value) : null); }
 
         /// <summary>
-        /// The credentials, account, tenant, and subscription used for communication with Azure
+        /// The DefaultProfile parameter is not functional. Use the SubscriptionId parameter when available if executing the cmdlet
+        /// against a different subscription
         /// </summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The credentials, account, tenant, and subscription used for communication with Azure.")]
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The DefaultProfile parameter is not functional. Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.")]
         [global::System.Management.Automation.ValidateNotNull]
         [global::System.Management.Automation.Alias("AzureRMContext", "AzureCredential")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Azure)]
@@ -98,7 +123,14 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"Display name for the Custom Locations location.",
         SerializedName = @"displayName",
         PossibleTypes = new [] { typeof(string) })]
-        public string DisplayName { get => ParametersBody.DisplayName ?? null; set => ParametersBody.DisplayName = value; }
+        public string DisplayName { get => _parametersBody.DisplayName ?? null; set => _parametersBody.DisplayName = value; }
+
+        /// <summary>Decides if enable a system assigned identity for the resource.</summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Decides if enable a system assigned identity for the resource.")]
+        public System.Boolean? EnableSystemAssignedIdentity { get; set; }
+
+        /// <summary>Accessor for extensibleParameters.</summary>
+        public global::System.Collections.Generic.IDictionary<global::System.String,global::System.Object> ExtensibleParameters { get => _extensibleParameters ; }
 
         /// <summary>
         /// Connected Cluster or AKS Cluster. The Custom Locations RP will perform a checkAccess API for listAdminCredentials permissions.
@@ -111,7 +143,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"Connected Cluster or AKS Cluster. The Custom Locations RP will perform a checkAccess API for listAdminCredentials permissions.",
         SerializedName = @"hostResourceId",
         PossibleTypes = new [] { typeof(string) })]
-        public string HostResourceId { get => ParametersBody.HostResourceId ?? null; set => ParametersBody.HostResourceId = value; }
+        public string HostResourceId { get => _parametersBody.HostResourceId ?? null; set => _parametersBody.HostResourceId = value; }
 
         /// <summary>Type of host the Custom Locations is referencing (Kubernetes, etc...).</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Type of host the Custom Locations is referencing (Kubernetes, etc...).")]
@@ -121,14 +153,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         ReadOnly = false,
         Description = @"Type of host the Custom Locations is referencing (Kubernetes, etc...).",
         SerializedName = @"hostType",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.HostType) })]
+        PossibleTypes = new [] { typeof(string) })]
         [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.DefaultInfo(
         Name = @"",
         Description =@"",
-        Script = @"""Kubernetes""")]
+        Script = @"""Kubernetes""",
+        SetCondition = @"")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.DoNotExport]
-        [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.HostType))]
-        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.HostType HostType { get => ParametersBody.HostType ?? ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.HostType)""); set => ParametersBody.HostType = value; }
+        [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.PSArgumentCompleterAttribute("Kubernetes")]
+        public string HostType { get => _parametersBody.HostType ?? null; set => _parametersBody.HostType = value; }
 
         /// <summary>SendAsync Pipeline Steps to be appended to the front of the pipeline</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "SendAsync Pipeline Steps to be appended to the front of the pipeline")]
@@ -142,27 +175,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Runtime)]
         public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.SendAsyncStep[] HttpPipelinePrepend { get; set; }
 
-        /// <summary>The identity type.</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The identity type.")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"The identity type.",
-        SerializedName = @"type",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType) })]
-        [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType))]
-        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType IdentityType { get => ParametersBody.IdentityType ?? ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Support.ResourceIdentityType)""); set => ParametersBody.IdentityType = value; }
-
         /// <summary>Accessor for our copy of the InvocationInfo.</summary>
         public global::System.Management.Automation.InvocationInfo InvocationInformation { get => __invocationInfo = __invocationInfo ?? this.MyInvocation ; set { __invocationInfo = value; } }
 
         /// <summary>
-        /// <see cref="IEventListener" /> cancellation delegate. Stops the cmdlet when called.
+        /// <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener" /> cancellation delegate. Stops the cmdlet when called.
         /// </summary>
         global::System.Action Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener.Cancel => _cancellationTokenSource.Cancel;
 
-        /// <summary><see cref="IEventListener" /> cancellation token.</summary>
+        /// <summary><see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener" /> cancellation token.</summary>
         global::System.Threading.CancellationToken Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener.Token => _cancellationTokenSource.Token;
 
         /// <summary>Backing field for <see cref="Name" /> property.</summary>
@@ -188,18 +209,20 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         Description = @"Kubernetes namespace that will be created on the specified cluster.",
         SerializedName = @"namespace",
         PossibleTypes = new [] { typeof(string) })]
-        public string Namespace { get => ParametersBody.Namespace ?? null; set => ParametersBody.Namespace = value; }
+        public string Namespace { get => _parametersBody.Namespace ?? null; set => _parametersBody.Namespace = value; }
 
-        /// <summary>Backing field for <see cref="ParametersBody" /> property.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.IPatchableCustomLocations _parametersBody= new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.PatchableCustomLocations();
-
-        /// <summary>The Custom Locations patchable resource definition.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.IPatchableCustomLocations ParametersBody { get => this._parametersBody; set => this._parametersBody = value; }
+        /// <summary>
+        /// when specified, will make the remote call, and return an AsyncOperationResponse, letting the remote operation continue
+        /// asynchronously.
+        /// </summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Run the command asynchronously")]
+        [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Runtime)]
+        public global::System.Management.Automation.SwitchParameter NoWait { get; set; }
 
         /// <summary>
         /// The instance of the <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.HttpPipeline" /> that the remote call will use.
         /// </summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.HttpPipeline Pipeline { get; set; }
+        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.HttpPipeline Pipeline { get; set; }
 
         /// <summary>The URI for the proxy server to use</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "The URI for the proxy server to use")]
@@ -245,51 +268,57 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.DefaultInfo(
         Name = @"",
         Description =@"",
-        Script = @"(Get-AzContext).Subscription.Id")]
+        Script = @"(Get-AzContext).Subscription.Id",
+        SetCondition = @"")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Path)]
         public string SubscriptionId { get => this._subscriptionId; set => this._subscriptionId = value; }
 
-        /// <summary>Resource tags</summary>
+        /// <summary>Resource tags.</summary>
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ExportAs(typeof(global::System.Collections.Hashtable))]
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Resource tags")]
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Resource tags.")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Category(global::Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.ParameterCategory.Body)]
         [Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Info(
         Required = false,
         ReadOnly = false,
-        Description = @"Resource tags",
+        Description = @"Resource tags.",
         SerializedName = @"tags",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.IPatchableCustomLocationsTags) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.IPatchableCustomLocationsTags Tag { get => ParametersBody.Tag ?? null /* object */; set => ParametersBody.Tag = value; }
+        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ITrackedResourceTags) })]
+        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ITrackedResourceTags Tag { get => _parametersBody.Tag ?? null /* object */; set => _parametersBody.Tag = value; }
 
         /// <summary>
         /// <c>overrideOnDefault</c> will be called before the regular onDefault has been processed, allowing customization of what
         /// happens on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20.IErrorResponse"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse</see>
+        /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onDefault method should be processed, or if the method should
         /// return immediately (set to true to skip further processing )</param>
 
-        partial void overrideOnDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20.IErrorResponse> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
+        partial void overrideOnDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
 
         /// <summary>
         /// <c>overrideOnOk</c> will be called before the regular onOk has been processed, allowing customization of what happens
         /// on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation">Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation</see>
+        /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onOk method should be processed, or if the method should return
         /// immediately (set to true to skip further processing )</param>
 
-        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
+        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
 
         /// <summary>
         /// (overrides the default BeginProcessing method in global::System.Management.Automation.PSCmdlet)
         /// </summary>
         protected override void BeginProcessing()
         {
+            var telemetryId = Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.GetTelemetryId.Invoke();
+            if (telemetryId != "" && telemetryId != "internal")
+            {
+                __correlationId = telemetryId;
+            }
             Module.Instance.SetProxyConfiguration(Proxy, ProxyCredential, ProxyUseDefaultCredentials);
             if (Break)
             {
@@ -298,10 +327,56 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
             ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletBeginProcessing).Wait(); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
         }
 
+        /// <summary>Creates a duplicate instance of this cmdlet (via JSON serialization).</summary>
+        /// <returns>a duplicate instance of UpdateAzCustomLocation_UpdateExpanded</returns>
+        public Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets.UpdateAzCustomLocation_UpdateExpanded Clone()
+        {
+            var clone = new UpdateAzCustomLocation_UpdateExpanded();
+            clone.__correlationId = this.__correlationId;
+            clone.__processRecordId = this.__processRecordId;
+            clone.DefaultProfile = this.DefaultProfile;
+            clone.InvocationInformation = this.InvocationInformation;
+            clone.Proxy = this.Proxy;
+            clone.Pipeline = this.Pipeline;
+            clone.AsJob = this.AsJob;
+            clone.Break = this.Break;
+            clone.ProxyCredential = this.ProxyCredential;
+            clone.ProxyUseDefaultCredentials = this.ProxyUseDefaultCredentials;
+            clone.HttpPipelinePrepend = this.HttpPipelinePrepend;
+            clone.HttpPipelineAppend = this.HttpPipelineAppend;
+            clone._parametersBody = this._parametersBody;
+            clone.SubscriptionId = this.SubscriptionId;
+            clone.ResourceGroupName = this.ResourceGroupName;
+            clone.Name = this.Name;
+            return clone;
+        }
+
         /// <summary>Performs clean-up after the command execution</summary>
         protected override void EndProcessing()
         {
-            ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletEndProcessing).Wait(); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
+            if (1 ==_responseSize)
+            {
+                // Flush buffer
+                WriteObject(_firstResponse);
+            }
+            var telemetryInfo = Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.GetTelemetryInfo?.Invoke(__correlationId);
+            if (telemetryInfo != null)
+            {
+                telemetryInfo.TryGetValue("ShowSecretsWarning", out var showSecretsWarning);
+                telemetryInfo.TryGetValue("SanitizedProperties", out var sanitizedProperties);
+                telemetryInfo.TryGetValue("InvocationName", out var invocationName);
+                if (showSecretsWarning == "true")
+                {
+                    if (string.IsNullOrEmpty(sanitizedProperties))
+                    {
+                        WriteWarning($"The output of cmdlet {invocationName} may compromise security by showing secrets. Learn more at https://go.microsoft.com/fwlink/?linkid=2258844");
+                    }
+                    else
+                    {
+                        WriteWarning($"The output of cmdlet {invocationName} may compromise security by showing the following secrets: {sanitizedProperties}. Learn more at https://go.microsoft.com/fwlink/?linkid=2258844");
+                    }
+                }
+            }
         }
 
         /// <summary>Handles/Dispatches events during the call to the REST service.</summary>
@@ -334,8 +409,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
                     }
                     case Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.Information:
                     {
-                        var data = messageData();
-                        WriteInformation(data.Message, new string[]{});
+                        // When an operation supports asjob, Information messages must go thru verbose.
+                        WriteVerbose($"INFORMATION: {(messageData().Message ?? global::System.String.Empty)}");
                         return ;
                     }
                     case Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.Debug:
@@ -348,13 +423,95 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
                         WriteError(new global::System.Management.Automation.ErrorRecord( new global::System.Exception(messageData().Message), string.Empty, global::System.Management.Automation.ErrorCategory.NotSpecified, null ) );
                         return ;
                     }
+                    case Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.Progress:
+                    {
+                        var data = messageData();
+                        int progress = (int)data.Value;
+                        string activityMessage, statusDescription;
+                        global::System.Management.Automation.ProgressRecordType recordType;
+                        if (progress < 100)
+                        {
+                            activityMessage = "In progress";
+                            statusDescription = "Checking operation status";
+                            recordType = System.Management.Automation.ProgressRecordType.Processing;
+                        }
+                        else
+                        {
+                            activityMessage = "Completed";
+                            statusDescription = "Completed";
+                            recordType = System.Management.Automation.ProgressRecordType.Completed;
+                        }
+                        WriteProgress(new global::System.Management.Automation.ProgressRecord(1, activityMessage, statusDescription)
+                        {
+                            PercentComplete = progress,
+                        RecordType = recordType
+                        });
+                        return ;
+                    }
+                    case Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.DelayBeforePolling:
+                    {
+                        var data = messageData();
+                        if (true == MyInvocation?.BoundParameters?.ContainsKey("NoWait"))
+                        {
+                            if (data.ResponseMessage is System.Net.Http.HttpResponseMessage response)
+                            {
+                                var asyncOperation = response.GetFirstHeader(@"Azure-AsyncOperation");
+                                var location = response.GetFirstHeader(@"Location");
+                                var uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? response.RequestMessage.RequestUri.AbsoluteUri : location : asyncOperation;
+                                WriteObject(new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.AsyncOperationResponse { Target = uri });
+                                // do nothing more.
+                                data.Cancel();
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (data.ResponseMessage is System.Net.Http.HttpResponseMessage response)
+                            {
+                                int delay = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30);
+                                WriteDebug($"Delaying {delay} seconds before polling.");
+                                for (var now = 0; now < delay; ++now)
+                                {
+                                    WriteProgress(new global::System.Management.Automation.ProgressRecord(1, "In progress", "Checking operation status")
+                                    {
+                                        PercentComplete = now * 100 / delay
+                                    });
+                                    await global::System.Threading.Tasks.Task.Delay(1000, token);
+                                }
+                            }
+                        }
+                        break;
+                    }
                 }
-                await Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.Signal(id, token, messageData, (i,t,m) => ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(i,t,()=> Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.EventDataConverter.ConvertFrom( m() ) as Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.EventData ), InvocationInformation, this.ParameterSetName, __correlationId, __processRecordId, null );
+                await Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.Signal(id, token, messageData, (i, t, m) => ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(i, t, () => Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.EventDataConverter.ConvertFrom(m()) as Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.EventData), InvocationInformation, this.ParameterSetName, __correlationId, __processRecordId, null );
                 if (token.IsCancellationRequested)
                 {
                     return ;
                 }
                 WriteDebug($"{id}: {(messageData().Message ?? global::System.String.Empty)}");
+            }
+        }
+
+        private void PreProcessManagedIdentityParametersWithGetResult()
+        {
+            bool supportsSystemAssignedIdentity = (true == this.EnableSystemAssignedIdentity || null == this.EnableSystemAssignedIdentity && true == _parametersBody?.IdentityType?.Contains("SystemAssigned"));
+            bool supportsUserAssignedIdentity = false;
+            // calculate IdentityType
+            if ((supportsUserAssignedIdentity && supportsSystemAssignedIdentity))
+            {
+                _parametersBody.IdentityType = "SystemAssigned,UserAssigned";
+            }
+            else if ((supportsUserAssignedIdentity && !supportsSystemAssignedIdentity))
+            {
+                _parametersBody.IdentityType = "UserAssigned";
+            }
+            else if ((!supportsUserAssignedIdentity && supportsSystemAssignedIdentity))
+            {
+                _parametersBody.IdentityType = "SystemAssigned";
+            }
+            else
+            {
+                _parametersBody.IdentityType = "None";
             }
         }
 
@@ -366,11 +523,23 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
             try
             {
                 // work
-                if (ShouldProcess($"Call remote 'CustomLocationsUpdate' operation"))
+                if (ShouldProcess($"Call remote 'CustomLocationsCreateOrUpdate' operation"))
                 {
-                    using( var asyncCommandRuntime = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.AsyncCommandRuntime(this, ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token) )
+                    if (true == MyInvocation?.BoundParameters?.ContainsKey("AsJob"))
                     {
-                        asyncCommandRuntime.Wait( ProcessRecordAsync(),((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token);
+                        var instance = this.Clone();
+                        var job = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.AsyncJob(instance, this.MyInvocation.Line, this.MyInvocation.MyCommand.Name, this._cancellationTokenSource.Token, this._cancellationTokenSource.Cancel);
+                        JobRepository.Add(job);
+                        var task = instance.ProcessRecordAsync();
+                        job.Monitor(task);
+                        WriteObject(job);
+                    }
+                    else
+                    {
+                        using( var asyncCommandRuntime = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.AsyncCommandRuntime(this, ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token) )
+                        {
+                            asyncCommandRuntime.Wait( ProcessRecordAsync(),((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token);
+                        }
                     }
                 }
             }
@@ -404,9 +573,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         {
             using( NoSynchronizationContext )
             {
-                await ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletProcessRecordAsyncStart); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 await ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletGetPipeline); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                Pipeline = Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.CreatePipeline(InvocationInformation, __correlationId, __processRecordId, this.ParameterSetName);
+                Pipeline = Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.CreatePipeline(InvocationInformation, __correlationId, __processRecordId, this.ParameterSetName, this.ExtensibleParameters);
                 if (null != HttpPipelinePrepend)
                 {
                     Pipeline.Prepend((this.CommandRuntime as Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.IAsyncCommandRuntimeExtensions)?.Wrap(HttpPipelinePrepend) ?? HttpPipelinePrepend);
@@ -416,15 +584,22 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
                     Pipeline.Append((this.CommandRuntime as Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.PowerShell.IAsyncCommandRuntimeExtensions)?.Wrap(HttpPipelineAppend) ?? HttpPipelineAppend);
                 }
                 // get the client instance
+                if (true == this.MyInvocation?.BoundParameters?.ContainsKey("HostType"))
+                {
+                    HostType = (string)this.MyInvocation.BoundParameters["HostType"];
+                }
                 try
                 {
                     await ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletBeforeAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                    await this.Client.CustomLocationsUpdate(SubscriptionId, ResourceGroupName, Name, ParametersBody, onOk, onDefault, this, Pipeline);
+                    _parametersBody = await this.Client.CustomLocationsGetWithResult(SubscriptionId, ResourceGroupName, Name, this, Pipeline);
+                    this.PreProcessManagedIdentityParametersWithGetResult();
+                    this.Update_parametersBody();
+                    await this.Client.CustomLocationsCreateOrUpdate(SubscriptionId, ResourceGroupName, Name, _parametersBody, onOk, onDefault, this, Pipeline, Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.SerializationMode.IncludeCreate|Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.SerializationMode.IncludeUpdate);
                     await ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.Events.CmdletAfterAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 }
                 catch (Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.UndeclaredResponseException urexception)
                 {
-                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  SubscriptionId=SubscriptionId,ResourceGroupName=ResourceGroupName,Name=Name,body=ParametersBody})
+                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId,ResourceGroupName=ResourceGroupName,Name=Name})
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(urexception.Message) { RecommendedAction = urexception.Action }
                     });
@@ -444,23 +619,74 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
         }
 
         /// <summary>
-        /// Intializes a new instance of the <see cref="UpdateAzCustomLocation_UpdateExpanded" /> cmdlet class.
+        /// Initializes a new instance of the <see cref="UpdateAzCustomLocation_UpdateExpanded" /> cmdlet class.
         /// </summary>
         public UpdateAzCustomLocation_UpdateExpanded()
         {
 
         }
 
+        private void Update_parametersBody()
+        {
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("Tag")))
+            {
+                this.Tag = (Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ITrackedResourceTags)(this.MyInvocation?.BoundParameters["Tag"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("HostType")))
+            {
+                this.HostType = (string)(this.MyInvocation?.BoundParameters["HostType"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("ClusterExtensionId")))
+            {
+                this.ClusterExtensionId = (string[])(this.MyInvocation?.BoundParameters["ClusterExtensionId"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("DisplayName")))
+            {
+                this.DisplayName = (string)(this.MyInvocation?.BoundParameters["DisplayName"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("HostResourceId")))
+            {
+                this.HostResourceId = (string)(this.MyInvocation?.BoundParameters["HostResourceId"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("Namespace")))
+            {
+                this.Namespace = (string)(this.MyInvocation?.BoundParameters["Namespace"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("AuthenticationType")))
+            {
+                this.AuthenticationType = (string)(this.MyInvocation?.BoundParameters["AuthenticationType"]);
+            }
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("AuthenticationValue")))
+            {
+                this.AuthenticationValue = (string)(this.MyInvocation?.BoundParameters["AuthenticationValue"]);
+            }
+        }
+
+        /// <param name="sendToPipeline"></param>
+        new protected void WriteObject(object sendToPipeline)
+        {
+            Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.SanitizeOutput?.Invoke(sendToPipeline, __correlationId);
+            base.WriteObject(sendToPipeline);
+        }
+
+        /// <param name="sendToPipeline"></param>
+        /// <param name="enumerateCollection"></param>
+        new protected void WriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Module.Instance.SanitizeOutput?.Invoke(sendToPipeline, __correlationId);
+            base.WriteObject(sendToPipeline, enumerateCollection);
+        }
+
         /// <summary>
         /// a delegate that is called when the remote service returns default (any response code not handled elsewhere).
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20.IErrorResponse"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse</see>
+        /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>
-        private async global::System.Threading.Tasks.Task onDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20.IErrorResponse> response)
+        private async global::System.Threading.Tasks.Task onDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse> response)
         {
             using( NoSynchronizationContext )
             {
@@ -477,15 +703,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
                 if ((null == code || null == message))
                 {
                     // Unrecognized Response. Create an error record based on what we have.
-                    var ex = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.RestException<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20.IErrorResponse>(responseMessage, await response);
-                    WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId, ResourceGroupName=ResourceGroupName, Name=Name, body=ParametersBody })
+                    var ex = new Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Runtime.RestException<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.IErrorResponse>(responseMessage, await response);
+                    WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  })
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(ex.Message) { RecommendedAction = ex.Action }
                     });
                 }
                 else
                 {
-                    WriteError( new global::System.Management.Automation.ErrorRecord(new global::System.Exception($"[{code}] : {message}"), code?.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId, ResourceGroupName=ResourceGroupName, Name=Name, body=ParametersBody })
+                    WriteError( new global::System.Management.Automation.ErrorRecord(new global::System.Exception($"[{code}] : {message}"), code?.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  })
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(message) { RecommendedAction = global::System.String.Empty }
                     });
@@ -495,12 +721,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
 
         /// <summary>a delegate that is called when the remote service returns 200 (OK).</summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation"
-        /// /> from the remote call</param>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation">Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation</see>
+        /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>
-        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation> response)
+        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation> response)
         {
             using( NoSynchronizationContext )
             {
@@ -512,8 +738,26 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Cmdlets
                     return ;
                 }
                 // onOk - response for 200 / application/json
-                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.Api20210815.ICustomLocation
-                WriteObject((await response));
+                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.CustomLocation.Models.ICustomLocation
+                var result = (await response);
+                if (null != result)
+                {
+                    if (0 == _responseSize)
+                    {
+                        _firstResponse = result;
+                        _responseSize = 1;
+                    }
+                    else
+                    {
+                        if (1 ==_responseSize)
+                        {
+                            // Flush buffer
+                            WriteObject(_firstResponse.AddMultipleTypeNameIntoPSObject());
+                        }
+                        WriteObject(result.AddMultipleTypeNameIntoPSObject());
+                        _responseSize = 2;
+                    }
+                }
             }
         }
     }

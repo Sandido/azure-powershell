@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.applicationinsights/get-azapplicationinsightsmyworkbook
 schema: 2.0.0
@@ -14,7 +14,7 @@ Get a single private workbook by its resourceName.
 
 ### List1 (Default)
 ```
-Get-AzApplicationInsightsMyWorkbook -Category <CategoryType> [-SubscriptionId <String[]>] [-CanFetchContent]
+Get-AzApplicationInsightsMyWorkbook [-SubscriptionId <String[]>] -Category <CategoryType> [-CanFetchContent]
  [-Tag <String[]>] [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
@@ -26,8 +26,8 @@ Get-AzApplicationInsightsMyWorkbook -Name <String> -ResourceGroupName <String> [
 
 ### List
 ```
-Get-AzApplicationInsightsMyWorkbook -ResourceGroupName <String> -Category <CategoryType>
- [-SubscriptionId <String[]>] [-CanFetchContent] [-LinkedSourceId <String>] [-Tag <String[]>]
+Get-AzApplicationInsightsMyWorkbook -ResourceGroupName <String> [-SubscriptionId <String[]>]
+ -Category <CategoryType> [-CanFetchContent] [-LinkedSourceId <String>] [-Tag <String[]>]
  [-DefaultProfile <PSObject>] [<CommonParameters>]
 ```
 
@@ -55,7 +55,7 @@ appinsights-hkrs2v-test 5df8625f-fae4-4a38-9f43-62a40a2e99d1 5df8625f-fae4-4a38-
 
 This command lists my workbook by category.
 
-### Example 2: Get a single private workbook by its resourceName 
+### Example 2: Get a single private workbook by its resourceName
 ```powershell
 Get-AzApplicationInsightsMyWorkbook -ResourceGroupName appinsights-hkrs2v-test -Name 5df8625f-fae4-4a38-9f43-62a40a2e99d1
 ```
@@ -95,7 +95,7 @@ If false, only return summary content for workbooks.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-Parameter Sets: List, List1
+Parameter Sets: List1, List
 Aliases:
 
 Required: False
@@ -110,7 +110,7 @@ Category of workbook to return.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Support.CategoryType
-Parameter Sets: List, List1
+Parameter Sets: List1, List
 Aliases:
 
 Required: True
@@ -121,7 +121,8 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultProfile
-The credentials, account, tenant, and subscription used for communication with Azure.
+The DefaultProfile parameter is not functional.
+Use the SubscriptionId parameter when available if executing the cmdlet against a different subscription.
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -201,7 +202,7 @@ Tags presents on each workbook returned.
 
 ```yaml
 Type: System.String[]
-Parameter Sets: List, List1
+Parameter Sets: List1, List
 Aliases:
 
 Required: False
@@ -222,7 +223,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

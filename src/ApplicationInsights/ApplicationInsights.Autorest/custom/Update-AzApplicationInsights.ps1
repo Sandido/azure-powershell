@@ -22,7 +22,7 @@ Note: You cannot specify a different value for InstrumentationKey nor AppId in t
 Creates (or updates) an Application Insights component.
 Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 .Link
-https://learn.microsoft.com/powershell/module/az.applicationinsights/new-azapplicationinsights
+https://learn.microsoft.com/powershell/module/az.applicationinsights/update-azapplicationinsights
 #>
 function Update-AzApplicationInsights {
     [OutputType([Microsoft.Azure.PowerShell.Cmdlets.ApplicationInsights.Models.Api202002.IApplicationInsightsComponent])]
@@ -206,8 +206,38 @@ function Update-AzApplicationInsights {
     )
     
     process {
+        # add PS bound parameters to run test
+        $EnvPSBoundParameters = @{}
+        if ($PSBoundParameters.ContainsKey('Debug')) {
+            $EnvPSBoundParameters['Debug'] = $Debug
+        }
+        if ($PSBoundParameters.ContainsKey('HttpPipelineAppend')) {
+            $EnvPSBoundParameters['HttpPipelineAppend'] = $HttpPipelineAppend
+        }
+        if ($PSBoundParameters.ContainsKey('HttpPipelinePrepend')) {
+            $EnvPSBoundParameters['HttpPipelinePrepend'] = $HttpPipelinePrepend
+        }
+        if ($PSBoundParameters.ContainsKey('Proxy')) {
+            $EnvPSBoundParameters['Proxy'] = $Proxy
+        }
+        if ($PSBoundParameters.ContainsKey('ProxyCredential')) {
+            $EnvPSBoundParameters['ProxyCredential'] = $ProxyCredential
+        }
+        if ($PSBoundParameters.ContainsKey('ProxyUseDefaultCredentials')) {
+            $EnvPSBoundParameters['ProxyUseDefaultCredentials'] = $ProxyUseDefaultCredentials
+        }
+        if ($PSBoundParameters.ContainsKey('SubscriptionId')) {
+            $EnvPSBoundParameters['SubscriptionId'] = $SubscriptionId
+        }
+        if ($PSBoundParameters.ContainsKey('ResourceGroupName')) {
+            $EnvPSBoundParameters['ResourceGroupName'] = $ResourceGroupName
+        }
+        if ($PSBoundParameters.ContainsKey('Name')) {
+            $EnvPSBoundParameters['Name'] = $Name
+        }
+
         try {
-            $component = . Get-AzApplicationInsights -SubscriptionId $PSBoundParameters["SubscriptionId"] -ResourceGroupName $PSBoundParameters["ResourceGroupName"] -Name $PSBoundParameters["Name"]
+            $component = . Get-AzApplicationInsights @EnvPSBoundParameters
         } catch {
             Write-Warning "component $($PSBoundParameters['Name']) is not existed in Resource Group $($PSBoundParameters["ResourceGroupName"])"
             return
@@ -258,7 +288,7 @@ function Update-AzApplicationInsights {
             $PSBoundParameters["SamplingPercentage"] = $component.SamplingPercentage
         }
         if (!$PSBoundParameters.ContainsKey("Tag") -and ($null -ne $component.Tag)) {
-            $PSBoundParameters["Tag"] = [System.Collections.Hashtable]$component.Tag.AddtionalProperties
+            $PSBoundParameters["Tag"] = [System.Collections.Hashtable]$component.Tag.AdditionalProperties
         }
         if (!$PSBoundParameters.ContainsKey("WorkspaceResourceId") -and ![System.String]::IsNullOrEmpty($component.WorkspaceResourceId)) {
             $PSBoundParameters["WorkspaceResourceId"] = $component.WorkspaceResourceId

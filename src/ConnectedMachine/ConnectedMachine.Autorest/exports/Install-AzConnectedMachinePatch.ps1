@@ -25,32 +25,44 @@ Install-AzConnectedMachinePatch -ResourceGroupName az-sdk-test -Name testMachine
 .Inputs
 Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineInstallPatchesResult
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineInstallPatchesResult
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 INPUTOBJECT <IConnectedMachineIdentity>: Identity Parameter
+  [BaseProvider <String>]: The name of the base Resource Provider.
+  [BaseResourceName <String>]: The name of the base resource.
+  [BaseResourceType <String>]: The name of the base Resource Type.
   [ExtensionName <String>]: The name of the machine extension.
   [ExtensionType <String>]: The extensionType of the Extension being received.
+  [GatewayName <String>]: The name of the Gateway.
   [GroupName <String>]: The name of the private link resource.
   [Id <String>]: Resource identity path
+  [LicenseName <String>]: The name of the license.
+  [LicenseProfileName <String>]: The name of the license profile.
   [Location <String>]: The location of the Extension being received.
   [MachineName <String>]: The name of the hybrid machine.
+  [MetadataName <String>]: Name of the HybridIdentityMetadata.
   [Name <String>]: The name of the hybrid machine.
+  [OSType <String>]: Defines the os type.
+  [PerimeterName <String>]: The name, in the format {perimeterGuid}.{associationName}, of the Network Security Perimeter resource.
   [PrivateEndpointConnectionName <String>]: The name of the private endpoint connection.
   [PrivateLinkScopeId <String>]: The id (Guid) of the Azure Arc PrivateLinkScope resource.
   [Publisher <String>]: The publisher of the Extension being received.
   [ResourceGroupName <String>]: The name of the resource group. The name is case insensitive.
+  [ResourceUri <String>]: The fully qualified Azure Resource manager identifier of the resource to be connected.
+  [RunCommandName <String>]: The name of the run command.
   [ScopeName <String>]: The name of the Azure Arc PrivateLinkScope resource.
+  [SettingsResourceName <String>]: The name of the settings resource.
   [SubscriptionId <String>]: The ID of the target subscription.
   [Version <String>]: The version of the Extension being received.
 .Link
 https://learn.microsoft.com/powershell/module/az.connectedmachine/install-azconnectedmachinepatch
 #>
 function Install-AzConnectedMachinePatch {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachineInstallPatchesResult])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachineInstallPatchesResult])]
 [CmdletBinding(DefaultParameterSetName='InstallExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
 param(
     [Parameter(ParameterSetName='InstallExpanded', Mandatory)]
@@ -77,7 +89,6 @@ param(
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Path')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity]
     # Identity Parameter
-    # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
     ${InputObject},
 
     [Parameter(Mandatory)]
@@ -88,17 +99,17 @@ param(
     ${MaximumDuration},
 
     [Parameter(Mandatory)]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchRebootSetting])]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.PSArgumentCompleterAttribute("IfRequired", "Never", "Always")]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchRebootSetting]
+    [System.String]
     # Defines when it is acceptable to reboot a VM during a software update operation.
     ${RebootSetting},
 
     [Parameter()]
     [AllowEmptyCollection()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchClassificationLinux])]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.PSArgumentCompleterAttribute("Critical", "Security", "Other")]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchClassificationLinux[]]
+    [System.String[]]
     # The update classifications to select when installing patches for Linux.
     ${LinuxParameterClassificationsToInclude},
 
@@ -120,9 +131,9 @@ param(
 
     [Parameter()]
     [AllowEmptyCollection()]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchClassificationWindows])]
+    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.PSArgumentCompleterAttribute("Critical", "Security", "UpdateRollUp", "FeaturePack", "ServicePack", "Definition", "Tools", "Updates")]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Body')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.VMGuestPatchClassificationWindows[]]
+    [System.String[]]
     # The update classifications to select when installing patches for Windows.
     ${WindowParameterClassificationsToInclude},
 
@@ -242,8 +253,14 @@ begin {
             InstallExpanded = 'Az.ConnectedMachine.private\Install-AzConnectedMachinePatch_InstallExpanded';
             InstallViaIdentityExpanded = 'Az.ConnectedMachine.private\Install-AzConnectedMachinePatch_InstallViaIdentityExpanded';
         }
-        if (('InstallExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('InstallExpanded') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)

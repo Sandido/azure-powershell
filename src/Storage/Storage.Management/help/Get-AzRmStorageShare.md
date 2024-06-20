@@ -15,24 +15,27 @@ Gets or lists Storage file shares.
 ### AccountNameSingle (Default)
 ```
 Get-AzRmStorageShare [-ResourceGroupName] <String> [-StorageAccountName] <String> [-Name <String>]
- [-SnapshotTime <DateTime>] [-GetShareUsage] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+ [-SnapshotTime <DateTime>] [-GetShareUsage] [-DefaultProfile <IAzureContextContainer>]
+ [<CommonParameters>]
 ```
 
 ### AccountName
 ```
 Get-AzRmStorageShare [-ResourceGroupName] <String> [-StorageAccountName] <String> [-IncludeDeleted]
- [-IncludeSnapshot] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+ [-IncludeSnapshot] [-Filter <String>] [-DefaultProfile <IAzureContextContainer>]
+ [<CommonParameters>]
 ```
 
 ### AccountObjectSingle
 ```
 Get-AzRmStorageShare -StorageAccount <PSStorageAccount> -Name <String> [-SnapshotTime <DateTime>]
- [-GetShareUsage] [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
+ [-GetShareUsage] [-DefaultProfile <IAzureContextContainer>]
+ [<CommonParameters>]
 ```
 
 ### AccountObject
 ```
-Get-AzRmStorageShare -StorageAccount <PSStorageAccount> [-IncludeDeleted] [-IncludeSnapshot]
+Get-AzRmStorageShare -StorageAccount <PSStorageAccount> [-IncludeDeleted] [-IncludeSnapshot] [-Filter <String>]
  [-DefaultProfile <IAzureContextContainer>] [<CommonParameters>]
 ```
 
@@ -140,6 +143,22 @@ testshare1 5120                     TransactionOptimized                        
 
 This command gets a single file share snapshot with share name and snapshot time.
 
+### Example 7: List Storage file shares of a Storage account with a filter
+```powershell
+Get-AzRmStorageShare -ResourceGroupName "myresourcegroup" -StorageAccountName "mystorageaccount" -Filter "startswith(name, test)"
+```
+
+```output
+ResourceGroupName: myresourcegroup, StorageAccountName: mystorageaccount
+
+Name       QuotaGiB EnabledProtocols AccessTier           Deleted Version ShareUsageBytes snapshotTime
+----       -------- ---------------- ----------           ------- ------- --------------- ------------
+testshare1 5120     SMB              TransactionOptimized
+testshare2 5120     SMB              TransactionOptimized
+```
+
+This command lists all Storage file shares with names that begin with "test".
+
 ## PARAMETERS
 
 ### -DefaultProfile
@@ -149,6 +168,21 @@ The credentials, account, tenant, and subscription used for communication with A
 Type: Microsoft.Azure.Commands.Common.Authentication.Abstractions.Core.IAzureContextContainer
 Parameter Sets: (All)
 Aliases: AzContext, AzureRmContext, AzureCredential
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Filter
+The filter of share name. When specified, only share names starting with the filter will be listed. The filter must be in format: startswith(name, `<prefix>`)
+
+```yaml
+Type: System.String
+Parameter Sets: AccountName, AccountObject
+Aliases:
 
 Required: False
 Position: Named
@@ -309,9 +343,9 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
-
 ### Microsoft.Azure.Commands.Management.Storage.Models.PSStorageAccount
+
+### System.String
 
 ## OUTPUTS
 

@@ -106,6 +106,7 @@ function Test-LoadBalancerBackendPoolCreate
     $testIpAddress1 = "10.0.0.5"
     $testIpAddress2 = "10.0.1.6"
     $testIpAddress3 = "10.0.0.7"
+    $adminState = "Up"
 
     $backendAddressConfigName1 = Get-ResourceName
     $backendAddressConfigName2 = Get-ResourceName
@@ -128,7 +129,7 @@ function Test-LoadBalancerBackendPoolCreate
         # Create Standard Azure load balancer
         $lb = New-AzLoadBalancer -Name $lbName -ResourceGroupName $rgname -Location $location -SKU Standard
 
-        $ip1 = New-AzLoadBalancerBackendAddressConfig -IpAddress $testIpAddress1 -Name $backendAddressConfigName1 -VirtualNetworkId $vnet.Id
+        $ip1 = New-AzLoadBalancerBackendAddressConfig -IpAddress $testIpAddress1 -Name $backendAddressConfigName1 -VirtualNetworkId $vnet.Id -AdminState $adminState
         $ip2 = New-AzLoadBalancerBackendAddressConfig -IpAddress $testIpAddress2 -Name $backendAddressConfigName2 -SubnetId $vnet.Subnets[0].Id 
         $ip3 = New-AzLoadBalancerBackendAddressConfig -IpAddress $testIpAddress3 -Name $backendAddressConfigName3 -VirtualNetworkId $vnet.Id
 
@@ -144,6 +145,7 @@ function Test-LoadBalancerBackendPoolCreate
 
         Assert-NotNull $create2
         Assert-True { @($create2.LoadBalancerBackendAddresses).Count -eq 2}
+        Assert-True { $create2.LoadBalancerBackendAddresses[0].AdminState -eq "Up"}
 
         ## create by Name without ip's
         $create3 = New-AzLoadBalancerBackendAddressPool -ResourceGroupName $rgname -LoadBalancerName $lbName -Name $backendPool3
@@ -502,6 +504,8 @@ function Test-LoadBalancerBackendAddressConfig
     $validIpAddress = "10.0.0.5"
     $invalidIpAddress2 = "xxxxx"
 
+    $adminState = "Up"
+
     $backendAddressConfigName1 = Get-ResourceName
     $backendAddressConfigName2 = Get-ResourceName
 
@@ -514,11 +518,12 @@ function Test-LoadBalancerBackendAddressConfig
         $subnet = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 10.0.1.0/24
         $virtualNetwork = New-AzVirtualNetwork -Name $vnetName -ResourceGroupName $rgname -Location $location -AddressPrefix 10.0.0.0/16 -Subnet $subnet
 
-        $ipconfig1 = New-AzLoadBalancerBackendAddressConfig -IpAddress $validIpAddress -Name $backendAddressConfigName1 -VirtualNetworkId $virtualNetwork.Id
+        $ipconfig1 = New-AzLoadBalancerBackendAddressConfig -IpAddress $validIpAddress -Name $backendAddressConfigName1 -VirtualNetworkId $virtualNetwork.Id -AdminState $adminState
 
         Assert-AreEqual $ipconfig1.Name $backendAddressConfigName1
         Assert-AreEqual $ipconfig1.IpAddress $validIpAddress
         Assert-AreEqual $ipconfig1.VirtualNetwork.Id $virtualNetwork.Id
+        Assert-AreEqual $ipconfig1.AdminState $adminState
 
         $ipconfig2 = New-AzLoadBalancerBackendAddressConfig -IpAddress $validIpAddress -Name $backendAddressConfigName1 -SubnetId virtualNetwork.Subnets[0].Id
 
@@ -726,11 +731,89 @@ function Test-ManagedIpBasedLoadBalancerBackendPoolCreate
         $create1 = $lb | New-AzLoadBalancerBackendAddressPool -Name $backendPool1 -SyncMode "Automatic" -VirtualNetworkId $vnet.Id
 
         Assert-NotNull $create1
+        Assert-True { $create1.SyncMode -eq "Automatic"}
+        Assert-AreEqual $create1.VirtualNetwork.Id $vnet.Id
 
         ## create by Name without ip's
         $create2 = New-AzLoadBalancerBackendAddressPool -ResourceGroupName $rgname -LoadBalancerName $lbName -Name $backendPool2 -SyncMode "Automatic" -VirtualNetworkId $vnet.Id
 
         Assert-NotNull $create2
+        Assert-True { $create2.SyncMode -eq "Automatic"}
+        Assert-AreEqual $create2.VirtualNetwork.Id $vnet.Id
+    }
+    finally {
+        # Cleanup
+        Clean-ResourceGroup $rgname
+    }
+}
+
+<#
+.SYNOPSIS
+Tests Set-AzLoadBalancerBackendAddressPool
+#>
+function Test-ManagedIpBasedLoadBalancerBackendPoolUpdate
+{
+
+    # Setup
+    $rgname = Get-ResourceGroupName
+    $vnetName = Get-ResourceName
+    $subnetName = Get-ResourceName
+    $publicIpName = Get-ResourceName
+    $domainNameLabel = Get-ResourceName
+    $lbName = Get-ResourceName
+    $frontendName = Get-ResourceName
+    $backendAddressPoolName = Get-ResourceName
+    $rglocation = Get-ProviderLocation ResourceManagement
+    $resourceTypeParent = "Microsoft.Network/loadBalancers"
+    $location = Get-ProviderLocation $resourceTypeParent
+
+    $testIpAddress1 = "10.0.0.5"
+    $testIpAddress2 = "10.0.0.6"
+
+    $backendAddressConfigName1 = Get-ResourceName
+    $backendAddressConfigName2 = Get-ResourceName
+
+    $backendPool1 = Get-ResourceName
+
+    try
+    {
+         # Create the resource group
+        $resourceGroup = New-AzResourceGroup -Name $rgname -Location $rglocation -Tags @{ testtag = "testval"} 
+
+        # Create pip
+        $publicip = New-AzPublicIpAddress -ResourceGroupName $rgname -name $publicIpName -location $location -AllocationMethod Static -DomainNameLabel $domainNameLabel -SKU Standard
+
+        # Create fip
+        $frontend = New-AzLoadBalancerFrontendIpConfig -Name $frontendName -PublicIpAddress $publicip
+
+        # Create the Virtual Network
+        $subnet = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 10.0.1.0/24
+        $vnet = New-AzVirtualNetwork -Name $vnetName -ResourceGroupName $rgname -Location $location -AddressPrefix 10.0.0.0/16 -Subnet $subnet
+
+        # Create Standard Azure load balancer
+        $lb = New-AzLoadBalancer -Name $lbName -ResourceGroupName $rgname -Location $location -SKU Standard -FrontendIPConfiguration $frontend
+       
+        $unmodified = $lb | New-AzLoadBalancerBackendAddressPool -Name $backendPool1 -SyncMode "Automatic" -VirtualNetworkId $vnet.Id
+        Assert-NotNull $unmodified
+        Assert-True { $unmodified.SyncMode -eq "Automatic"}
+        Assert-AreEqual $unmodified.VirtualNetwork.Id $vnet.Id
+
+        $lb = Get-AzLoadBalancer -Name $lbName -ResourceGroupName $rgname
+        Assert-True { $lb.BackendAddressPools[0].SyncMode -eq "Automatic"}
+        Assert-AreEqual $lb.BackendAddressPools[0].VirtualNetwork.Id $vnet.Id
+
+        $pool = Get-AzLoadBalancerBackendAddressPool -ResourceGroupName $rgname -LoadBalancerName $lbName -Name $backendPool1
+        Assert-True { $pool.SyncMode -eq "Automatic"}
+        Assert-AreEqual $pool.VirtualNetwork.Id $vnet.Id
+
+        $lb2 = Set-AzLoadBalancer -LoadBalancer $lb
+        Assert-NotNull $lb2
+        Assert-True { $lb2.BackendAddressPools[0].SyncMode -eq "Automatic"}
+        Assert-AreEqual $lb2.BackendAddressPools[0].VirtualNetwork.Id $vnet.Id
+
+        $pool2 = Set-AzLoadBalancerBackendAddressPool -InputObject $pool
+        Assert-True { $pool2.SyncMode -eq "Automatic"}
+        Assert-AreEqual $pool2.VirtualNetwork.Id $vnet.Id
     }
     finally {
         # Cleanup

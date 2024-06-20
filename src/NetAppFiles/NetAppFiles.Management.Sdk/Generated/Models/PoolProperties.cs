@@ -28,11 +28,11 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </param>
 
         /// <param name="size">Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks
-        /// (value must be multiply of 4398046511104).
+        /// (value must be multiply of 1099511627776).
         /// </param>
 
         /// <param name="serviceLevel">The service level of the file system
-        /// Possible values include: 'Standard', 'Premium', 'Ultra', 'StandardZRS'</param>
+        /// Possible values include: &#39;Standard&#39;, &#39;Premium&#39;, &#39;Ultra&#39;, &#39;StandardZRS&#39;</param>
 
         /// <param name="provisioningState">Azure lifecycle management
         /// </param>
@@ -44,7 +44,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </param>
 
         /// <param name="qosType">The qos type of the pool
-        /// Possible values include: 'Auto', 'Manual'</param>
+        /// Possible values include: &#39;Auto&#39;, &#39;Manual&#39;</param>
 
         /// <param name="coolAccess">If enabled (true) the pool can contain cool Access enabled volumes.
         /// </param>
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// <param name="encryptionType">Encryption type of the capacity pool, set encryption type for data at rest
         /// for this pool and all volumes in it. This value can only be set when
         /// creating new pool.
-        /// Possible values include: 'Single', 'Double'</param>
+        /// Possible values include: &#39;Single&#39;, &#39;Double&#39;</param>
         public PoolProperties(long size, string serviceLevel, string poolId = default(string), string provisioningState = default(string), double? totalThroughputMibps = default(double?), double? utilizedThroughputMibps = default(double?), string qosType = default(string), bool? coolAccess = default(bool?), string encryptionType = default(string))
 
         {
@@ -82,7 +82,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
 
         /// <summary>
         /// Gets or sets provisioned size of the pool (in bytes). Allowed values are in
-        /// 1TiB chunks (value must be multiply of 4398046511104).
+        /// 1TiB chunks (value must be multiply of 1099511627776).
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "size")]
         public long Size {get; set; }

@@ -20,19 +20,19 @@ Retrieves information about the model view or the instance view of a hybrid mach
 .Description
 Retrieves information about the model view or the instance view of a hybrid machine.
 .Example
-Get-AzConnectedMachine -SubscriptionId 67379433-5e19-4702-b39a-c0a03ca8d20c
+Get-AzConnectedMachine -SubscriptionId ********-****-****-****-**********
 .Example
 Get-AzConnectedMachine -ResourceGroupName contoso-connected-machines
 .Example
 Get-AzConnectedMachine -ResourceGroupName contoso-connected-machines -Name winwestus2_1
 
 .Outputs
-Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachine
+Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachine
 .Link
 https://learn.microsoft.com/powershell/module/az.connectedmachine/get-azconnectedmachine
 #>
 function Get-AzConnectedMachine {
-[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IMachine])]
+[OutputType([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IMachine])]
 [CmdletBinding(DefaultParameterSetName='List1', PositionalBinding=$false)]
 param(
     [Parameter(ParameterSetName='Get', Mandatory)]
@@ -59,9 +59,9 @@ param(
     ${SubscriptionId},
 
     [Parameter(ParameterSetName='Get')]
-    [ArgumentCompleter([Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.InstanceViewTypes])]
+    [Parameter(ParameterSetName='List')]
     [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Category('Query')]
-    [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Support.InstanceViewTypes]
+    [System.String]
     # The expand expression to apply on the operation.
     ${Expand},
 
@@ -144,8 +144,14 @@ begin {
             List = 'Az.ConnectedMachine.private\Get-AzConnectedMachine_List';
             List1 = 'Az.ConnectedMachine.private\Get-AzConnectedMachine_List1';
         }
-        if (('Get', 'List', 'List1') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId')) {
-            $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+        if (('Get', 'List', 'List1') -contains $parameterSet -and -not $PSBoundParameters.ContainsKey('SubscriptionId') ) {
+            $testPlayback = $false
+            $PSBoundParameters['HttpPipelinePrepend'] | Foreach-Object { if ($_) { $testPlayback = $testPlayback -or ('Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.PipelineMock' -eq $_.Target.GetType().FullName -and 'Playback' -eq $_.Target.Mode) } }
+            if ($testPlayback) {
+                $PSBoundParameters['SubscriptionId'] = . (Join-Path $PSScriptRoot '..' 'utils' 'Get-SubscriptionIdTestSafe.ps1')
+            } else {
+                $PSBoundParameters['SubscriptionId'] = (Get-AzContext).Subscription.Id
+            }
         }
         $cmdInfo = Get-Command -Name $mapping[$parameterSet]
         [Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Runtime.MessageAttributeHelper]::ProcessCustomAttributesAtRuntime($cmdInfo, $MyInvocation, $parameterSet, $PSCmdlet)

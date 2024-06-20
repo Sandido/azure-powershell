@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ApplicationInsights-help.xml
 Module Name: Az.ApplicationInsights
 online version: https://learn.microsoft.com/powershell/module/az.ApplicationInsights/new-AzApplicationInsightsWebTestHeaderFieldObject
 schema: 2.0.0
@@ -13,7 +13,8 @@ Create a in-memory object for HeaderField
 ## SYNTAX
 
 ```
-New-AzApplicationInsightsWebTestHeaderFieldObject [-Name <String>] [-Value <String>] [<CommonParameters>]
+New-AzApplicationInsightsWebTestHeaderFieldObject [-Name <String>] [-Value <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -77,7 +78,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

@@ -19,8 +19,8 @@ Get-AzStorageBlobQueryResult [-Blob] <String> [-Container] <String> [-SnapshotTi
  [-InputTextConfiguration <PSBlobQueryTextConfiguration>]
  [-OutputTextConfiguration <PSBlobQueryTextConfiguration>] [-PassThru] [-Force] [-TagCondition <String>]
  [-Context <IStorageContext>] [-ServerTimeoutPerRequest <Int32>] [-ClientTimeoutPerRequest <Int32>]
- [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### BlobPipeline
@@ -29,8 +29,8 @@ Get-AzStorageBlobQueryResult -BlobBaseClient <BlobBaseClient> -QueryString <Stri
  [-InputTextConfiguration <PSBlobQueryTextConfiguration>]
  [-OutputTextConfiguration <PSBlobQueryTextConfiguration>] [-PassThru] [-Force] [-TagCondition <String>]
  [-Context <IStorageContext>] [-ServerTimeoutPerRequest <Int32>] [-ClientTimeoutPerRequest <Int32>]
- [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### ContainerPipeline
@@ -40,8 +40,8 @@ Get-AzStorageBlobQueryResult -BlobContainerClient <BlobContainerClient> [-Blob] 
  [-InputTextConfiguration <PSBlobQueryTextConfiguration>]
  [-OutputTextConfiguration <PSBlobQueryTextConfiguration>] [-PassThru] [-Force] [-TagCondition <String>]
  [-Context <IStorageContext>] [-ServerTimeoutPerRequest <Int32>] [-ClientTimeoutPerRequest <Int32>]
- [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-DefaultProfile <IAzureContextContainer>] [-ConcurrentTaskCount <Int32>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,17 +75,17 @@ This command querys a blob succsssfully with input config as csv, and output con
 
 
 ```powershell
-PS C:\> $blob = Get-AzStorageBlob -Container $containerName -Blob $blobName -SnapshotTime "2020-07-29T11:08:21.1097874Z" -Context $ctx
+$blob = Get-AzStorageBlob -Container $containerName -Blob $blobName -SnapshotTime "2020-07-29T11:08:21.1097874Z" -Context $ctx
 
-PS C:\> $inputconfig = New-AzStorageBlobQueryConfig -AsCsv -ColumnSeparator "," -QuotationCharacter """" -EscapeCharacter "\" -RecordSeparator "`n" -HasHeader
+$inputconfig = New-AzStorageBlobQueryConfig -AsCsv -ColumnSeparator "," -QuotationCharacter """" -EscapeCharacter "\" -RecordSeparator "`n" -HasHeader
 
-PS C:\> $outputconfig = New-AzStorageBlobQueryConfig -AsJson -RecordSeparator "`n" 
+$outputconfig = New-AzStorageBlobQueryConfig -AsJson -RecordSeparator "`n" 
 
-PS C:\> $queryString = "SELECT * FROM BlobStorage WHERE _1 LIKE '1%%'"
+$queryString = "SELECT * FROM BlobStorage WHERE _1 LIKE '1%%'"
 
-PS C:\> $result = $blob | Get-AzStorageBlobQueryResult -QueryString $queryString -ResultFile $localFilePath -InputTextConfiguration $inputconfig -OutputTextConfiguration $outputconfig
+$result = $blob | Get-AzStorageBlobQueryResult -QueryString $queryString -ResultFile $localFilePath -InputTextConfiguration $inputconfig -OutputTextConfiguration $outputconfig
 
-PS C:\> $result
+$result
 
 BytesScanned FailureCount BlobQueryError
 ------------ ------------ --------------
@@ -93,7 +93,7 @@ BytesScanned FailureCount BlobQueryError
 
 
 
-PS C:\> $result.BlobQueryError
+$result.BlobQueryError
 
 Name       Description                                                   IsFatal Position
 ----       -----------                                                   ------- --------

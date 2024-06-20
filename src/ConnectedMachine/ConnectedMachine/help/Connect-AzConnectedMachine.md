@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/connect-azconnectedmachine
 schema: 2.0.0
@@ -13,9 +13,9 @@ API to register a new machine and thereby create a tracked resource in ARM
 ## SYNTAX
 
 ```
-Connect-AzConnectedMachine [-ResourceGroupName] <String> [-Location] <String> [[-SubscriptionId] <String>]
- [[-Name] <String>] [[-DefaultProfile] <PSObject>] [[-PSSession] <PSSession[]>] [[-Tag] <Hashtable>]
- [[-Proxy] <Uri>] [<CommonParameters>]
+Connect-AzConnectedMachine [-ResourceGroupName] <String> [[-SubscriptionId] <String>] [[-Name] <String>]
+ [-Location] <String> [[-PSSession] <PSSession[]>] [[-Tag] <Hashtable>] [[-DefaultProfile] <PSObject>]
+ [[-Proxy] <Uri>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,7 +34,7 @@ Connect-AzConnectedMachine -ResourceGroupName contoso-connected-machines -Name l
 time="2020-08-07T13:13:25-07:00" level=info msg="Onboarding Machine. It usually takes a few minutes to complete. Sometimes it may take longer depending on network and server load status."
 time="2020-08-07T13:13:25-07:00" level=info msg="Check network connectivity to all endpoints..."
 time="2020-08-07T13:13:29-07:00" level=info msg="All endpoints are available... continue onboarding"
-time="2020-08-07T13:13:50-07:00" level=info msg="Successfully Onboarded Resource to Azure" VM Id=978ab182-6cf0-4de3-a58b-53c8d0a3235e
+time="2020-08-07T13:13:50-07:00" level=info msg="Successfully Onboarded Resource to Azure" VM Id=********-****-****-****-**********
 
 Name             Location OSName   Status     ProvisioningState
 ----             -------- ------   ------     -----------------
@@ -55,7 +55,8 @@ Connect-AzConnectedMachine -ResourceGroupName contoso-rg -Name win_eastus1_1 -Lo
 time="2020-08-07T13:13:25-07:00" level=info msg="Onboarding Machine. It usually takes a few minutes to complete. Sometimes it may take longer depending on network and server load status."
 time="2020-08-07T13:13:25-07:00" level=info msg="Check network connectivity to all endpoints..."
 time="2020-08-07T13:13:29-07:00" level=info msg="All endpoints are available... continue onboarding"
-time="2020-08-07T13:13:50-07:00" level=info msg="Successfully Onboarded Resource to Azure" VM Id=978ab182-6cf0-4de3-a58b-53c8d0a3236a
+time="2020-08-07T13:13:50-07:00" level=info msg="Successfully Onboarded Resource to Azure" VM Id=********-****-****-****-**********
+
 
 Name           Location OSName   Status     ProvisioningState
 ----           -------- ------   ------     -----------------
@@ -76,7 +77,7 @@ Parameter Sets: (All)
 Aliases: AzureRMContext, AzureCredential
 
 Required: False
-Position: 4
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -91,7 +92,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -107,7 +108,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -122,7 +138,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -138,7 +154,7 @@ Parameter Sets: (All)
 Aliases: Session
 
 Required: False
-Position: 5
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -153,7 +169,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -168,7 +184,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: (Get-AzContext).Subscription.Id
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -183,7 +199,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -199,4 +215,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-

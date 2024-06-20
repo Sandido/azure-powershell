@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.ConnectedMachine-help.xml
 Module Name: Az.ConnectedMachine
 online version: https://learn.microsoft.com/powershell/module/az.connectedmachine/update-azconnectedprivatelinkscopetag
 schema: 2.0.0
@@ -8,7 +8,7 @@ schema: 2.0.0
 # Update-AzConnectedPrivateLinkScopeTag
 
 ## SYNOPSIS
-Updates an existing PrivateLinkScope's tags.
+Update an existing PrivateLinkScope's tags.
 To update other fields use the CreateOrUpdate method.
 
 ## SYNTAX
@@ -16,31 +16,46 @@ To update other fields use the CreateOrUpdate method.
 ### UpdateExpanded (Default)
 ```
 Update-AzConnectedPrivateLinkScopeTag -ResourceGroupName <String> -ScopeName <String>
- [-SubscriptionId <String>] [-Tag <Hashtable>] [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-SubscriptionId <String>] [-Tag <Hashtable>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaJsonString
+```
+Update-AzConnectedPrivateLinkScopeTag -ResourceGroupName <String> -ScopeName <String>
+ [-SubscriptionId <String>] -JsonString <String> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaJsonFilePath
+```
+Update-AzConnectedPrivateLinkScopeTag -ResourceGroupName <String> -ScopeName <String>
+ [-SubscriptionId <String>] -JsonFilePath <String> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Update
 ```
 Update-AzConnectedPrivateLinkScopeTag -ResourceGroupName <String> -ScopeName <String>
- -PrivateLinkScopeTag <ITagsResource> [-SubscriptionId <String>] [-DefaultProfile <PSObject>] [-Confirm]
- [-WhatIf] [<CommonParameters>]
-```
-
-### UpdateViaIdentity
-```
-Update-AzConnectedPrivateLinkScopeTag -InputObject <IConnectedMachineIdentity>
- -PrivateLinkScopeTag <ITagsResource> [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-SubscriptionId <String>] -PrivateLinkScopeTag <ITagsResource> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### UpdateViaIdentityExpanded
 ```
 Update-AzConnectedPrivateLinkScopeTag -InputObject <IConnectedMachineIdentity> [-Tag <Hashtable>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### UpdateViaIdentity
+```
+Update-AzConnectedPrivateLinkScopeTag -InputObject <IConnectedMachineIdentity>
+ -PrivateLinkScopeTag <ITagsResource> [-DefaultProfile <PSObject>] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Updates an existing PrivateLinkScope's tags.
+Update an existing PrivateLinkScope's tags.
 To update other fields use the CreateOrUpdate method.
 
 ## EXAMPLES
@@ -79,11 +94,10 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
-Parameter Sets: UpdateViaIdentity, UpdateViaIdentityExpanded
+Parameter Sets: UpdateViaIdentityExpanded, UpdateViaIdentity
 Aliases:
 
 Required: True
@@ -93,12 +107,41 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
-### -PrivateLinkScopeTag
-A container holding only the Tags for a resource, allowing the user to update the tags on a PrivateLinkScope instance.
-To construct, see NOTES section for PRIVATELINKSCOPETAG properties and create a hash table.
+### -JsonFilePath
+Path of Json file supplied to the Update operation
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.ITagsResource
+Type: System.String
+Parameter Sets: UpdateViaJsonFilePath
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -JsonString
+Json string supplied to the Update operation
+
+```yaml
+Type: System.String
+Parameter Sets: UpdateViaJsonString
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrivateLinkScopeTag
+A container holding only the Tags for a resource, allowing the user to update the tags on a PrivateLinkScope instance.
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.ITagsResource
 Parameter Sets: Update, UpdateViaIdentity
 Aliases:
 
@@ -109,13 +152,28 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ResourceGroupName
 The name of the resource group.
 The name is case insensitive.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, UpdateViaJsonString, UpdateViaJsonFilePath, Update
 Aliases:
 
 Required: True
@@ -130,7 +188,7 @@ The name of the Azure Arc PrivateLinkScope resource.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, UpdateViaJsonString, UpdateViaJsonFilePath, Update
 Aliases:
 
 Required: True
@@ -145,7 +203,7 @@ The ID of the target subscription.
 
 ```yaml
 Type: System.String
-Parameter Sets: Update, UpdateExpanded
+Parameter Sets: UpdateExpanded, UpdateViaJsonString, UpdateViaJsonFilePath, Update
 Aliases:
 
 Required: False
@@ -206,15 +264,14 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.ITagsResource
-
 ### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IConnectedMachineIdentity
+
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.ITagsResource
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.Api20221227.IHybridComputePrivateLinkScope
+### Microsoft.Azure.PowerShell.Cmdlets.ConnectedMachine.Models.IHybridComputePrivateLinkScope
 
 ## NOTES
 
 ## RELATED LINKS
-

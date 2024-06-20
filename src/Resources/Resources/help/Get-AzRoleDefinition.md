@@ -15,20 +15,20 @@ Lists all Azure RBAC roles that are available for assignment.
 
 ### RoleDefinitionNameParameterSet (Default)
 ```
-Get-AzRoleDefinition [[-Name] <String>] [-Scope <String>] [-DefaultProfile <IAzureContextContainer>]
- [<CommonParameters>]
+Get-AzRoleDefinition [[-Name] <String>] [-Scope <String>] [-SkipClientSideScopeValidation]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### RoleDefinitionIdParameterSet
 ```
-Get-AzRoleDefinition -Id <Guid> [-Scope <String>] [-DefaultProfile <IAzureContextContainer>]
- [<CommonParameters>]
+Get-AzRoleDefinition -Id <Guid> [-Scope <String>] [-SkipClientSideScopeValidation]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### RoleDefinitionCustomParameterSet
 ```
-Get-AzRoleDefinition [-Scope <String>] [-Custom] [-DefaultProfile <IAzureContextContainer>]
- [<CommonParameters>]
+Get-AzRoleDefinition [-Scope <String>] [-Custom] [-SkipClientSideScopeValidation]
+ [-DefaultProfile <IAzureContextContainer>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -115,6 +115,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Scope
 Role definition scope.
 
@@ -127,6 +142,21 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -SkipClientSideScopeValidation
+If specified, skip client side scope validation.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -157,4 +187,3 @@ Keywords: azure, azurerm, arm, resource, management, manager, resource, group, t
 [New-AzRoleDefinition](./New-AzRoleDefinition.md)
 
 [Remove-AzRoleDefinition](./Remove-AzRoleDefinition.md)
-

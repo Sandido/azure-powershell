@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Workloads-help.xml
 Module Name: Az.Workloads
 online version: https://learn.microsoft.com/powershell/module/az.workloads/stop-azworkloadssapvirtualinstance
 schema: 2.0.0
@@ -15,14 +15,15 @@ Stops the SAP Application, that is the Application server instances and Central 
 ### StopExpanded (Default)
 ```
 Stop-AzWorkloadsSapVirtualInstance -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>]
- [-SoftStopTimeoutSecond <Int64>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-Confirm] [-WhatIf]
- [<CommonParameters>]
+ [-DeallocateVM] [-SoftStopTimeoutSecond <Int64>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### StopViaIdentityExpanded
 ```
-Stop-AzWorkloadsSapVirtualInstance -InputObject <IWorkloadsIdentity> [-SoftStopTimeoutSecond <Int64>]
- [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-Confirm] [-WhatIf] [<CommonParameters>]
+Stop-AzWorkloadsSapVirtualInstance -InputObject <IWorkloadsIdentity> [-DeallocateVM]
+ [-SoftStopTimeoutSecond <Int64>] [-DefaultProfile <PSObject>] [-AsJob] [-NoWait]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -80,10 +81,75 @@ Target            :
 Stop-AzWorkloadsSapVirtualInstance cmdlet stops the SAP application tier, that is App servers and ASCS instances of the system.
 In this example, you can see that system can be stopped by providing the VIS Azure resource ID as InputObject to the cmdlet.
 
+### Example 3: Stop an SAP system and its underlying Virtual Machine(s)
+```powershell
+Stop-AzWorkloadsSapVirtualInstance -Name DB0 -ResourceGroupName db0-vis-rg -DeallocateVM
+```
+
+```output
+AdditionalInfo    :
+Code              :
+Detail            :
+EndTime           : 15-03-2023 09:04:37
+Id                : /subscriptions/49d64d54-e966-4c46-a868-1999802b762c/providers/Microsoft.Workloads/locations/CENTRALUSEUAP/operationStatuses/7ff215e4-afb
+                    8-41fa-b281-0111da9a0cce*D9A8F8EF15D6E75CE64E8F442A39F1D7AF307793D262CE855530D335419055E3
+Message           :
+Name              : 7ff215e4-afb8-41fa-b281-0111da9a0cce*D9A8F8EF15D6E75CE64E8F442A39F1D7AF307793D262CE855530D335419055E3
+Operation         :
+PercentComplete   :
+ResourceGroupName :
+StartTime         : 15-03-2023 09:01:24
+Status            : Succeeded
+Target            :
+```
+
+Stop-AzWorkloadsSapVirtualInstance cmdlet stops the SAP application tier and its underlying VIrtual Machine, that is App servers and ASCS instances of the system.
+In this example, you can see that SAP application and the VMs can be stopped by passing the VIS name, ResourceGroupName of the VIS, and DeallocateVM parameter as inputs.
+
+### Example 4: Soft Stop an SAP system
+```powershell
+Stop-AzWorkloadsSapVirtualInstance -Name DB0 -ResourceGroupName db0-vis-rg -SoftStopTimeoutSecond 300
+```
+
+```output
+AdditionalInfo    :
+Code              :
+Detail            :
+EndTime           : 15-03-2023 09:04:37
+Id                : /subscriptions/49d64d54-e966-4c46-a868-1999802b762c/providers/Microsoft.Workloads/locations/CENTRALUSEUAP/operationStatuses/7ff215e4-afb
+                    8-41fa-b281-0111da9a0cce*D9A8F8EF15D6E75CE64E8F442A39F1D7AF307793D262CE855530D335419055E3
+Message           :
+Name              : 7ff215e4-afb8-41fa-b281-0111da9a0cce*D9A8F8EF15D6E75CE64E8F442A39F1D7AF307793D262CE855530D335419055E3
+Operation         :
+PercentComplete   :
+ResourceGroupName :
+StartTime         : 15-03-2023 09:01:24
+Status            : Succeeded
+Target            :
+```
+
+Stop-AzWorkloadsSapVirtualInstance cmdlet soft stops the SAP application tier, that is App servers and ASCS instances of the system.
+In this example, you can see that system can be soft stopped by passing the VIS name, ResourceGroupName of the VIS and soft stop timeout seconds as inputs.
+
 ## PARAMETERS
 
 ### -AsJob
 Run the command as a job
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DeallocateVM
+The boolean value indicates whether to Stop and deallocate the virtual machines along with the SAP instances.
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -151,6 +217,21 @@ Run the command asynchronously
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -251,24 +332,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IWorkloadsIdentity>`: Identity Parameter
-  - `[ApplicationInstanceName <String>]`: The name of SAP Application Server instance resource.
-  - `[CentralInstanceName <String>]`: Central Services Instance resource name string modeled as parameter for auto generation to work correctly.
-  - `[DatabaseInstanceName <String>]`: Database resource name string modeled as parameter for auto generation to work correctly.
-  - `[Id <String>]`: Resource identity path
-  - `[Location <String>]`: The name of Azure region.
-  - `[MonitorName <String>]`: Name of the SAP monitor resource.
-  - `[ProviderInstanceName <String>]`: Name of the provider instance.
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SapVirtualInstanceName <String>]`: The name of the Virtual Instances for SAP solutions resource
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-
 ## RELATED LINKS
-

@@ -39,7 +39,7 @@ namespace Microsoft.Azure.Management.NetApp
         public NetAppManagementClient Client { get; private set; }
 
         /// <summary>
-        /// Get the status of the backup for a volume
+        /// Get the latest status of the backup for a volume
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<BackupStatus>> GetStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<BackupStatus>> GetLatestStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -84,13 +84,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -112,9 +106,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
             if (poolName == null)
@@ -174,12 +168,12 @@ namespace Microsoft.Azure.Management.NetApp
 
 
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "GetStatus", tracingParameters);
+                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "GetLatestStatus", tracingParameters);
             }
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backupStatus").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/latestBackupStatus/current").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
@@ -251,14 +245,13 @@ namespace Microsoft.Azure.Management.NetApp
 
             if ((int)_statusCode != 200)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -268,10 +261,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -322,7 +311,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Get the status of the restore for a volume
+        /// Get the latest status of the restore for a volume
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -357,7 +346,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<RestoreStatus>> GetVolumeRestoreStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<RestoreStatus>> GetVolumeLatestRestoreStatusWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -367,13 +356,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -395,9 +378,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
             if (poolName == null)
@@ -457,12 +440,12 @@ namespace Microsoft.Azure.Management.NetApp
 
 
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "GetVolumeRestoreStatus", tracingParameters);
+                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "GetVolumeLatestRestoreStatus", tracingParameters);
             }
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/restoreStatus").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/latestRestoreStatus/current").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
@@ -534,14 +517,13 @@ namespace Microsoft.Azure.Management.NetApp
 
             if ((int)_statusCode != 200)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -551,10 +533,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -605,7 +583,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// List all backups for a volume
+        /// List all backups Under a Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -613,11 +591,12 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='filter'>
+        /// An option to specify the VolumeResourceId. If present, then only returns
+        /// the backups under the specified volume
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -640,7 +619,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<System.Collections.Generic.IEnumerable<Backup>>> ListWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>> ListByVaultWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string filter = default(string), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -650,13 +629,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -678,49 +651,23 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
-            if (poolName == null)
+            if (backupVaultName == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupVaultName");
             }
-            if (poolName != null)
+            if (backupVaultName != null)
             {
-                if (poolName.Length > 64)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupVaultName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupVaultName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
                 }
             }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
+
             if (this.Client.ApiVersion == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.ApiVersion");
@@ -735,24 +682,27 @@ namespace Microsoft.Azure.Management.NetApp
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
                 tracingParameters.Add("resourceGroupName", resourceGroupName);
                 tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
+                tracingParameters.Add("backupVaultName", backupVaultName);
+                tracingParameters.Add("filter", filter);
 
 
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "List", tracingParameters);
+                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "ListByVault", tracingParameters);
             }
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
+            _url = _url.Replace("{backupVaultName}", System.Uri.EscapeDataString(backupVaultName));
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
+            if (filter != null)
+            {
+                _queryParameters.Add(string.Format("$filter={0}", System.Uri.EscapeDataString(filter)));
+            }
             if (this.Client.ApiVersion != null)
             {
                 _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(this.Client.ApiVersion)));
@@ -817,14 +767,13 @@ namespace Microsoft.Azure.Management.NetApp
 
             if ((int)_statusCode != 200)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -834,10 +783,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -850,7 +795,7 @@ namespace Microsoft.Azure.Management.NetApp
                 throw ex;
             }
             // Create Result
-            var _result = new Microsoft.Rest.Azure.AzureOperationResponse<System.Collections.Generic.IEnumerable<Backup>>();
+            var _result = new Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             
@@ -864,7 +809,7 @@ namespace Microsoft.Azure.Management.NetApp
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<Page<Backup>>(_responseContent, this.Client.DeserializationSettings);
+                    _result.Body = Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<Page1<Backup>>(_responseContent, this.Client.DeserializationSettings);
                 }
                 catch (Newtonsoft.Json.JsonException ex)
                 {
@@ -888,7 +833,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Gets the specified backup of the volume
+        /// Get the specified Backup under Backup Vault.
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -896,11 +841,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -926,7 +868,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> GetWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> GetWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -936,13 +878,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -964,47 +900,20 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
-            if (poolName == null)
+            if (backupVaultName == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupVaultName");
             }
-            if (poolName != null)
+            if (backupVaultName != null)
             {
-                if (poolName.Length > 64)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupVaultName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupVaultName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
                 }
             }
             if (backupName == null)
@@ -1013,9 +922,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (backupName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$");
                 }
             }
             if (this.Client.ApiVersion == null)
@@ -1032,8 +941,7 @@ namespace Microsoft.Azure.Management.NetApp
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
                 tracingParameters.Add("resourceGroupName", resourceGroupName);
                 tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
+                tracingParameters.Add("backupVaultName", backupVaultName);
                 tracingParameters.Add("backupName", backupName);
 
 
@@ -1043,12 +951,11 @@ namespace Microsoft.Azure.Management.NetApp
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups/{backupName}").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups/{backupName}").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
+            _url = _url.Replace("{backupVaultName}", System.Uri.EscapeDataString(backupVaultName));
             _url = _url.Replace("{backupName}", System.Uri.EscapeDataString(backupName));
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
@@ -1116,14 +1023,13 @@ namespace Microsoft.Azure.Management.NetApp
 
             if ((int)_statusCode != 200)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -1133,10 +1039,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -1187,7 +1089,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Create a backup for the volume
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1195,11 +1097,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -1213,15 +1112,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> CreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
                 // Send Request
-                Microsoft.Rest.Azure.AzureOperationResponse<Backup> _response = await BeginCreateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, customHeaders, cancellationToken).ConfigureAwait(false);
+                Microsoft.Rest.Azure.AzureOperationResponse<Backup> _response = await BeginCreateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, customHeaders, cancellationToken).ConfigureAwait(false);
                 return await this.Client.GetPutOrPatchOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1229,11 +1128,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -1247,15 +1143,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders>> UpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
                 // Send Request
-                Microsoft.Rest.Azure.AzureOperationResponse<Backup> _response = await BeginUpdateWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, customHeaders, cancellationToken).ConfigureAwait(false);
+                Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders> _response = await BeginUpdateWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, body, customHeaders, cancellationToken).ConfigureAwait(false);
                 return await this.Client.GetPutOrPatchOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1263,11 +1159,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -1278,15 +1171,15 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse> DeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders>> DeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
                 // Send Request
-                Microsoft.Rest.Azure.AzureOperationResponse _response = await BeginDeleteWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, customHeaders, cancellationToken).ConfigureAwait(false);
+                Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders> _response = await BeginDeleteWithHttpMessagesAsync(resourceGroupName, accountName, backupVaultName, backupName, customHeaders, cancellationToken).ConfigureAwait(false);
                 return await this.Client.GetPostOrDeleteOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// Create a backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1294,45 +1187,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='body'>
-        /// Restore payload supplied in the body of the operation.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders>> RestoreFilesWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-                // Send Request
-                Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders> _response = await BeginRestoreFilesWithHttpMessagesAsync(resourceGroupName, accountName, poolName, volumeName, backupName, body, customHeaders, cancellationToken).ConfigureAwait(false);
-                return await this.Client.GetPostOrDeleteOperationResultAsync(_response, customHeaders, cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Create a backup for the volume
-        /// </summary>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -1361,7 +1217,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginCreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginCreateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, Backup body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -1379,13 +1235,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -1407,47 +1257,20 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
-            if (poolName == null)
+            if (backupVaultName == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupVaultName");
             }
-            if (poolName != null)
+            if (backupVaultName != null)
             {
-                if (poolName.Length > 64)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupVaultName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupVaultName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
                 }
             }
             if (backupName == null)
@@ -1456,9 +1279,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (backupName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$");
                 }
             }
             if (this.Client.ApiVersion == null)
@@ -1475,8 +1298,7 @@ namespace Microsoft.Azure.Management.NetApp
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
                 tracingParameters.Add("resourceGroupName", resourceGroupName);
                 tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
+                tracingParameters.Add("backupVaultName", backupVaultName);
                 tracingParameters.Add("backupName", backupName);
 
                 tracingParameters.Add("body", body);
@@ -1487,12 +1309,11 @@ namespace Microsoft.Azure.Management.NetApp
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups/{backupName}").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups/{backupName}").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
+            _url = _url.Replace("{backupVaultName}", System.Uri.EscapeDataString(backupVaultName));
             _url = _url.Replace("{backupName}", System.Uri.EscapeDataString(backupName));
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
@@ -1564,16 +1385,15 @@ namespace Microsoft.Azure.Management.NetApp
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
 
-            if ((int)_statusCode != 200 && (int)_statusCode != 201 && (int)_statusCode != 202)
+            if ((int)_statusCode != 200 && (int)_statusCode != 201)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -1583,10 +1403,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -1655,7 +1471,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Patch a backup for the volume
+        /// Patch a Backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1663,11 +1479,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -1696,7 +1509,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup>> BeginUpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders>> BeginUpdateWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, BackupPatch body = default(BackupPatch), System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -1706,13 +1519,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -1734,47 +1541,20 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
-            if (poolName == null)
+            if (backupVaultName == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupVaultName");
             }
-            if (poolName != null)
+            if (backupVaultName != null)
             {
-                if (poolName.Length > 64)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupVaultName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupVaultName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
                 }
             }
             if (backupName == null)
@@ -1783,9 +1563,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (backupName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$");
                 }
             }
             if (this.Client.ApiVersion == null)
@@ -1802,8 +1582,7 @@ namespace Microsoft.Azure.Management.NetApp
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
                 tracingParameters.Add("resourceGroupName", resourceGroupName);
                 tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
+                tracingParameters.Add("backupVaultName", backupVaultName);
                 tracingParameters.Add("backupName", backupName);
 
                 tracingParameters.Add("body", body);
@@ -1814,12 +1593,11 @@ namespace Microsoft.Azure.Management.NetApp
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups/{backupName}").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups/{backupName}").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
+            _url = _url.Replace("{backupVaultName}", System.Uri.EscapeDataString(backupVaultName));
             _url = _url.Replace("{backupName}", System.Uri.EscapeDataString(backupName));
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
@@ -1893,14 +1671,13 @@ namespace Microsoft.Azure.Management.NetApp
 
             if ((int)_statusCode != 200 && (int)_statusCode != 202)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -1910,10 +1687,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -1926,7 +1699,7 @@ namespace Microsoft.Azure.Management.NetApp
                 throw ex;
             }
             // Create Result
-            var _result = new Microsoft.Rest.Azure.AzureOperationResponse<Backup>();
+            var _result = new Microsoft.Rest.Azure.AzureOperationResponse<Backup,BackupsUpdateHeaders>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             
@@ -1970,6 +1743,19 @@ namespace Microsoft.Azure.Management.NetApp
                     throw new Microsoft.Rest.SerializationException("Unable to deserialize the response.", _responseContent, ex);
                 }
             }
+            try
+            {
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<BackupsUpdateHeaders>(Newtonsoft.Json.JsonSerializer.Create(this.Client.DeserializationSettings));
+            }
+            catch (Newtonsoft.Json.JsonException ex)
+            {
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw new Microsoft.Rest.SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
+            }
             if (_shouldTrace)
             {
                 Microsoft.Rest.ServiceClientTracing.Exit(_invocationId, _result);
@@ -1982,7 +1768,7 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Delete a backup of the volume
+        /// Delete a Backup under the Backup Vault
         /// </summary>
         /// <param name='resourceGroupName'>
         /// The name of the resource group. The name is case insensitive.
@@ -1990,11 +1776,8 @@ namespace Microsoft.Azure.Management.NetApp
         /// <param name='accountName'>
         /// The name of the NetApp account
         /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
+        /// <param name='backupVaultName'>
+        /// The name of the Backup Vault
         /// </param>
         /// <param name='backupName'>
         /// The name of the backup
@@ -2017,7 +1800,7 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse> BeginDeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders>> BeginDeleteWithHttpMessagesAsync(string resourceGroupName, string accountName, string backupVaultName, string backupName, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
 
@@ -2027,13 +1810,7 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
             }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
+
             if (resourceGroupName == null)
             {
                 throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
@@ -2055,47 +1832,20 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (accountName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$");
                 }
             }
-            if (poolName == null)
+            if (backupVaultName == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupVaultName");
             }
-            if (poolName != null)
+            if (backupVaultName != null)
             {
-                if (poolName.Length > 64)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupVaultName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupVaultName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
                 }
             }
             if (backupName == null)
@@ -2104,9 +1854,9 @@ namespace Microsoft.Azure.Management.NetApp
             }
             if (backupName != null)
             {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
+                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$"))
                 {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
+                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$");
                 }
             }
             if (this.Client.ApiVersion == null)
@@ -2123,8 +1873,7 @@ namespace Microsoft.Azure.Management.NetApp
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
                 tracingParameters.Add("resourceGroupName", resourceGroupName);
                 tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
+                tracingParameters.Add("backupVaultName", backupVaultName);
                 tracingParameters.Add("backupName", backupName);
 
 
@@ -2134,12 +1883,11 @@ namespace Microsoft.Azure.Management.NetApp
             // Construct URL
 
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups/{backupName}").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups/{backupName}").ToString();
             _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
             _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
             _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
+            _url = _url.Replace("{backupVaultName}", System.Uri.EscapeDataString(backupVaultName));
             _url = _url.Replace("{backupName}", System.Uri.EscapeDataString(backupName));
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
@@ -2205,16 +1953,15 @@ namespace Microsoft.Azure.Management.NetApp
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
 
-            if ((int)_statusCode != 200 && (int)_statusCode != 202 && (int)_statusCode != 204)
+            if ((int)_statusCode != 202 && (int)_statusCode != 204)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -2224,10 +1971,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -2240,13 +1983,26 @@ namespace Microsoft.Azure.Management.NetApp
                 throw ex;
             }
             // Create Result
-            var _result = new Microsoft.Rest.Azure.AzureOperationResponse();
+            var _result = new Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsDeleteHeaders>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             
             if (_httpResponse.Headers.Contains("x-ms-request-id"))
             {
                 _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
+            }
+            try
+            {
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<BackupsDeleteHeaders>(Newtonsoft.Json.JsonSerializer.Create(this.Client.DeserializationSettings));
+            }
+            catch (Newtonsoft.Json.JsonException ex)
+            {
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw new Microsoft.Rest.SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
             }
             if (_shouldTrace)
             {
@@ -2260,25 +2016,10 @@ namespace Microsoft.Azure.Management.NetApp
 
         }
         /// <summary>
-        /// Restore the specified files from the specified backup to the active filesystem
+        /// List all backups Under a Backup Vault
         /// </summary>
-        /// <param name='resourceGroupName'>
-        /// The name of the resource group. The name is case insensitive.
-        /// </param>
-        /// <param name='accountName'>
-        /// The name of the NetApp account
-        /// </param>
-        /// <param name='poolName'>
-        /// The name of the capacity pool
-        /// </param>
-        /// <param name='volumeName'>
-        /// The name of the volume
-        /// </param>
-        /// <param name='backupName'>
-        /// The name of the backup
-        /// </param>
-        /// <param name='body'>
-        /// Restore payload supplied in the body of the operation.
+        /// <param name='nextPageLink'>
+        /// The NextLink from the previous successful call to List operation.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -2289,6 +2030,9 @@ namespace Microsoft.Azure.Management.NetApp
         /// <exception cref="Microsoft.Rest.Azure.CloudException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
+        /// <exception cref="Microsoft.Rest.SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
         /// <exception cref="Microsoft.Rest.ValidationException">
         /// Thrown when a required parameter is null
         /// </exception>
@@ -2298,111 +2042,13 @@ namespace Microsoft.Azure.Management.NetApp
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders>> BeginRestoreFilesWithHttpMessagesAsync(string resourceGroupName, string accountName, string poolName, string volumeName, string backupName, BackupRestoreFiles body, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>> ListByVaultNextWithHttpMessagesAsync(string nextPageLink, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> customHeaders = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
-
-
- 
-            if (body == null)
+            if (nextPageLink == null)
             {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "body");
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "nextPageLink");
             }
-            if (body != null)
-            {
-                body.Validate();
-            }
-            if (this.Client.SubscriptionId == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
-            }
-            if (this.Client.SubscriptionId != null)
-            {
-                if (this.Client.SubscriptionId.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "Client.SubscriptionId", 1);
-                }
-            }
-            if (resourceGroupName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "resourceGroupName");
-            }
-            if (resourceGroupName != null)
-            {
-                if (resourceGroupName.Length > 90)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "resourceGroupName", 90);
-                }
-                if (resourceGroupName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "resourceGroupName", 1);
-                }
-            }
-            if (accountName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "accountName");
-            }
-            if (accountName != null)
-            {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(accountName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "accountName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (poolName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "poolName");
-            }
-            if (poolName != null)
-            {
-                if (poolName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "poolName", 64);
-                }
-                if (poolName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "poolName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(poolName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "poolName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (volumeName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "volumeName");
-            }
-            if (volumeName != null)
-            {
-                if (volumeName.Length > 64)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MaxLength, "volumeName", 64);
-                }
-                if (volumeName.Length < 1)
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.MinLength, "volumeName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(volumeName, "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "volumeName", "^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (backupName == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "backupName");
-            }
-            if (backupName != null)
-            {
-                if (!System.Text.RegularExpressions.Regex.IsMatch(backupName, "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$"))
-                {
-                    throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "backupName", "^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$");
-                }
-            }
-            if (this.Client.ApiVersion == null)
-            {
-                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "this.Client.ApiVersion");
-            }
-
             // Tracing
             bool _shouldTrace = Microsoft.Rest.ServiceClientTracing.IsEnabled;
             string _invocationId = null;
@@ -2410,33 +2056,17 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 _invocationId = Microsoft.Rest.ServiceClientTracing.NextInvocationId.ToString();
                 System.Collections.Generic.Dictionary<string, object> tracingParameters = new System.Collections.Generic.Dictionary<string, object>();
-                tracingParameters.Add("resourceGroupName", resourceGroupName);
-                tracingParameters.Add("accountName", accountName);
-                tracingParameters.Add("poolName", poolName);
-                tracingParameters.Add("volumeName", volumeName);
-                tracingParameters.Add("backupName", backupName);
-
-                tracingParameters.Add("body", body);
+                tracingParameters.Add("nextPageLink", nextPageLink);
+               
 
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "BeginRestoreFiles", tracingParameters);
+                Microsoft.Rest.ServiceClientTracing.Enter(_invocationId, this, "ListByVaultNext", tracingParameters);
             }
             // Construct URL
-
-            var _baseUrl = this.Client.BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/backups/{backupName}/restoreFiles").ToString();
-            _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(this.Client.SubscriptionId));
-            _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
-            _url = _url.Replace("{accountName}", System.Uri.EscapeDataString(accountName));
-            _url = _url.Replace("{poolName}", System.Uri.EscapeDataString(poolName));
-            _url = _url.Replace("{volumeName}", System.Uri.EscapeDataString(volumeName));
-            _url = _url.Replace("{backupName}", System.Uri.EscapeDataString(backupName));
+            string _url = "{nextLink}";
+            _url = _url.Replace("{nextLink}", nextPageLink);
 
             System.Collections.Generic.List<string> _queryParameters = new System.Collections.Generic.List<string>();
-            if (this.Client.ApiVersion != null)
-            {
-                _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(this.Client.ApiVersion)));
-            }
             if (_queryParameters.Count > 0)
             {
                 _url += (_url.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
@@ -2444,7 +2074,7 @@ namespace Microsoft.Azure.Management.NetApp
             // Create HTTP transport objects
             var _httpRequest = new System.Net.Http.HttpRequestMessage();
             System.Net.Http.HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new System.Net.Http.HttpMethod("POST");
+            _httpRequest.Method = new System.Net.Http.HttpMethod("GET");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
             if (this.Client.GenerateClientRequestId != null && this.Client.GenerateClientRequestId.Value)
@@ -2473,12 +2103,6 @@ namespace Microsoft.Azure.Management.NetApp
             }
             // Serialize Request
             string _requestContent = null;
-            if(body != null)
-            {
-                _requestContent = Microsoft.Rest.Serialization.SafeJsonConvert.SerializeObject(body, this.Client.SerializationSettings);
-                _httpRequest.Content = new System.Net.Http.StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
             // Set Credentials
             if (this.Client.Credentials != null)
             {
@@ -2501,16 +2125,15 @@ namespace Microsoft.Azure.Management.NetApp
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
 
-            if ((int)_statusCode != 200 && (int)_statusCode != 202)
+            if ((int)_statusCode != 200)
             {
-                var ex = new Microsoft.Rest.Azure.CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 try
                 {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, this.Client.DeserializationSettings);
+                    ErrorResponse _errorBody =  Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, this.Client.DeserializationSettings);
                     if (_errorBody != null)
                     {
-                        ex = new Microsoft.Rest.Azure.CloudException(_errorBody.Message);
                         ex.Body = _errorBody;
                     }
                 }
@@ -2520,10 +2143,6 @@ namespace Microsoft.Azure.Management.NetApp
                 }
                 ex.Request = new Microsoft.Rest.HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new Microsoft.Rest.HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
                 if (_shouldTrace)
                 {
                     Microsoft.Rest.ServiceClientTracing.Error(_invocationId, ex);
@@ -2536,7 +2155,7 @@ namespace Microsoft.Azure.Management.NetApp
                 throw ex;
             }
             // Create Result
-            var _result = new Microsoft.Rest.Azure.AzureOperationHeaderResponse<BackupsRestoreFilesHeaders>();
+            var _result = new Microsoft.Rest.Azure.AzureOperationResponse<Microsoft.Rest.Azure.IPage<Backup>>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             
@@ -2544,18 +2163,23 @@ namespace Microsoft.Azure.Management.NetApp
             {
                 _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
             }
-            try
+            // Deserialize Response
+            if ((int)_statusCode == 200)
             {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<BackupsRestoreFilesHeaders>(Newtonsoft.Json.JsonSerializer.Create(this.Client.DeserializationSettings));
-            }
-            catch (Newtonsoft.Json.JsonException ex)
-            {
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
                 {
-                    _httpResponse.Dispose();
+                    _result.Body = Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<Page1<Backup>>(_responseContent, this.Client.DeserializationSettings);
                 }
-                throw new Microsoft.Rest.SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
+                catch (Newtonsoft.Json.JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new Microsoft.Rest.SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
             }
             if (_shouldTrace)
             {

@@ -18,6 +18,14 @@
         - Additional information about change #1
 -->
 ## Upcoming Release
+* Removed "at lease one NIC needs to be user selected" constrain when creating/updating server replication (protected item)
+* Added retries for calls to internal Get commands
+
+## Version 2.3.1
+* Introduced secrets detection feature to safeguard sensitive data.
+
+## Version 2.3.0
+* Added support for `Data.Replication`
 
 ## Version 2.2.0
 * Fixed key vault SPN Id coming as null for some users

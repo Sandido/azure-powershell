@@ -35,16 +35,15 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         /// </param>
 
         /// <param name="protectionState">State of the back up item.
-        /// Possible values include: 'Invalid', 'NotProtected', 'Protecting',
-        /// 'Protected', 'ProtectionFailed'</param>
+        /// Possible values include: &#39;Invalid&#39;, &#39;NotProtected&#39;, &#39;Protecting&#39;,
+        /// &#39;Protected&#39;, &#39;ProtectionFailed&#39;</param>
 
         /// <param name="parentName">Name for instance or AG
         /// </param>
 
         /// <param name="parentUniqueName">Parent Unique Name is added to provide the service formatted URI Name of
-        /// the Parent
-        /// Only Applicable for data bases where the parent would be either Instance or
-        /// a SQL AG.
+        /// the Parent Only Applicable for data bases where the parent would be either
+        /// Instance or a SQL AG.
         /// </param>
 
         /// <param name="serverName">Host/Cluster Name for instance or AG
@@ -64,7 +63,10 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
 
         /// <param name="prebackupvalidation">Pre-backup validation for protectable objects
         /// </param>
-        public AzureVmWorkloadProtectableItem(string backupManagementType = default(string), string workloadType = default(string), string friendlyName = default(string), string protectionState = default(string), string parentName = default(string), string parentUniqueName = default(string), string serverName = default(string), bool? isAutoProtectable = default(bool?), bool? isAutoProtected = default(bool?), int? subinquireditemcount = default(int?), int? subprotectableitemcount = default(int?), PreBackupValidation prebackupvalidation = default(PreBackupValidation))
+
+        /// <param name="isProtectable">Indicates if item is protectable
+        /// </param>
+        public AzureVmWorkloadProtectableItem(string backupManagementType = default(string), string workloadType = default(string), string friendlyName = default(string), string protectionState = default(string), string parentName = default(string), string parentUniqueName = default(string), string serverName = default(string), bool? isAutoProtectable = default(bool?), bool? isAutoProtected = default(bool?), int? subinquireditemcount = default(int?), int? subprotectableitemcount = default(int?), PreBackupValidation prebackupvalidation = default(PreBackupValidation), bool? isProtectable = default(bool?))
 
         : base(backupManagementType, workloadType, friendlyName, protectionState)
         {
@@ -76,6 +78,7 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
             this.Subinquireditemcount = subinquireditemcount;
             this.Subprotectableitemcount = subprotectableitemcount;
             this.Prebackupvalidation = prebackupvalidation;
+            this.IsProtectable = isProtectable;
             CustomInit();
         }
 
@@ -93,9 +96,8 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
 
         /// <summary>
         /// Gets or sets parent Unique Name is added to provide the service formatted
-        /// URI Name of the Parent
-        /// Only Applicable for data bases where the parent would be either Instance or
-        /// a SQL AG.
+        /// URI Name of the Parent Only Applicable for data bases where the parent
+        /// would be either Instance or a SQL AG.
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "parentUniqueName")]
         public string ParentUniqueName {get; set; }
@@ -135,5 +137,11 @@ namespace Microsoft.Azure.Management.RecoveryServices.Backup.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "prebackupvalidation")]
         public PreBackupValidation Prebackupvalidation {get; set; }
+
+        /// <summary>
+        /// Gets or sets indicates if item is protectable
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty(PropertyName = "isProtectable")]
+        public bool? IsProtectable {get; set; }
     }
 }

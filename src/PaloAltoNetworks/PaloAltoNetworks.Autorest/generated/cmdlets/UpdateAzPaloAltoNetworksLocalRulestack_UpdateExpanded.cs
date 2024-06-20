@@ -6,18 +6,22 @@
 namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
 {
     using static Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Extensions;
+    using Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell;
+    using Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Cmdlets;
     using System;
 
     /// <summary>Update a LocalRulestackResource</summary>
     /// <remarks>
-    /// [OpenAPI] Update=>PATCH:"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}"
+    /// [OpenAPI] Get=>GET:"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}"
+    /// [OpenAPI] CreateOrUpdate=>PUT:"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}"
     /// </remarks>
     [global::System.Management.Automation.Cmdlet(global::System.Management.Automation.VerbsData.Update, @"AzPaloAltoNetworksLocalRulestack_UpdateExpanded", SupportsShouldProcess = true)]
-    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource))]
+    [global::System.Management.Automation.OutputType(typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource))]
     [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Description(@"Update a LocalRulestackResource")]
     [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Generated]
     public partial class UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded : global::System.Management.Automation.PSCmdlet,
-        Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener
+        Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener,
+        Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IContext
     {
         /// <summary>A unique id generatd for the this cmdlet when it is instantiated.</summary>
         private string __correlationId = System.Guid.NewGuid().ToString();
@@ -33,40 +37,36 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         /// </summary>
         private global::System.Threading.CancellationTokenSource _cancellationTokenSource = new global::System.Threading.CancellationTokenSource();
 
-        /// <summary>The type used for update operations of the LocalRulestackResource.</summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResourceUpdate _propertiesBody = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.LocalRulestackResourceUpdate();
+        /// <summary>A dictionary to carry over additional data for pipeline.</summary>
+        private global::System.Collections.Generic.Dictionary<global::System.String,global::System.Object> _extensibleParameters = new System.Collections.Generic.Dictionary<string, object>();
 
-        /// <summary>subscription scope of global rulestack</summary>
-        [global::System.Management.Automation.AllowEmptyCollection]
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "subscription scope of global rulestack")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"subscription scope of global rulestack",
-        SerializedName = @"associatedSubscriptions",
-        PossibleTypes = new [] { typeof(string) })]
-        public string[] AssociatedSubscription { get => _propertiesBody.AssociatedSubscription ?? null /* arrayOf */; set => _propertiesBody.AssociatedSubscription = value; }
+        /// <summary>A buffer to record first returned object in response.</summary>
+        private object _firstResponse = null;
+
+        /// <summary>PaloAltoNetworks LocalRulestack</summary>
+        private Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource _resourceBody = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.LocalRulestackResource();
+
+        /// <summary>
+        /// A flag to tell whether it is the first returned object in a call. Zero means no response yet. One means 1 returned object.
+        /// Two means multiple returned objects in response.
+        /// </summary>
+        private int _responseSize = 0;
+
+        /// <summary>when specified, runs this cmdlet as a PowerShell job</summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Run the command as a job")]
+        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Runtime)]
+        public global::System.Management.Automation.SwitchParameter AsJob { get; set; }
 
         /// <summary>Wait for .NET debugger to attach</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "Wait for .NET debugger to attach")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Runtime)]
         public global::System.Management.Automation.SwitchParameter Break { get; set; }
 
+        /// <summary>Accessor for cancellationTokenSource.</summary>
+        public global::System.Threading.CancellationTokenSource CancellationTokenSource { get => _cancellationTokenSource ; set { _cancellationTokenSource = value; } }
+
         /// <summary>The reference to the client API class.</summary>
         public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.PaloAltoNetworks Client => Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.ClientAPI;
-
-        /// <summary>Mode for default rules creation</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Mode for default rules creation")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Mode for default rules creation",
-        SerializedName = @"defaultMode",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode) })]
-        [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode))]
-        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode DefaultMode { get => _propertiesBody.DefaultMode ?? ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.DefaultMode)""); set => _propertiesBody.DefaultMode = value; }
 
         /// <summary>
         /// The DefaultProfile parameter is not functional. Use the SubscriptionId parameter when available if executing the cmdlet
@@ -78,16 +78,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Azure)]
         public global::System.Management.Automation.PSObject DefaultProfile { get; set; }
 
-        /// <summary>rulestack description</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "rulestack description")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"rulestack description",
-        SerializedName = @"description",
-        PossibleTypes = new [] { typeof(string) })]
-        public string Description { get => _propertiesBody.Description ?? null; set => _propertiesBody.Description = value; }
+        /// <summary>Decides if enable a system assigned identity for the resource.</summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Decides if enable a system assigned identity for the resource.")]
+        public System.Boolean? EnableSystemAssignedIdentity { get; set; }
+
+        /// <summary>Accessor for extensibleParameters.</summary>
+        public global::System.Collections.Generic.IDictionary<global::System.String,global::System.Object> ExtensibleParameters { get => _extensibleParameters ; }
 
         /// <summary>SendAsync Pipeline Steps to be appended to the front of the pipeline</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "SendAsync Pipeline Steps to be appended to the front of the pipeline")]
@@ -101,30 +97,6 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Runtime)]
         public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.SendAsyncStep[] HttpPipelinePrepend { get; set; }
 
-        /// <summary>The type of managed identity assigned to this resource.</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The type of managed identity assigned to this resource.")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"The type of managed identity assigned to this resource.",
-        SerializedName = @"type",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType) })]
-        [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType))]
-        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType IdentityType { get => _propertiesBody.IdentityType ?? ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ManagedIdentityType)""); set => _propertiesBody.IdentityType = value; }
-
-        /// <summary>The identities assigned to this resource by the user.</summary>
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ExportAs(typeof(global::System.Collections.Hashtable))]
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The identities assigned to this resource by the user.")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"The identities assigned to this resource by the user.",
-        SerializedName = @"userAssignedIdentities",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IAzureResourceManagerManagedIdentityPropertiesUserAssignedIdentities) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.IAzureResourceManagerManagedIdentityPropertiesUserAssignedIdentities IdentityUserAssignedIdentity { get => _propertiesBody.IdentityUserAssignedIdentity ?? null /* object */; set => _propertiesBody.IdentityUserAssignedIdentity = value; }
-
         /// <summary>Accessor for our copy of the InvocationInfo.</summary>
         public global::System.Management.Automation.InvocationInfo InvocationInformation { get => __invocationInfo = __invocationInfo ?? this.MyInvocation ; set { __invocationInfo = value; } }
 
@@ -135,17 +107,6 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
 
         /// <summary><see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener" /> cancellation token.</summary>
         global::System.Threading.CancellationToken Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener.Token => _cancellationTokenSource.Token;
-
-        /// <summary>minimum version</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "minimum version")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"minimum version",
-        SerializedName = @"minAppIdVersion",
-        PossibleTypes = new [] { typeof(string) })]
-        public string MinAppIdVersion { get => _propertiesBody.MinAppIdVersion ?? null; set => _propertiesBody.MinAppIdVersion = value; }
 
         /// <summary>Backing field for <see cref="Name" /> property.</summary>
         private string _name;
@@ -162,32 +123,18 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Path)]
         public string Name { get => this._name; set => this._name = value; }
 
-        /// <summary>PanEtag info</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "PanEtag info")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"PanEtag info",
-        SerializedName = @"panEtag",
-        PossibleTypes = new [] { typeof(string) })]
-        public string PanEtag { get => _propertiesBody.PanEtag ?? null; set => _propertiesBody.PanEtag = value; }
-
-        /// <summary>Rulestack Location, Required for GlobalRulestacks, Not for LocalRulestacks</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Rulestack Location, Required for GlobalRulestacks, Not for LocalRulestacks")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Rulestack Location, Required for GlobalRulestacks, Not for LocalRulestacks",
-        SerializedName = @"panLocation",
-        PossibleTypes = new [] { typeof(string) })]
-        public string PanLocation { get => _propertiesBody.PanLocation ?? null; set => _propertiesBody.PanLocation = value; }
+        /// <summary>
+        /// when specified, will make the remote call, and return an AsyncOperationResponse, letting the remote operation continue
+        /// asynchronously.
+        /// </summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Run the command asynchronously")]
+        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Runtime)]
+        public global::System.Management.Automation.SwitchParameter NoWait { get; set; }
 
         /// <summary>
         /// The instance of the <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.HttpPipeline" /> that the remote call will use.
         /// </summary>
-        private Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.HttpPipeline Pipeline { get; set; }
+        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.HttpPipeline Pipeline { get; set; }
 
         /// <summary>The URI for the proxy server to use</summary>
         [global::System.Management.Automation.Parameter(Mandatory = false, DontShow = true, HelpMessage = "The URI for the proxy server to use")]
@@ -219,106 +166,6 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Path)]
         public string ResourceGroupName { get => this._resourceGroupName; set => this._resourceGroupName = value; }
 
-        /// <summary>Rulestack Type</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Rulestack Type")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Rulestack Type",
-        SerializedName = @"scope",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType) })]
-        [global::System.Management.Automation.ArgumentCompleter(typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType))]
-        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType Scope { get => _propertiesBody.Scope ?? ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ScopeType)""); set => _propertiesBody.Scope = value; }
-
-        /// <summary>Anti spyware Profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Anti spyware Profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Anti spyware Profile data",
-        SerializedName = @"antiSpywareProfile",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceAntiSpywareProfile { get => _propertiesBody.SecurityServiceAntiSpywareProfile ?? null; set => _propertiesBody.SecurityServiceAntiSpywareProfile = value; }
-
-        /// <summary>anti virus profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "anti virus profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"anti virus profile data",
-        SerializedName = @"antiVirusProfile",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceAntiVirusProfile { get => _propertiesBody.SecurityServiceAntiVirusProfile ?? null; set => _propertiesBody.SecurityServiceAntiVirusProfile = value; }
-
-        /// <summary>DNS Subscription profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "DNS Subscription profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"DNS Subscription profile data",
-        SerializedName = @"dnsSubscription",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceDnsSubscription { get => _propertiesBody.SecurityServiceDnsSubscription ?? null; set => _propertiesBody.SecurityServiceDnsSubscription = value; }
-
-        /// <summary>File blocking profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "File blocking profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"File blocking profile data",
-        SerializedName = @"fileBlockingProfile",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceFileBlockingProfile { get => _propertiesBody.SecurityServiceFileBlockingProfile ?? null; set => _propertiesBody.SecurityServiceFileBlockingProfile = value; }
-
-        /// <summary>Trusted Egress Decryption profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Trusted Egress Decryption profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Trusted Egress Decryption profile data",
-        SerializedName = @"outboundTrustCertificate",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceOutboundTrustCertificate { get => _propertiesBody.SecurityServiceOutboundTrustCertificate ?? null; set => _propertiesBody.SecurityServiceOutboundTrustCertificate = value; }
-
-        /// <summary>Untrusted Egress Decryption profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "Untrusted Egress Decryption profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"Untrusted Egress Decryption profile data",
-        SerializedName = @"outboundUnTrustCertificate",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceOutboundUnTrustCertificate { get => _propertiesBody.SecurityServiceOutboundUnTrustCertificate ?? null; set => _propertiesBody.SecurityServiceOutboundUnTrustCertificate = value; }
-
-        /// <summary>URL filtering profile data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "URL filtering profile data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"URL filtering profile data",
-        SerializedName = @"urlFilteringProfile",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceUrlFilteringProfile { get => _propertiesBody.SecurityServiceUrlFilteringProfile ?? null; set => _propertiesBody.SecurityServiceUrlFilteringProfile = value; }
-
-        /// <summary>IPs Vulnerability Profile Data</summary>
-        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "IPs Vulnerability Profile Data")]
-        [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Body)]
-        [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Info(
-        Required = false,
-        ReadOnly = false,
-        Description = @"IPs Vulnerability Profile Data",
-        SerializedName = @"vulnerabilityProfile",
-        PossibleTypes = new [] { typeof(string) })]
-        public string SecurityServiceVulnerabilityProfile { get => _propertiesBody.SecurityServiceVulnerabilityProfile ?? null; set => _propertiesBody.SecurityServiceVulnerabilityProfile = value; }
-
         /// <summary>Backing field for <see cref="SubscriptionId" /> property.</summary>
         private string _subscriptionId;
 
@@ -333,7 +180,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         [Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.DefaultInfo(
         Name = @"",
         Description =@"",
-        Script = @"(Get-AzContext).Subscription.Id")]
+        Script = @"(Get-AzContext).Subscription.Id",
+        SetCondition = @"")]
         [global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Category(global::Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.ParameterCategory.Path)]
         public string SubscriptionId { get => this._subscriptionId; set => this._subscriptionId = value; }
 
@@ -346,32 +194,40 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         ReadOnly = false,
         Description = @"Resource tags.",
         SerializedName = @"tags",
-        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResourceUpdateTags) })]
-        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResourceUpdateTags Tag { get => _propertiesBody.Tag ?? null /* object */; set => _propertiesBody.Tag = value; }
+        PossibleTypes = new [] { typeof(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ITrackedResourceTags) })]
+        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ITrackedResourceTags Tag { get => _resourceBody.Tag ?? null /* object */; set => _resourceBody.Tag = value; }
+
+        /// <summary>
+        /// The array of user assigned identities associated with the resource. The elements in array will be ARM resource ids in
+        /// the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.'
+        /// </summary>
+        [global::System.Management.Automation.Parameter(Mandatory = false, HelpMessage = "The array of user assigned identities associated with the resource. The elements in array will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.'")]
+        [global::System.Management.Automation.AllowEmptyCollection]
+        public string[] UserAssignedIdentity { get; set; }
 
         /// <summary>
         /// <c>overrideOnDefault</c> will be called before the regular onDefault has been processed, allowing customization of what
         /// happens on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse</see>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse</see>
         /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onDefault method should be processed, or if the method should
         /// return immediately (set to true to skip further processing )</param>
 
-        partial void overrideOnDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
+        partial void overrideOnDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
 
         /// <summary>
         /// <c>overrideOnOk</c> will be called before the regular onOk has been processed, allowing customization of what happens
         /// on that response. Implement this method in a partial class to enable this behavior
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource</see>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource</see>
         /// from the remote call</param>
         /// <param name="returnNow">/// Determines if the rest of the onOk method should be processed, or if the method should return
         /// immediately (set to true to skip further processing )</param>
 
-        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
+        partial void overrideOnOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource> response, ref global::System.Threading.Tasks.Task<bool> returnNow);
 
         /// <summary>
         /// (overrides the default BeginProcessing method in global::System.Management.Automation.PSCmdlet)
@@ -391,10 +247,56 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
             ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.CmdletBeginProcessing).Wait(); if( ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
         }
 
+        /// <summary>Creates a duplicate instance of this cmdlet (via JSON serialization).</summary>
+        /// <returns>a duplicate instance of UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded</returns>
+        public Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets.UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded Clone()
+        {
+            var clone = new UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded();
+            clone.__correlationId = this.__correlationId;
+            clone.__processRecordId = this.__processRecordId;
+            clone.DefaultProfile = this.DefaultProfile;
+            clone.InvocationInformation = this.InvocationInformation;
+            clone.Proxy = this.Proxy;
+            clone.Pipeline = this.Pipeline;
+            clone.AsJob = this.AsJob;
+            clone.Break = this.Break;
+            clone.ProxyCredential = this.ProxyCredential;
+            clone.ProxyUseDefaultCredentials = this.ProxyUseDefaultCredentials;
+            clone.HttpPipelinePrepend = this.HttpPipelinePrepend;
+            clone.HttpPipelineAppend = this.HttpPipelineAppend;
+            clone._resourceBody = this._resourceBody;
+            clone.SubscriptionId = this.SubscriptionId;
+            clone.ResourceGroupName = this.ResourceGroupName;
+            clone.Name = this.Name;
+            return clone;
+        }
+
         /// <summary>Performs clean-up after the command execution</summary>
         protected override void EndProcessing()
         {
-
+            if (1 ==_responseSize)
+            {
+                // Flush buffer
+                WriteObject(_firstResponse);
+            }
+            var telemetryInfo = Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.GetTelemetryInfo?.Invoke(__correlationId);
+            if (telemetryInfo != null)
+            {
+                telemetryInfo.TryGetValue("ShowSecretsWarning", out var showSecretsWarning);
+                telemetryInfo.TryGetValue("SanitizedProperties", out var sanitizedProperties);
+                telemetryInfo.TryGetValue("InvocationName", out var invocationName);
+                if (showSecretsWarning == "true")
+                {
+                    if (string.IsNullOrEmpty(sanitizedProperties))
+                    {
+                        WriteWarning($"The output of cmdlet {invocationName} may compromise security by showing secrets. Learn more at https://go.microsoft.com/fwlink/?linkid=2258844");
+                    }
+                    else
+                    {
+                        WriteWarning($"The output of cmdlet {invocationName} may compromise security by showing the following secrets: {sanitizedProperties}. Learn more at https://go.microsoft.com/fwlink/?linkid=2258844");
+                    }
+                }
+            }
         }
 
         /// <summary>Handles/Dispatches events during the call to the REST service.</summary>
@@ -427,8 +329,8 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
                     }
                     case Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.Information:
                     {
-                        var data = messageData();
-                        WriteInformation(data.Message, new string[]{});
+                        // When an operation supports asjob, Information messages must go thru verbose.
+                        WriteVerbose($"INFORMATION: {(messageData().Message ?? global::System.String.Empty)}");
                         return ;
                     }
                     case Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.Debug:
@@ -441,13 +343,110 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
                         WriteError(new global::System.Management.Automation.ErrorRecord( new global::System.Exception(messageData().Message), string.Empty, global::System.Management.Automation.ErrorCategory.NotSpecified, null ) );
                         return ;
                     }
+                    case Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.Progress:
+                    {
+                        var data = messageData();
+                        int progress = (int)data.Value;
+                        string activityMessage, statusDescription;
+                        global::System.Management.Automation.ProgressRecordType recordType;
+                        if (progress < 100)
+                        {
+                            activityMessage = "In progress";
+                            statusDescription = "Checking operation status";
+                            recordType = System.Management.Automation.ProgressRecordType.Processing;
+                        }
+                        else
+                        {
+                            activityMessage = "Completed";
+                            statusDescription = "Completed";
+                            recordType = System.Management.Automation.ProgressRecordType.Completed;
+                        }
+                        WriteProgress(new global::System.Management.Automation.ProgressRecord(1, activityMessage, statusDescription)
+                        {
+                            PercentComplete = progress,
+                        RecordType = recordType
+                        });
+                        return ;
+                    }
+                    case Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.DelayBeforePolling:
+                    {
+                        var data = messageData();
+                        if (true == MyInvocation?.BoundParameters?.ContainsKey("NoWait"))
+                        {
+                            if (data.ResponseMessage is System.Net.Http.HttpResponseMessage response)
+                            {
+                                var asyncOperation = response.GetFirstHeader(@"Azure-AsyncOperation");
+                                var location = response.GetFirstHeader(@"Location");
+                                var uri = global::System.String.IsNullOrEmpty(asyncOperation) ? global::System.String.IsNullOrEmpty(location) ? response.RequestMessage.RequestUri.AbsoluteUri : location : asyncOperation;
+                                WriteObject(new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell.AsyncOperationResponse { Target = uri });
+                                // do nothing more.
+                                data.Cancel();
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (data.ResponseMessage is System.Net.Http.HttpResponseMessage response)
+                            {
+                                int delay = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30);
+                                WriteDebug($"Delaying {delay} seconds before polling.");
+                                for (var now = 0; now < delay; ++now)
+                                {
+                                    WriteProgress(new global::System.Management.Automation.ProgressRecord(1, "In progress", "Checking operation status")
+                                    {
+                                        PercentComplete = now * 100 / delay
+                                    });
+                                    await global::System.Threading.Tasks.Task.Delay(1000, token);
+                                }
+                            }
+                        }
+                        break;
+                    }
                 }
-                await Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.Signal(id, token, messageData, (i,t,m) => ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(i,t,()=> Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.EventDataConverter.ConvertFrom( m() ) as Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.EventData ), InvocationInformation, this.ParameterSetName, __correlationId, __processRecordId, null );
+                await Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.Signal(id, token, messageData, (i, t, m) => ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(i, t, () => Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.EventDataConverter.ConvertFrom(m()) as Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.EventData), InvocationInformation, this.ParameterSetName, __correlationId, __processRecordId, null );
                 if (token.IsCancellationRequested)
                 {
                     return ;
                 }
                 WriteDebug($"{id}: {(messageData().Message ?? global::System.String.Empty)}");
+            }
+        }
+
+        private void PreProcessManagedIdentityParametersWithGetResult()
+        {
+            bool supportsSystemAssignedIdentity = (true == this.EnableSystemAssignedIdentity || null == this.EnableSystemAssignedIdentity && true == _resourceBody?.IdentityType?.Contains("SystemAssigned"));
+            bool supportsUserAssignedIdentity = false;
+            if (this.UserAssignedIdentity?.Length > 0)
+            {
+                // calculate UserAssignedIdentity
+                _resourceBody.IdentityUserAssignedIdentity.Clear();
+                foreach( var id in this.UserAssignedIdentity )
+                {
+                    _resourceBody.IdentityUserAssignedIdentity.Add(id, new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.AzureResourceManagerUserAssignedIdentity());
+                }
+            }
+            supportsUserAssignedIdentity = true == this.MyInvocation?.BoundParameters?.ContainsKey("UserAssignedIdentity") && this.UserAssignedIdentity?.Length > 0 ||
+                    true != this.MyInvocation?.BoundParameters?.ContainsKey("UserAssignedIdentity") && true == _resourceBody.IdentityType?.Contains("UserAssigned");
+            if (!supportsUserAssignedIdentity)
+            {
+                _resourceBody.IdentityUserAssignedIdentity = null;
+            }
+            // calculate IdentityType
+            if ((supportsUserAssignedIdentity && supportsSystemAssignedIdentity))
+            {
+                _resourceBody.IdentityType = "SystemAssigned,UserAssigned";
+            }
+            else if ((supportsUserAssignedIdentity && !supportsSystemAssignedIdentity))
+            {
+                _resourceBody.IdentityType = "UserAssigned";
+            }
+            else if ((!supportsUserAssignedIdentity && supportsSystemAssignedIdentity))
+            {
+                _resourceBody.IdentityType = "SystemAssigned";
+            }
+            else
+            {
+                _resourceBody.IdentityType = "None";
             }
         }
 
@@ -459,11 +458,23 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
             try
             {
                 // work
-                if (ShouldProcess($"Call remote 'LocalRulestacksUpdate' operation"))
+                if (ShouldProcess($"Call remote 'LocalRulestacksCreateOrUpdate' operation"))
                 {
-                    using( var asyncCommandRuntime = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell.AsyncCommandRuntime(this, ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token) )
+                    if (true == MyInvocation?.BoundParameters?.ContainsKey("AsJob"))
                     {
-                        asyncCommandRuntime.Wait( ProcessRecordAsync(),((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token);
+                        var instance = this.Clone();
+                        var job = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell.AsyncJob(instance, this.MyInvocation.Line, this.MyInvocation.MyCommand.Name, this._cancellationTokenSource.Token, this._cancellationTokenSource.Cancel);
+                        JobRepository.Add(job);
+                        var task = instance.ProcessRecordAsync();
+                        job.Monitor(task);
+                        WriteObject(job);
+                    }
+                    else
+                    {
+                        using( var asyncCommandRuntime = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell.AsyncCommandRuntime(this, ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token) )
+                        {
+                            asyncCommandRuntime.Wait( ProcessRecordAsync(),((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token);
+                        }
                     }
                 }
             }
@@ -498,7 +509,7 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
             using( NoSynchronizationContext )
             {
                 await ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.CmdletGetPipeline); if( ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                Pipeline = Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.CreatePipeline(InvocationInformation, __correlationId, __processRecordId, this.ParameterSetName);
+                Pipeline = Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.CreatePipeline(InvocationInformation, __correlationId, __processRecordId, this.ParameterSetName, this.ExtensibleParameters);
                 if (null != HttpPipelinePrepend)
                 {
                     Pipeline.Prepend((this.CommandRuntime as Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.PowerShell.IAsyncCommandRuntimeExtensions)?.Wrap(HttpPipelinePrepend) ?? HttpPipelinePrepend);
@@ -511,12 +522,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
                 try
                 {
                     await ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.CmdletBeforeAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
-                    await this.Client.LocalRulestacksUpdate(SubscriptionId, ResourceGroupName, Name, _propertiesBody, onOk, onDefault, this, Pipeline);
+                    _resourceBody = await this.Client.LocalRulestacksGetWithResult(SubscriptionId, ResourceGroupName, Name, this, Pipeline);
+                    this.PreProcessManagedIdentityParametersWithGetResult();
+                    this.Update_resourceBody();
+                    await this.Client.LocalRulestacksCreateOrUpdate(SubscriptionId, ResourceGroupName, Name, _resourceBody, onOk, onDefault, this, Pipeline, Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.SerializationMode.IncludeCreate|Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.SerializationMode.IncludeUpdate);
                     await ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Signal(Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.Events.CmdletAfterAPICall); if( ((Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.IEventListener)this).Token.IsCancellationRequested ) { return; }
                 }
                 catch (Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.UndeclaredResponseException urexception)
                 {
-                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  SubscriptionId=SubscriptionId,ResourceGroupName=ResourceGroupName,Name=Name,body=_propertiesBody})
+                    WriteError(new global::System.Management.Automation.ErrorRecord(urexception, urexception.StatusCode.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId,ResourceGroupName=ResourceGroupName,Name=Name})
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(urexception.Message) { RecommendedAction = urexception.Action }
                     });
@@ -536,23 +550,46 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
         }
 
         /// <summary>
-        /// Intializes a new instance of the <see cref="UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded" /> cmdlet class.
+        /// Initializes a new instance of the <see cref="UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded" /> cmdlet class.
         /// </summary>
         public UpdateAzPaloAltoNetworksLocalRulestack_UpdateExpanded()
         {
 
         }
 
+        private void Update_resourceBody()
+        {
+            if ((bool)(true == this.MyInvocation?.BoundParameters.ContainsKey("Tag")))
+            {
+                this.Tag = (Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ITrackedResourceTags)(this.MyInvocation?.BoundParameters["Tag"]);
+            }
+        }
+
+        /// <param name="sendToPipeline"></param>
+        new protected void WriteObject(object sendToPipeline)
+        {
+            Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.SanitizeOutput?.Invoke(sendToPipeline, __correlationId);
+            base.WriteObject(sendToPipeline);
+        }
+
+        /// <param name="sendToPipeline"></param>
+        /// <param name="enumerateCollection"></param>
+        new protected void WriteObject(object sendToPipeline, bool enumerateCollection)
+        {
+            Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Module.Instance.SanitizeOutput?.Invoke(sendToPipeline, __correlationId);
+            base.WriteObject(sendToPipeline, enumerateCollection);
+        }
+
         /// <summary>
         /// a delegate that is called when the remote service returns default (any response code not handled elsewhere).
         /// </summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse</see>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse</see>
         /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>
-        private async global::System.Threading.Tasks.Task onDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse> response)
+        private async global::System.Threading.Tasks.Task onDefault(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse> response)
         {
             using( NoSynchronizationContext )
             {
@@ -569,15 +606,15 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
                 if ((null == code || null == message))
                 {
                     // Unrecognized Response. Create an error record based on what we have.
-                    var ex = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.RestException<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api30.IErrorResponse>(responseMessage, await response);
-                    WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId, ResourceGroupName=ResourceGroupName, Name=Name, body=_propertiesBody })
+                    var ex = new Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Runtime.RestException<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IErrorResponse>(responseMessage, await response);
+                    WriteError( new global::System.Management.Automation.ErrorRecord(ex, ex.Code, global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  })
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(ex.Message) { RecommendedAction = ex.Action }
                     });
                 }
                 else
                 {
-                    WriteError( new global::System.Management.Automation.ErrorRecord(new global::System.Exception($"[{code}] : {message}"), code?.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new { SubscriptionId=SubscriptionId, ResourceGroupName=ResourceGroupName, Name=Name, body=_propertiesBody })
+                    WriteError( new global::System.Management.Automation.ErrorRecord(new global::System.Exception($"[{code}] : {message}"), code?.ToString(), global::System.Management.Automation.ErrorCategory.InvalidOperation, new {  })
                     {
                       ErrorDetails = new global::System.Management.Automation.ErrorDetails(message) { RecommendedAction = global::System.String.Empty }
                     });
@@ -587,12 +624,12 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
 
         /// <summary>a delegate that is called when the remote service returns 200 (OK).</summary>
         /// <param name="responseMessage">the raw response message as an global::System.Net.Http.HttpResponseMessage.</param>
-        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource</see>
+        /// <param name="response">the body result as a <see cref="Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource">Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource</see>
         /// from the remote call</param>
         /// <returns>
         /// A <see cref="global::System.Threading.Tasks.Task" /> that will be complete when handling of the method is completed.
         /// </returns>
-        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource> response)
+        private async global::System.Threading.Tasks.Task onOk(global::System.Net.Http.HttpResponseMessage responseMessage, global::System.Threading.Tasks.Task<Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource> response)
         {
             using( NoSynchronizationContext )
             {
@@ -604,8 +641,26 @@ namespace Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Cmdlets
                     return ;
                 }
                 // onOk - response for 200 / application/json
-                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.ILocalRulestackResource
-                WriteObject((await response));
+                // (await response) // should be Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.ILocalRulestackResource
+                var result = (await response);
+                if (null != result)
+                {
+                    if (0 == _responseSize)
+                    {
+                        _firstResponse = result;
+                        _responseSize = 1;
+                    }
+                    else
+                    {
+                        if (1 ==_responseSize)
+                        {
+                            // Flush buffer
+                            WriteObject(_firstResponse.AddMultipleTypeNameIntoPSObject());
+                        }
+                        WriteObject(result.AddMultipleTypeNameIntoPSObject());
+                        _responseSize = 2;
+                    }
+                }
             }
         }
     }

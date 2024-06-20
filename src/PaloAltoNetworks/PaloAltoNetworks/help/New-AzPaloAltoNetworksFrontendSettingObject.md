@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.PaloAltoNetworks-help.xml
 Module Name: Az.PaloAltoNetworks
 online version: https://learn.microsoft.com/powershell/module/Az.PaloAltoNetworks/new-azpaloaltonetworksfrontendsettingobject
 schema: 2.0.0
@@ -14,9 +14,9 @@ Create an in-memory object for FrontendSetting.
 
 ```
 New-AzPaloAltoNetworksFrontendSettingObject -BackendConfigurationPort <String>
- -FrontendConfigurationPort <String> -Name <String> -Protocol <ProtocolType> [-Address <String>]
+ -FrontendConfigurationPort <String> -Name <String> -Protocol <String> [-Address <String>]
  [-BackendConfigurationAddress1 <String>] [-BackendConfigurationAddressResourceId <String>]
- [-FrontendConfigurationAddressResourceId <String>] [<CommonParameters>]
+ [-FrontendConfigurationAddressResourceId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -144,11 +144,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Protocol
 Protocol Type.
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.ProtocolType
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -166,11 +181,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.Api20220829.FrontendSetting
+### Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.FrontendSetting
 
 ## NOTES
 
-ALIASES
-
 ## RELATED LINKS
-

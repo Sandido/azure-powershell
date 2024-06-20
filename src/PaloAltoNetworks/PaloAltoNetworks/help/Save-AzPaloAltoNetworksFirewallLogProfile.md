@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.PaloAltoNetworks-help.xml
 Module Name: Az.PaloAltoNetworks
 online version: https://learn.microsoft.com/powershell/module/az.paloaltonetworks/save-azpaloaltonetworksfirewalllogprofile
 schema: 2.0.0
@@ -40,8 +40,8 @@ Save-AzPaloAltoNetworksFirewallLogProfile -FirewallName <String> -ResourceGroupN
  [-DecryptLogDestinationMonitorConfigurationsWorkspace <String>]
  [-DecryptLogDestinationStorageConfigurationsAccountName <String>]
  [-DecryptLogDestinationStorageConfigurationsId <String>]
- [-DecryptLogDestinationStorageConfigurationsSubscriptionId <String>] [-LogOption <LogOption>]
- [-LogType <LogType>] [-ThreatLogDestinationEventHubConfigurationsId <String>]
+ [-DecryptLogDestinationStorageConfigurationsSubscriptionId <String>] [-LogOption <String>] [-LogType <String>]
+ [-ThreatLogDestinationEventHubConfigurationsId <String>]
  [-ThreatLogDestinationEventHubConfigurationsName <String>]
  [-ThreatLogDestinationEventHubConfigurationsNameSpace <String>]
  [-ThreatLogDestinationEventHubConfigurationsPolicyName <String>]
@@ -67,7 +67,7 @@ Save-AzPaloAltoNetworksFirewallLogProfile -FirewallName <String> -ResourceGroupN
  [-TrafficLogDestinationStorageConfigurationsAccountName <String>]
  [-TrafficLogDestinationStorageConfigurationsId <String>]
  [-TrafficLogDestinationStorageConfigurationsSubscriptionId <String>] [-DefaultProfile <PSObject>] [-PassThru]
- [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### SaveViaIdentityExpanded
@@ -98,8 +98,8 @@ Save-AzPaloAltoNetworksFirewallLogProfile -InputObject <IPaloAltoNetworksIdentit
  [-DecryptLogDestinationMonitorConfigurationsWorkspace <String>]
  [-DecryptLogDestinationStorageConfigurationsAccountName <String>]
  [-DecryptLogDestinationStorageConfigurationsId <String>]
- [-DecryptLogDestinationStorageConfigurationsSubscriptionId <String>] [-LogOption <LogOption>]
- [-LogType <LogType>] [-ThreatLogDestinationEventHubConfigurationsId <String>]
+ [-DecryptLogDestinationStorageConfigurationsSubscriptionId <String>] [-LogOption <String>] [-LogType <String>]
+ [-ThreatLogDestinationEventHubConfigurationsId <String>]
  [-ThreatLogDestinationEventHubConfigurationsName <String>]
  [-ThreatLogDestinationEventHubConfigurationsNameSpace <String>]
  [-ThreatLogDestinationEventHubConfigurationsPolicyName <String>]
@@ -125,7 +125,7 @@ Save-AzPaloAltoNetworksFirewallLogProfile -InputObject <IPaloAltoNetworksIdentit
  [-TrafficLogDestinationStorageConfigurationsAccountName <String>]
  [-TrafficLogDestinationStorageConfigurationsId <String>]
  [-TrafficLogDestinationStorageConfigurationsSubscriptionId <String>] [-DefaultProfile <PSObject>] [-PassThru]
- [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -599,7 +599,6 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Models.IPaloAltoNetworksIdentity
@@ -617,7 +616,7 @@ Accept wildcard characters: False
 Log option SAME/INDIVIDUAL
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.LogOption
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -632,7 +631,7 @@ Accept wildcard characters: False
 One of possible log type
 
 ```yaml
-Type: Microsoft.Azure.PowerShell.Cmdlets.PaloAltoNetworks.Support.LogType
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -650,6 +649,21 @@ Returns true when the command succeeds
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
@@ -1123,22 +1137,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IPaloAltoNetworksIdentity>`: Identity Parameter
-  - `[FirewallName <String>]`: Firewall resource name
-  - `[GlobalRulestackName <String>]`: GlobalRulestack resource name
-  - `[Id <String>]`: Resource identity path
-  - `[LocalRulestackName <String>]`: LocalRulestack resource name
-  - `[Name <String>]`: certificate name
-  - `[Priority <String>]`: Post Rule priority
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-
 ## RELATED LINKS
-

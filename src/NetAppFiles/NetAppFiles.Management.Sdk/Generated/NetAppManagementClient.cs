@@ -38,7 +38,7 @@ namespace Microsoft.Azure.Management.NetApp
         public string ApiVersion { get; private set; }
 
         /// <summary>
-        /// The ID of the target subscription.
+        /// The ID of the target subscription. The value must be an UUID.
         /// </summary>
         public string SubscriptionId { get; set;}
 
@@ -49,14 +49,14 @@ namespace Microsoft.Azure.Management.NetApp
 
         /// <summary>
         /// The retry timeout in seconds for Long Running Operations. Default
-        /// value is 30.
+        /// /// value is 30.
         /// </summary>
         public int? LongRunningOperationRetryTimeout { get; set;}
 
         /// <summary>
-        /// Whether a unique x-ms-client-request-id should be generated. When 
-        /// set to true a unique x-ms-client-request-id value is generated and 
-        /// included in each request. Default is true.
+        /// Whether a unique x-ms-client-request-id should be generated. When
+        /// /// set to true a unique x-ms-client-request-id value is generated and
+        /// /// included in each request. Default is true.
         /// </summary>
         public bool? GenerateClientRequestId { get; set;}
 
@@ -72,6 +72,10 @@ namespace Microsoft.Azure.Management.NetApp
         /// Gets the INetAppResourceQuotaLimitsOperations
         /// </summary>
         public virtual INetAppResourceQuotaLimitsOperations NetAppResourceQuotaLimits { get; private set; }
+        /// <summary>
+        /// Gets the INetAppResourceRegionInfosOperations
+        /// </summary>
+        public virtual INetAppResourceRegionInfosOperations NetAppResourceRegionInfos { get; private set; }
         /// <summary>
         /// Gets the IAccountsOperations
         /// </summary>
@@ -93,14 +97,6 @@ namespace Microsoft.Azure.Management.NetApp
         /// </summary>
         public virtual ISnapshotPoliciesOperations SnapshotPolicies { get; private set; }
         /// <summary>
-        /// Gets the IBackupsOperations
-        /// </summary>
-        public virtual IBackupsOperations Backups { get; private set; }
-        /// <summary>
-        /// Gets the IAccountBackupsOperations
-        /// </summary>
-        public virtual IAccountBackupsOperations AccountBackups { get; private set; }
-        /// <summary>
         /// Gets the IBackupPoliciesOperations
         /// </summary>
         public virtual IBackupPoliciesOperations BackupPolicies { get; private set; }
@@ -116,6 +112,26 @@ namespace Microsoft.Azure.Management.NetApp
         /// Gets the ISubvolumesOperations
         /// </summary>
         public virtual ISubvolumesOperations Subvolumes { get; private set; }
+        /// <summary>
+        /// Gets the IBackupsOperations
+        /// </summary>
+        public virtual IBackupsOperations Backups { get; private set; }
+        /// <summary>
+        /// Gets the IBackupVaultsOperations
+        /// </summary>
+        public virtual IBackupVaultsOperations BackupVaults { get; private set; }
+        /// <summary>
+        /// Gets the IBackupsUnderBackupVaultOperations
+        /// </summary>
+        public virtual IBackupsUnderBackupVaultOperations BackupsUnderBackupVault { get; private set; }
+        /// <summary>
+        /// Gets the IBackupsUnderVolumeOperations
+        /// </summary>
+        public virtual IBackupsUnderVolumeOperations BackupsUnderVolume { get; private set; }
+        /// <summary>
+        /// Gets the IBackupsUnderAccountOperations
+        /// </summary>
+        public virtual IBackupsUnderAccountOperations BackupsUnderAccount { get; private set; }
         /// <summary>
         /// Initializes a new instance of the NetAppManagementClient class.
         /// </summary>
@@ -354,19 +370,23 @@ namespace Microsoft.Azure.Management.NetApp
             this.Operations = new Operations(this);
             this.NetAppResource = new NetAppResourceOperations(this);
             this.NetAppResourceQuotaLimits = new NetAppResourceQuotaLimitsOperations(this);
+            this.NetAppResourceRegionInfos = new NetAppResourceRegionInfosOperations(this);
             this.Accounts = new AccountsOperations(this);
             this.Pools = new PoolsOperations(this);
             this.Volumes = new VolumesOperations(this);
             this.Snapshots = new SnapshotsOperations(this);
             this.SnapshotPolicies = new SnapshotPoliciesOperations(this);
-            this.Backups = new BackupsOperations(this);
-            this.AccountBackups = new AccountBackupsOperations(this);
             this.BackupPolicies = new BackupPoliciesOperations(this);
             this.VolumeQuotaRules = new VolumeQuotaRulesOperations(this);
             this.VolumeGroups = new VolumeGroupsOperations(this);
             this.Subvolumes = new SubvolumesOperations(this);
+            this.Backups = new BackupsOperations(this);
+            this.BackupVaults = new BackupVaultsOperations(this);
+            this.BackupsUnderBackupVault = new BackupsUnderBackupVaultOperations(this);
+            this.BackupsUnderVolume = new BackupsUnderVolumeOperations(this);
+            this.BackupsUnderAccount = new BackupsUnderAccountOperations(this);
             this.BaseUri = new System.Uri("https://management.azure.com");
-            this.ApiVersion = "2022-11-01";
+            this.ApiVersion = "2023-11-01";
             this.AcceptLanguage = "en-US";
             this.LongRunningOperationRetryTimeout = 30;
             this.GenerateClientRequestId = true;

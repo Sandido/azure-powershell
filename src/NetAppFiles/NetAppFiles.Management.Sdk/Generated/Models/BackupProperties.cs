@@ -33,25 +33,31 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// <param name="provisioningState">Azure lifecycle management
         /// </param>
 
-        /// <param name="size">Size of backup
+        /// <param name="size">Size of backup in bytes
         /// </param>
 
         /// <param name="label">Label for backup
         /// </param>
 
         /// <param name="backupType">Type of backup Manual or Scheduled
-        /// Possible values include: 'Manual', 'Scheduled'</param>
+        /// Possible values include: &#39;Manual&#39;, &#39;Scheduled&#39;</param>
 
         /// <param name="failureReason">Failure reason
         /// </param>
 
-        /// <param name="volumeName">Volume name
+        /// <param name="volumeResourceId">ResourceId used to identify the Volume
         /// </param>
 
         /// <param name="useExistingSnapshot">Manual backup an already existing snapshot. This will always be false for
         /// scheduled backups and true/false for manual backups
         /// </param>
-        public BackupProperties(string backupId = default(string), System.DateTime? creationDate = default(System.DateTime?), string provisioningState = default(string), long? size = default(long?), string label = default(string), string backupType = default(string), string failureReason = default(string), string volumeName = default(string), bool? useExistingSnapshot = default(bool?))
+
+        /// <param name="snapshotName">The name of the snapshot
+        /// </param>
+
+        /// <param name="backupPolicyResourceId">ResourceId used to identify the backup policy
+        /// </param>
+        public BackupProperties(string volumeResourceId, string backupId = default(string), System.DateTime? creationDate = default(System.DateTime?), string provisioningState = default(string), long? size = default(long?), string label = default(string), string backupType = default(string), string failureReason = default(string), bool? useExistingSnapshot = default(bool?), string snapshotName = default(string), string backupPolicyResourceId = default(string))
 
         {
             this.BackupId = backupId;
@@ -61,8 +67,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
             this.Label = label;
             this.BackupType = backupType;
             this.FailureReason = failureReason;
-            this.VolumeName = volumeName;
+            this.VolumeResourceId = volumeResourceId;
             this.UseExistingSnapshot = useExistingSnapshot;
+            this.SnapshotName = snapshotName;
+            this.BackupPolicyResourceId = backupPolicyResourceId;
             CustomInit();
         }
 
@@ -91,7 +99,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
         public string ProvisioningState {get; private set; }
 
         /// <summary>
-        /// Gets size of backup
+        /// Gets size of backup in bytes
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "size")]
         public long? Size {get; private set; }
@@ -115,10 +123,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
         public string FailureReason {get; private set; }
 
         /// <summary>
-        /// Gets volume name
+        /// Gets or sets resourceId used to identify the Volume
         /// </summary>
-        [Newtonsoft.Json.JsonProperty(PropertyName = "volumeName")]
-        public string VolumeName {get; private set; }
+        [Newtonsoft.Json.JsonProperty(PropertyName = "volumeResourceId")]
+        public string VolumeResourceId {get; set; }
 
         /// <summary>
         /// Gets or sets manual backup an already existing snapshot. This will always
@@ -126,6 +134,18 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </summary>
         [Newtonsoft.Json.JsonProperty(PropertyName = "useExistingSnapshot")]
         public bool? UseExistingSnapshot {get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the snapshot
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty(PropertyName = "snapshotName")]
+        public string SnapshotName {get; set; }
+
+        /// <summary>
+        /// Gets resourceId used to identify the backup policy
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty(PropertyName = "backupPolicyResourceId")]
+        public string BackupPolicyResourceId {get; private set; }
         /// <summary>
         /// Validate the object.
         /// </summary>
@@ -134,6 +154,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </exception>
         public virtual void Validate()
         {
+            if (this.VolumeResourceId == null)
+            {
+                throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.CannotBeNull, "VolumeResourceId");
+            }
             if (this.BackupId != null)
             {
                 if (this.BackupId.Length > 36)
@@ -149,6 +173,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
                     throw new Microsoft.Rest.ValidationException(Microsoft.Rest.ValidationRules.Pattern, "BackupId", "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
                 }
             }
+
+
 
 
 

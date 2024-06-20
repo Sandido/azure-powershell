@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.StorageMover-help.xml
 Module Name: Az.StorageMover
 online version: https://learn.microsoft.com/powershell/module/az.storagemover/start-azstoragemoverjobdefinition
 schema: 2.0.0
@@ -8,25 +8,25 @@ schema: 2.0.0
 # Start-AzStorageMoverJobDefinition
 
 ## SYNOPSIS
-Requests an Agent to start a new instance of this Job Definition, generating a new Job Run resource.
+Creates a new Job Run resource for the specified Job Definition and passes it to the Agent for execution.
 
 ## SYNTAX
 
 ### Start (Default)
 ```
-Start-AzStorageMoverJobDefinition -JobDefinitionName <String> -ProjectName <String>
- -ResourceGroupName <String> -StorageMoverName <String> [-SubscriptionId <String>]
- [-DefaultProfile <PSObject>] [-Confirm] [-WhatIf] [<CommonParameters>]
+Start-AzStorageMoverJobDefinition -JobDefinitionName <String> -ProjectName <String> -ResourceGroupName <String>
+ -StorageMoverName <String> [-SubscriptionId <String>] [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### StartViaIdentity
 ```
-Start-AzStorageMoverJobDefinition -InputObject <IStorageMoverIdentity> [-DefaultProfile <PSObject>] [-Confirm]
- [-WhatIf] [<CommonParameters>]
+Start-AzStorageMoverJobDefinition -InputObject <IStorageMoverIdentity> [-DefaultProfile <PSObject>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Requests an Agent to start a new instance of this Job Definition, generating a new Job Run resource.
+Creates a new Job Run resource for the specified Job Definition and passes it to the Agent for execution.
 
 ## EXAMPLES
 
@@ -90,6 +90,21 @@ Parameter Sets: Start
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -202,4 +217,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-

@@ -1,5 +1,5 @@
 ---
-external help file:
+external help file: Az.Alb-help.xml
 Module Name: Az.Alb
 online version: https://learn.microsoft.com/powershell/module/az.alb/remove-azalbfrontend
 schema: 2.0.0
@@ -15,13 +15,20 @@ Delete a Frontend
 ### Delete (Default)
 ```
 Remove-AzAlbFrontend -AlbName <String> -Name <String> -ResourceGroupName <String> [-SubscriptionId <String>]
- [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru] [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
+```
+
+### DeleteViaIdentityTrafficController
+```
+Remove-AzAlbFrontend -Name <String> -TrafficControllerInputObject <IAlbIdentity> [-DefaultProfile <PSObject>]
+ [-AsJob] [-NoWait] [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### DeleteViaIdentity
 ```
 Remove-AzAlbFrontend -InputObject <IAlbIdentity> [-DefaultProfile <PSObject>] [-AsJob] [-NoWait] [-PassThru]
- [-Confirm] [-WhatIf] [<CommonParameters>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -86,7 +93,6 @@ Accept wildcard characters: False
 
 ### -InputObject
 Identity Parameter
-To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
 
 ```yaml
 Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
@@ -105,7 +111,7 @@ Frontends
 
 ```yaml
 Type: System.String
-Parameter Sets: Delete
+Parameter Sets: Delete, DeleteViaIdentityTrafficController
 Aliases:
 
 Required: True
@@ -176,6 +182,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -TrafficControllerInputObject
+Identity Parameter
+
+```yaml
+Type: Microsoft.Azure.PowerShell.Cmdlets.Alb.Models.IAlbIdentity
+Parameter Sets: DeleteViaIdentityTrafficController
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
 
@@ -220,20 +241,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## NOTES
 
-ALIASES
-
-COMPLEX PARAMETER PROPERTIES
-
-To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
-
-
-`INPUTOBJECT <IAlbIdentity>`: Identity Parameter
-  - `[AssociationName <String>]`: Name of Association
-  - `[FrontendName <String>]`: Frontends
-  - `[Id <String>]`: Resource identity path
-  - `[ResourceGroupName <String>]`: The name of the resource group. The name is case insensitive.
-  - `[SubscriptionId <String>]`: The ID of the target subscription.
-  - `[TrafficControllerName <String>]`: traffic controller name for path
-
 ## RELATED LINKS
-
